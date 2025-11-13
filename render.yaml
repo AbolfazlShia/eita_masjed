@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: masjed-app
+    env: node
+    plan: free
+    branch: main
+    buildCommand: "npm run build"
+    startCommand: "npm run start"
+    disk: 1024
+    autoDeploy: true
+    envVars:
+      - key: EITA_TOKEN
+        scope: service
