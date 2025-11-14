@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
             key: "X-Frame-Options",
             value: "ALLOWALL",
           },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-UA-Compatible",
+            value: "IE=edge",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "no-referrer-when-downgrade",
+          },
         ],
       },
     ];

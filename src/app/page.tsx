@@ -1,5 +1,5 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState, Suspense } from "react";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 
 type User = { name: string; coins: number; lastScoreChangeTime?: string; lastScoreChangeAmount?: number };
