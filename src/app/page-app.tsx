@@ -65,6 +65,7 @@ export default function Home() {
             border: 'none',
             cursor: 'pointer',
             marginTop: '24px',
+            transition: 'background-color 0.2s',
           }}
           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgb(22, 163, 74)'}
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgb(34, 197, 94)'}
