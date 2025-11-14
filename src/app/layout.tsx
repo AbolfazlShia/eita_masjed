@@ -20,6 +20,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "مسجد - Masjed App",
   description: "برنامه مدیریت مسجد",
+  openGraph: {
+    title: "مسجد - Masjed App",
+    description: "برنامه مدیریت مسجد",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -28,7 +33,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fa" dir="rtl">
+      <head>
+        {/* Telegram Web App SDK */}
+        <script src="https://telegram.org/js/telegram-web-app.js" />
+        {/* Meta tags for Telegram/EITA */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

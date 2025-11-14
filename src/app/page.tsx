@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useTelegramWebApp } from "@/lib/telegram";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 
 type User = { name: string; coins: number; lastScoreChangeTime?: string; lastScoreChangeAmount?: number };
@@ -438,6 +439,7 @@ function UserView({ isDarkMode }: { isDarkMode: boolean }) {
 export default function Home() {
   const [entryType, setEntryType] = useState<string | null>(null);
   const [showRegister, setShowRegister] = useState(false);
+  const [isTelegram, setIsTelegram] = useState(false);
   const [users, setUsers] = useState<User[]>([
     { name: "علی رضایی", coins: 12, lastScoreChangeTime: new Date().toLocaleString('fa-IR'), lastScoreChangeAmount: 0 },
     { name: "زهرا احمدی", coins: 8, lastScoreChangeTime: new Date().toLocaleString('fa-IR'), lastScoreChangeAmount: 0 },
@@ -445,16 +447,15 @@ export default function Home() {
   ]);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Initialize Telegram WebApp
+  useTelegramWebApp();
+
   React.useEffect(() => {
-    async function checkRemembered() {
-      const ip = await fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => d.ip).catch(() => null);
-      if (ip) {
-        const role = localStorage.getItem('role_' + ip);
-        if (role === 'admin') setEntryType('admin');
-        else if (role === 'user') setEntryType('user');
-      }
+    // Detect if running in Telegram
+    if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+      setIsTelegram(true);
+      console.log('Running in Telegram WebApp');
     }
-    checkRemembered();
   }, []);
 
   // Load users and dark mode from localStorage on mount
