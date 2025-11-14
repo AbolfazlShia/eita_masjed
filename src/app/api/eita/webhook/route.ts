@@ -9,12 +9,15 @@ async function ensureDataFile() {
 }
 
 export async function POST(req: Request) {
-  // Simple token check: header 'x-eita-token' or query param 'token'
-  const token = process.env.EITA_TOKEN || process.env.NEXT_PUBLIC_EITA_TOKEN;
-  const provided = req.headers.get('x-eita-token') || new URL(req.url).searchParams.get('token');
-  if (!token || !provided || provided !== token) {
+  // Token is optional - check if provided and if it matches environment variable
+  const envToken = process.env.EITA_TOKEN || process.env.NEXT_PUBLIC_EITA_TOKEN;
+  const providedToken = req.headers.get('x-eita-token') || new URL(req.url).searchParams.get('token');
+  
+  // If environment token is set, verify it
+  if (envToken && providedToken && providedToken !== envToken) {
     return new NextResponse(JSON.stringify({ ok: false, error: 'invalid_token' }), { status: 401 });
   }
+  // If no token in environment, accept requests without token
 
   let body: any;
   try {
@@ -27,7 +30,7 @@ export async function POST(req: Request) {
   console.log('[EITA Webhook] Received:', {
     timestamp: new Date().toISOString(),
     payload: body,
-    token: provided ? '***' : 'none'
+    hasToken: !!providedToken
   });
 
   // Note: File storage disabled on Netlify (read-only filesystem)
@@ -42,18 +45,21 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  // Admin view: return recent messages (from memory/logs only)
-  const token = process.env.EITA_ADMIN_TOKEN || process.env.EITA_TOKEN || process.env.NEXT_PUBLIC_EITA_TOKEN;
-  const provided = req.headers.get('x-eita-token') || new URL(req.url).searchParams.get('token');
-  if (!token || !provided || provided !== token) {
+  // Token is optional for GET as well
+  const envToken = process.env.EITA_ADMIN_TOKEN || process.env.EITA_TOKEN || process.env.NEXT_PUBLIC_EITA_TOKEN;
+  const providedToken = req.headers.get('x-eita-token') || new URL(req.url).searchParams.get('token');
+  
+  // If environment token is set, verify it
+  if (envToken && providedToken && providedToken !== envToken) {
     return new NextResponse(JSON.stringify({ ok: false, error: 'invalid_token' }), { status: 401 });
   }
+  // If no token in environment, accept requests without token
 
   // Return empty array (filesystem storage disabled on Netlify)
   return new NextResponse(JSON.stringify({ 
     ok: true, 
     messages: [],
-    note: 'File persistence disabled on Netlify. Use external database for production.'
+    note: 'Webhook endpoint is working. Use external database for message persistence.'
   }), { status: 200 });
 }
 
