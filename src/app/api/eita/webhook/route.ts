@@ -64,3 +64,17 @@ export async function GET(req: Request) {
     return new NextResponse(JSON.stringify({ ok: false, error: 'read_failed' }), { status: 500 });
   }
 }
+
+export async function OPTIONS(req: Request) {
+  // Handle CORS preflight requests
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-eita-token',
+      'Access-Control-Max-Age': '86400',
+      'X-Frame-Options': 'ALLOWALL',
+    },
+  });
+}
