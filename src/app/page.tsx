@@ -1,8 +1,19 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+  const [selected, setSelected] = useState<'guest' | 'auth' | 'admin' | null>(null);
+
+  const handleGuest = () => router.push('/start');
+  const handleAuth = () => router.push('/auth/register');
+  const handleAdmin = () => {
+    setSelected('admin');
+    setTimeout(() => router.push('/auth/login'), 300);
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -14,73 +25,110 @@ export default function Home() {
     }}>
       <div style={{
         backgroundColor: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-        padding: '32px',
-        maxWidth: '400px',
+        borderRadius: '16px',
+        boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+        padding: '40px',
+        maxWidth: '500px',
         width: '100%',
         textAlign: 'center',
       }}>
         <h1 style={{
-          fontSize: '32px',
+          fontSize: '36px',
           fontWeight: 'bold',
           color: 'rgb(22, 163, 74)',
-          marginBottom: '24px',
+          marginBottom: '8px',
         }}>
-          مسجد 🕌
+          مسجد
         </h1>
 
-        <div style={{
-          backgroundColor: 'rgb(240, 253, 244)',
-          borderLeft: '4px solid rgb(22, 163, 74)',
-          padding: '16px',
-          marginBottom: '24px',
-        }}>
-          <p style={{
-            fontWeight: '600',
-            color: 'rgb(22, 163, 74)',
-          }}>
-            ✅ خوش آمدید
-          </p>
-        </div>
-
         <p style={{
-          fontSize: '18px',
-          color: 'rgb(55, 65, 81)',
-          marginBottom: '16px',
+          fontSize: '14px',
+          color: 'rgb(107, 114, 128)',
+          marginBottom: '32px',
         }}>
           برنامه مدیریت مسجد
         </p>
 
-        <button
-          onClick={() => alert('درحال توسعه...')}
-          style={{
-            width: '100%',
-            backgroundColor: 'rgb(34, 197, 94)',
-            color: 'white',
-            fontWeight: 'bold',
-            padding: '12px 16px',
-            fontSize: '16px',
-            borderRadius: '8px',
-            border: 'none',
-            cursor: 'pointer',
-            marginTop: '24px',
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgb(22, 163, 74)'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgb(34, 197, 94)'}
-        >
-          شروع کنید 🚀
-        </button>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gap: '16px',
+          marginTop: '32px',
+        }}>
+          <button
+            onClick={handleGuest}
+            style={{
+              padding: '16px 24px',
+              backgroundColor: 'rgb(59, 130, 246)',
+              color: 'white',
+              fontWeight: '600',
+              fontSize: '16px',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              transform: selected === 'guest' ? 'scale(0.98)' : 'scale(1)',
+            }}
+            onMouseDown={() => setSelected('guest')}
+            onMouseUp={() => setSelected(null)}
+          >
+            ورود به عنوان مهمان
+          </button>
 
-        <p style={{
-          fontSize: '12px',
-          color: 'rgb(156, 163, 175)',
-          marginTop: '24px',
+          <button
+            onClick={handleAuth}
+            style={{
+              padding: '16px 24px',
+              backgroundColor: 'rgb(22, 163, 74)',
+              color: 'white',
+              fontWeight: '600',
+              fontSize: '16px',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              transform: selected === 'auth' ? 'scale(0.98)' : 'scale(1)',
+            }}
+            onMouseDown={() => setSelected('auth')}
+            onMouseUp={() => setSelected(null)}
+          >
+            ثبت نام یا ورود
+          </button>
+
+          <button
+            onClick={handleAdmin}
+            style={{
+              padding: '16px 24px',
+              backgroundColor: 'rgb(239, 68, 68)',
+              color: 'white',
+              fontWeight: '600',
+              fontSize: '16px',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              transform: selected === 'admin' ? 'scale(0.98)' : 'scale(1)',
+            }}
+            onMouseDown={() => setSelected('admin')}
+            onMouseUp={() => setSelected(null)}
+          >
+            ورود مدیر
+          </button>
+        </div>
+
+        <div style={{
+          marginTop: '40px',
           paddingTop: '24px',
           borderTop: '1px solid rgb(229, 231, 235)',
         }}>
-          v1.0.0
-        </p>
+          <p style={{
+            fontSize: '12px',
+            color: 'rgb(156, 163, 175)',
+            margin: '0',
+          }}>
+            v1.0.0 • مسجد
+          </p>
+        </div>
       </div>
     </div>
   );
