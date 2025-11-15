@@ -4,10 +4,28 @@ services:
     env: node
     plan: free
     branch: main
-    buildCommand: "npm run build"
+    buildCommand: "npm ci && npm run build"
     startCommand: "npm run start"
     disk: 1024
     autoDeploy: true
+    region: frankfurt
     envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      # Telegram/Eitaa Webhook (optional: set if using webhook integration)
       - key: EITA_TOKEN
-        scope: service
+        sync: false
+      - key: NEXT_PUBLIC_EITA_TOKEN
+        sync: false
+      - key: EITA_ADMIN_TOKEN
+        sync: false
+      # hCaptcha (optional: enable by setting HCAPTCHA_SECRET and HCAPTCHA_SITEKEY)
+      # - key: HCAPTCHA_SECRET
+      #   sync: false
+      # - key: HCAPTCHA_SITEKEY
+      #   sync: false
+      # Prayer scraper source URL
+      - key: PRAYER_SOURCE_URL
+        value: "https://www.bahesab.ir/"
