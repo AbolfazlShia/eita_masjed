@@ -361,7 +361,7 @@ export default function PrayerTimesSelector() {
                 color: 'rgb(22, 163, 74)',
                 margin: '0 0 12px',
               }}>
-                🕌 اوقات شرعی مشهد
+                🕌 مسجد و پایگاه امام جعفر صادق (ع)
               </h1>
               <p style={{
                 fontSize: '16px',

@@ -146,7 +146,7 @@ export default function DailyInfo() {
             color: 'rgb(22, 163, 74)',
             marginBottom: '8px',
           }}>
-            مسجد مشهد
+            🕌 مسجد و پایگاه امام جعفر صادق (ع)
           </h1>
           <p style={{
             fontSize: '18px',
