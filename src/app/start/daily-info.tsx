@@ -26,10 +26,17 @@ export default function DailyInfo() {
   const [data, setData] = useState<TodayData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    fetchTodayData();
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchTodayData();
+    }
+  }, [mounted]);
 
   const fetchTodayData = async () => {
     try {

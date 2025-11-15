@@ -1,11 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [selected, setSelected] = useState<'guest' | 'calendar' | 'auth' | 'admin' | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(to bottom right, rgb(34, 197, 94), rgb(250, 204, 21))',
+      }}>
+        <div style={{ color: 'white', fontSize: '18px' }}>در حال بارگذاری...</div>
+      </div>
+    );
+  }
 
   const handleGuest = () => router.push('/start');
   const handleCalendar = () => router.push('/calendar');

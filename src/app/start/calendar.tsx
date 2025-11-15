@@ -111,9 +111,14 @@ export default function ShamsiCalendar() {
   const today = new Date();
   const todayShamsi = gregorianToShamsi(today);
 
+  const [mounted, setMounted] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(todayShamsi.month);
   const [currentYear, setCurrentYear] = useState(todayShamsi.year);
   const [selectedDay, setSelectedDay] = useState<number | null>(todayShamsi.day);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const daysInMonth = getDaysInShamsiMonth(currentMonth, currentYear);
   const firstDayOfMonth = shamsiToGregorian(currentYear, currentMonth, 1).getDay();
@@ -156,6 +161,16 @@ export default function ShamsiCalendar() {
       padding: '20px',
       direction: 'rtl',
     }}>
+      {!mounted ? (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+        }}>
+          <div style={{ color: 'white', fontSize: '18px' }}>در حال بارگذاری...</div>
+        </div>
+      ) : (
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         {/* هدر */}
         <div style={{
@@ -382,6 +397,7 @@ export default function ShamsiCalendar() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
