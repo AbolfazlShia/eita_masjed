@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
-  const [selected, setSelected] = useState<'guest' | 'auth' | 'admin' | null>(null);
+  const [selected, setSelected] = useState<'guest' | 'calendar' | 'auth' | 'admin' | null>(null);
 
   const handleGuest = () => router.push('/start');
+  const handleCalendar = () => router.push('/calendar');
   const handleAuth = () => router.push('/auth/register');
   const handleAdmin = () => {
     setSelected('admin');
@@ -38,7 +39,7 @@ export default function Home() {
           color: 'rgb(22, 163, 74)',
           marginBottom: '8px',
         }}>
-          مسجد
+          🕌 مسجد
         </h1>
 
         <p style={{
@@ -46,7 +47,7 @@ export default function Home() {
           color: 'rgb(107, 114, 128)',
           marginBottom: '32px',
         }}>
-          برنامه مدیریت مسجد
+          برنامه هوشمند مسجد مشهد
         </p>
 
         <div style={{
@@ -72,7 +73,27 @@ export default function Home() {
             onMouseDown={() => setSelected('guest')}
             onMouseUp={() => setSelected(null)}
           >
-            ورود به عنوان مهمان
+            📍 اوقات شرعی و مناسبت‌ها
+          </button>
+
+          <button
+            onClick={handleCalendar}
+            style={{
+              padding: '16px 24px',
+              backgroundColor: 'rgb(168, 85, 247)',
+              color: 'white',
+              fontWeight: '600',
+              fontSize: '16px',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              transform: selected === 'calendar' ? 'scale(0.98)' : 'scale(1)',
+            }}
+            onMouseDown={() => setSelected('calendar')}
+            onMouseUp={() => setSelected(null)}
+          >
+            📅 تقویم شمسی
           </button>
 
           <button
@@ -92,7 +113,7 @@ export default function Home() {
             onMouseDown={() => setSelected('auth')}
             onMouseUp={() => setSelected(null)}
           >
-            ثبت نام یا ورود
+            👤 ثبت نام یا ورود
           </button>
 
           <button
@@ -112,7 +133,7 @@ export default function Home() {
             onMouseDown={() => setSelected('admin')}
             onMouseUp={() => setSelected(null)}
           >
-            ورود مدیر
+            🔐 ورود مدیر
           </button>
         </div>
 
@@ -126,7 +147,7 @@ export default function Home() {
             color: 'rgb(156, 163, 175)',
             margin: '0',
           }}>
-            v1.0.0 • مسجد
+            v2.0.0 • مسجد مشهد • 🤖 با هوش مصنوعی
           </p>
         </div>
       </div>
