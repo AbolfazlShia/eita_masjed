@@ -7,9 +7,23 @@ export async function GET(req: Request) {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
+    // اگر فایل ذخیره‌شده وجود دارد آن را سرو کنیم
+    const fs = require('fs');
+    const path = require('path');
+    const dataFile = path.join(process.cwd(), 'data', 'prayer-times.json');
+    if (fs.existsSync(dataFile)) {
+      try {
+        const raw = fs.readFileSync(dataFile, 'utf8');
+        const obj = JSON.parse(raw);
+        if (obj && obj.date === `${year}-${month}-${day}`) {
+          return NextResponse.json({ ok: true, date: obj.date, city: obj.city || 'mashhad', prayerTimes: obj.prayerTimes, timestamp: obj.timestamp });
+        }
+      } catch (e) {
+        // fall through to default
+      }
+    }
 
-    // اوقات شرعی نمونه برای مشهد
-    // در واقعیت باید از bahesab.ir پارس کنیم
+    // اوقات شرعی نمونه برای مشهد (fallback)
     const prayerTimes = {
       fajr: '04:40',
       sunrise: '06:08',

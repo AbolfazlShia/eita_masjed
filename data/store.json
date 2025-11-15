@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "مدیر",
+      "lastName": "سایت",
+      "gender": "مرد",
+      "birth": "",
+      "pin": "$2a$08$yuAv6P69RC2ckaOUztoei.dzfchhxTSGpNkyAxyWD1p7aBe2F7BTi",
+      "role": "admin"
+    }
+  ],
+  "sessions": [],
+  "ip_remember": []
+}
