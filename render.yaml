@@ -29,3 +29,13 @@ services:
       # Prayer scraper source URL
       - key: PRAYER_SOURCE_URL
         value: "https://www.bahesab.ir/"
+      # Cron secret for prayer times update
+      - key: CRON_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        value: "https://eita-masjed.onrender.com"
+
+crons:
+  - id: update-prayer-times
+    schedule: "0 0 * * *"
+    httpPath: /api/cron/update-prayer-times
