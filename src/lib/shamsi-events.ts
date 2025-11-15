@@ -1,4 +1,5 @@
 // مناسبت های شمسی سال (ماه/روز)
+import { toGregorian } from 'jalaali-js';
 export const shamsiEvents: Record<string, string[]> = {
   '1/1': ['عید نوروز', 'سال نو شمسی'],
   '1/6': ['دیدار خانوادگی'],
@@ -169,8 +170,9 @@ export function formatShamsiDate(
   let result = `${day} ${monthName} ${year}`;
 
   if (withDayName) {
-    // محاسبه روز هفته برای تاریخ شمسی
-    const fullDate = shamsiToGregorian(year, month, day);
+    // محاسبه روز هفته برای تاریخ شمسی با استفاده از jalaali-js
+    const { gy, gm, gd } = toGregorian(year, month, day);
+    const fullDate = new Date(gy, gm - 1, gd);
     const dayIndex = fullDate.getDay();
     result = `${dayNames[dayIndex]} ${day} ${monthName} ${year}`;
   }
@@ -179,55 +181,6 @@ export function formatShamsiDate(
 }
 
 // تبدیل شمسی به میلادی
-export function shamsiToGregorian(
-  jy: number,
-  jm: number,
-  jd: number
-): Date {
-  let j_d_n = 365 * jy + Math.floor(jy / 33) * 8 + Math.floor((jy % 33 + 3) / 4) + 78 + jd;
 
-  for (let i = 1; i < jm; i++) {
-    j_d_n += i <= 6 ? 31 : 30;
-  }
 
-  let gy = 400 * Math.floor(j_d_n / 146097);
-  j_d_n %= 146097;
-
-  let flag = true;
-  if (j_d_n >= 36525) {
-    j_d_n--;
-    gy += 100 * Math.floor(j_d_n / 36524);
-    j_d_n %= 36524;
-    if (j_d_n >= 365) j_d_n++;
-    flag = false;
-  }
-
-  gy += 4 * Math.floor(j_d_n / 1461);
-  j_d_n %= 1461;
-
-  if (flag && j_d_n >= 366) {
-    j_d_n--;
-    gy += Math.floor(j_d_n / 365);
-    j_d_n = (j_d_n % 365) + 1;
-  }
-
-  let isLeap =
-    (gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0);
-  let sal_a = [0, 31, isLeap ? 60 : 59, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
-
-  let gm = 0;
-  for (let v = 0; v < 13; v++) {
-    v2 = sal_a[v];
-    if (j_d_n <= v2) {
-      gm = v;
-      break;
-    }
-  }
-
-  let gd = j_d_n - sal_a[gm - 1];
-
-  return new Date(gy, gm - 1, gd);
-}
-
-// متغیر کمکی
-let v2: number;
+// حذف شده - از jalaali-js استفاده می‌کنیم

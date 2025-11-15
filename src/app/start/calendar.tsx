@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getShamsiEventsByMonth, formatShamsiDate } from '@/lib/shamsi-events';
+import { toJalaali, toGregorian } from 'jalaali-js';
 
 const shamsiMonths = [
   'فروردین',
@@ -25,33 +26,11 @@ function gregorianToShamsi(date: Date) {
   const gy = date.getFullYear();
   const gm = date.getMonth() + 1;
   const gd = date.getDate();
-
-  let g_d_n = 365 * gy + Math.floor((gy + 3) / 4) - Math.floor((gy + 99) / 100) + Math.floor((gy + 399) / 400) + gd;
-  let j_d_n = g_d_n - 79;
-  let j_np = Math.floor(j_d_n / 12053);
-  j_d_n %= 12053;
-
-  let jy = 979 + 33 * j_np + 4 * Math.floor(j_d_n / 1461);
-  j_d_n %= 1461;
-
-  if (j_d_n >= 366) {
-    jy += Math.floor((j_d_n - 1) / 365);
-    j_d_n = (j_d_n - 1) % 365;
-  }
-
-  let jm = 1;
-  for (let i = 0; i < 12; i++) {
-    let v = i < 6 ? 31 : 30;
-    if (i === 11) v = 29;
-    if (j_d_n < v) break;
-    j_d_n -= v;
-    jm++;
-  }
-
-  return { year: jy, month: jm, day: j_d_n + 1 };
+  const { jy, jm, jd } = toJalaali(gy, gm, gd);
+  return { year: jy, month: jm, day: jd };
 }
 
-// شمارش روزهای ماه شمسی
+// شارش روزهای ماه شمسی
 function getDaysInShamsiMonth(month: number, year: number): number {
   if (month <= 6) return 31;
   if (month <= 11) return 30;
@@ -121,7 +100,9 @@ export default function ShamsiCalendar() {
   }, []);
 
   const daysInMonth = getDaysInShamsiMonth(currentMonth, currentYear);
-  const firstDayOfMonth = shamsiToGregorian(currentYear, currentMonth, 1).getDay();
+  const firstDayGregorian = toGregorian(currentYear, currentMonth, 1);
+  const firstDayDate = new Date(firstDayGregorian.gy, firstDayGregorian.gm - 1, firstDayGregorian.gd);
+  const firstDayOfMonth = firstDayDate.getDay();
 
   const events = getShamsiEventsByMonth(currentMonth);
   const selectedEvents = selectedDay ? events[selectedDay] || [] : [];
