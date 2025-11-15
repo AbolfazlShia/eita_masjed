@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [selected, setSelected] = useState<'guest' | 'calendar' | 'auth' | 'admin' | null>(null);
+  const [selected, setSelected] = useState<'guest' | 'prayer' | 'calendar' | 'auth' | 'admin' | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -27,6 +27,7 @@ export default function Home() {
   }
 
   const handleGuest = () => router.push('/start');
+  const handlePrayerTimes = () => router.push('/prayer-times');
   const handleCalendar = () => router.push('/calendar');
   const handleAuth = () => router.push('/auth/register');
   const handleAdmin = () => {
@@ -92,7 +93,27 @@ export default function Home() {
             onMouseDown={() => setSelected('guest')}
             onMouseUp={() => setSelected(null)}
           >
-            📍 اوقات شرعی و مناسبت‌ها
+            📍 اوقات شرعی امروز
+          </button>
+
+          <button
+            onClick={handlePrayerTimes}
+            style={{
+              padding: '16px 24px',
+              backgroundColor: 'rgb(245, 158, 11)',
+              color: 'white',
+              fontWeight: '600',
+              fontSize: '16px',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              transform: selected === 'prayer' ? 'scale(0.98)' : 'scale(1)',
+            }}
+            onMouseDown={() => setSelected('prayer')}
+            onMouseUp={() => setSelected(null)}
+          >
+            🔍 جستجوی اوقات شرعی
           </button>
 
           <button
