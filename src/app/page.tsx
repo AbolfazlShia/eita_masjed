@@ -1,10 +1,18 @@
-'use client';
-import { useSearchParams } from 'next/navigation';
+
+import { Suspense } from 'react';
 import { HomeShell } from './_components/home-shell';
 
-export default function Home() {
-  const searchParams = useSearchParams();
-  const appVariant = searchParams.get('app') === 'true' ? 'miniApp' : 'default';
-
+function HomeClient() {
+  // این بخش همان منطق قبلی را حفظ می‌کند
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const appVariant = searchParams && searchParams.get('app') === 'true' ? 'miniApp' : 'default';
   return <HomeShell variant={appVariant} />;
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#030d09]" />}>
+      <HomeClient />
+    </Suspense>
+  );
 }
