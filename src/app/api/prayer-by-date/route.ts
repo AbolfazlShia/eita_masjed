@@ -32,6 +32,77 @@ function gregorianToShamsi(date: Date) {
   return { year: jy, month: jm, day: j_d_n + 1 };
 }
 
+// تبدیل اعداد فارسی و عربی به ارقام انگلیسی
+function normalizeDigits(input: string): string {
+  const map: Record<string, string> = {
+    '۰': '0',
+    '۱': '1',
+    '۲': '2',
+    '۳': '3',
+    '۴': '4',
+    '۵': '5',
+    '۶': '6',
+    '۷': '7',
+    '۸': '8',
+    '۹': '9',
+    '٠': '0',
+    '١': '1',
+    '٢': '2',
+    '٣': '3',
+    '٤': '4',
+    '٥': '5',
+    '٦': '6',
+    '٧': '7',
+    '٨': '8',
+    '٩': '9',
+  };
+  return input
+    .split('')
+    .map((ch) => (map[ch] !== undefined ? map[ch] : ch))
+    .join('');
+}
+
+// دریافت اوقات شرعی امروز مشهد از سایت باحساب (در صورت دسترسی)
+async function fetchBahesabMashhadToday() {
+  try {
+    const res = await fetch('https://www.bahesab.ir/time/mashhad/', {
+      // در زمان اجرا، کش نکنیم تا همواره اوقات امروز باشد
+      cache: 'no-store',
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+
+    const extract = (label: string) => {
+      const re = new RegExp(label + "\\s+([0-9۰-۹:]+)");
+      const match = html.match(re);
+      if (!match) return null;
+      return normalizeDigits(match[1]);
+    };
+
+    const fajr = extract('اذان صبح مشهد');
+    const sunrise = extract('طلوع آفتاب مشهد');
+    const zuhr = extract('اذان ظهر مشهد');
+    const sunset = extract('غروب آفتاب مشهد');
+    const maghrib = extract('اذان مغرب مشهد');
+    const midnight = extract('نیمه شب شرعی مشهد');
+
+    if (!fajr || !sunrise || !zuhr || !sunset || !maghrib || !midnight) {
+      return null;
+    }
+
+    return {
+      fajr,
+      sunrise,
+      zuhr,
+      sunset,
+      maghrib,
+      midnight,
+    };
+  } catch {
+    return null;
+  }
+}
+
 // اوقات شرعی مشهد برای هر فصل
 // منبع: bahesab.ir و محاسبات رسمی اسلامی
 const mashhad_prayer_times_2024_2025: Record<string, any> = {
@@ -187,45 +258,63 @@ export async function GET(req: Request) {
       targetDate = new Date();
       targetShamsiDate = gregorianToShamsi(targetDate);
     }
+    // ابتدا تلاش برای دریافت اوقات شرعی امروز از سایت باحساب (فقط برای روز جاری بر مبنای زمان ایران)
+    const todayInIran = gregorianToShamsi(new Date());
+    let prayerTimes: any = null;
+    let source: Record<string, string> | undefined;
 
-    // دریافت اوقات از دیتابیس داخلی
-    const shamsiKey = `${String(targetShamsiDate.year).padStart(4, '0')}-${String(targetShamsiDate.month).padStart(2, '0')}`;
-    const dayKey = targetShamsiDate.day;
-
-    // جستجو در دیتابیس
-    let prayerTimes = null;
-    
-    // ابتدا روز دقیق را جستجو کنیں
-    if (mashhad_prayer_times_2024_2025[shamsiKey]) {
-      const monthData = mashhad_prayer_times_2024_2025[shamsiKey];
-      
-      // یافتن نزدیک‌ترین تاریخ
-      const availableDays = Object.keys(monthData).map(Number).sort((a, b) => a - b);
-      let closestDay = availableDays[0];
-      
-      for (const day of availableDays) {
-        if (day <= dayKey) {
-          closestDay = day;
-        } else {
-          break;
-        }
+    if (
+      targetShamsiDate.year === todayInIran.year &&
+      targetShamsiDate.month === todayInIran.month &&
+      targetShamsiDate.day === todayInIran.day
+    ) {
+      const live = await fetchBahesabMashhadToday();
+      if (live) {
+        prayerTimes = live;
+        source = { prayer: 'سایت باحساب (bahesab.ir)' };
       }
-      
-      prayerTimes = monthData[closestDay];
     }
 
-    // اگر داده نیافتید، از fallback استفاده کنید
+    // در صورت عدم دسترسی یا برای روزهای دیگر، از دیتابیس داخلی استفاده می‌کنیم
     if (!prayerTimes) {
-      prayerTimes = {
-        fajr: '04:40',
-        sunrise: '06:08',
-        zuhr: '11:16',
-        asr: '14:45',
-        sunset: '16:24',
-        maghrib: '16:43',
-        isha: '18:10',
-        midnight: '22:32',
-      };
+      // داده‌های اوقات شرعی موجود فعلی برای سال ۱۴۰۳ ثبت شده‌اند.
+      // برای سال‌های دیگر، همان الگوی سال ۱۴۰۳ را به‌صورت تقریبی استفاده می‌کنیم
+      // تا اوقات شرعی متناسب با فصل همان ماه شمسی باشد.
+      const normalizedYear = 1403;
+      const shamsiKey = `${String(normalizedYear).padStart(4, '0')}-${String(targetShamsiDate.month).padStart(2, '0')}`;
+      const dayKey = targetShamsiDate.day;
+
+      if (mashhad_prayer_times_2024_2025[shamsiKey]) {
+        const monthData = mashhad_prayer_times_2024_2025[shamsiKey];
+
+        // یافتن نزدیک‌ترین تاریخ ثبت‌شده در همان ماه
+        const availableDays = Object.keys(monthData).map(Number).sort((a, b) => a - b);
+        let closestDay = availableDays[0];
+
+        for (const day of availableDays) {
+          if (day <= dayKey) {
+            closestDay = day;
+          } else {
+            break;
+          }
+        }
+
+        prayerTimes = monthData[closestDay];
+      }
+
+      // اگر داده نیافتید، از fallback استفاده کنید
+      if (!prayerTimes) {
+        prayerTimes = {
+          fajr: '04:40',
+          sunrise: '06:08',
+          zuhr: '11:16',
+          asr: '14:45',
+          sunset: '16:24',
+          maghrib: '16:43',
+          isha: '18:10',
+          midnight: '22:32',
+        };
+      }
     }
 
     // دریافت مناسبت‌ها
@@ -245,8 +334,9 @@ export async function GET(req: Request) {
       city: 'مشهد',
       prayerTimes,
       events,
+      source,
       timestamp: new Date().toISOString(),
-      cache: 'cached', // نشان‌دهنده اینکه از کش استفاده شده
+      cache: source ? 'live' : 'cached',
     });
   } catch (error) {
     console.error('Error in prayer-by-date:', error);

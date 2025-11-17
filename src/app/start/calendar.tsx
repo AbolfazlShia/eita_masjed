@@ -102,7 +102,10 @@ export default function ShamsiCalendar() {
   const daysInMonth = getDaysInShamsiMonth(currentMonth, currentYear);
   const firstDayGregorian = toGregorian(currentYear, currentMonth, 1);
   const firstDayDate = new Date(firstDayGregorian.gy, firstDayGregorian.gm - 1, firstDayGregorian.gd);
-  const firstDayOfMonth = firstDayDate.getDay();
+  // در هدر تقویم، ترتیب روزها از «شنبه» شروع می‌شود،
+  // در حالی‌که در JavaScript ایندکس 0 برای Sunday است و 6 برای Saturday.
+  // این شیفت باعث می‌شود ستون‌ها با عناوین فارسی هم‌راستا شوند (۰ = شنبه).
+  const firstDayOfMonth = (firstDayDate.getDay() + 1) % 7;
 
   const events = getShamsiEventsByMonth(currentMonth);
   const selectedEvents = selectedDay ? events[selectedDay] || [] : [];

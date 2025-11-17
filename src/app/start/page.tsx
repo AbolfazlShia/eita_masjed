@@ -1,5 +1,5 @@
-import DailyInfo from './daily-info';
+import { redirect } from 'next/navigation';
 
 export default function Start() {
-  return <DailyInfo />;
+  redirect('/');
 }

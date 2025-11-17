@@ -4,21 +4,30 @@ import React, { useEffect, useState } from 'react';
 import { useTelegramWebApp } from '@/lib/telegram';
 
 export default function Home() {
+
+  const [mounted, setMounted] = useState(false);
   const [isTelegram, setIsTelegram] = useState(false);
   const [userData, setUserData] = useState<any>(null);
 
-  // Initialize Telegram WebApp
-  useTelegramWebApp();
+  // Only run Telegram logic after hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    // Check if running in Telegram WebApp
+    if (!mounted) return;
+    useTelegramWebApp();
     if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
       setIsTelegram(true);
       const webApp = window.Telegram.WebApp;
       setUserData(webApp.initData);
       console.log('Telegram WebApp User:', webApp.initData);
     }
-  }, []);
+  }, [mounted]);
+
+  if (!mounted) {
+    return <div className="min-h-screen bg-gradient-to-br from-green-700 to-yellow-400" />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-700 to-yellow-400 p-4">

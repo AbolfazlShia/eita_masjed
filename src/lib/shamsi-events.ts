@@ -164,7 +164,9 @@ export function formatShamsiDate(
     'اسفند',
   ];
 
-  const dayNames = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
+  // در JavaScript مقدار getDay به صورت 0=Sunday, 1=Monday, ..., 6=Saturday است
+  // این آرایه را طوری می‌چینیم که ایندکس 0 = یکشنبه، 1 = دوشنبه، ...، 6 = شنبه باشد
+  const dayNames = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
 
   const monthName = shamsiMonths[month - 1];
   let result = `${day} ${monthName} ${year}`;
