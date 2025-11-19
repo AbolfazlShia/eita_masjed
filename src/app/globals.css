@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #f7f5ef;
+  --background-gradient: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 20%, #ccfbf1 40%, #bfdbfe 65%, #fef3c7 85%, #f5e9d7 100%);
+  --background-pattern: none;
+  --foreground: #1a2236;
+  --accent: #ffd700;
+  --primary: #00bfae;
+  --secondary: #1976d2;
+  --card-bg: rgba(236,252,247,0.97);
+  --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+  --border-radius: 1.25rem;
+  --font-family: 'Vazirmatn', 'IRANSans', Arial, Helvetica, sans-serif;
+  --border-gold: 2px solid #ffd700;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background: #10151b;
+  --background-gradient: linear-gradient(135deg, #10151b 0%, #283593 60%, #009688 100%);
+  --background-pattern: none;
+  --foreground: #e0e6ed;
+  --accent: #ffd700;
+  --primary: #26c6da;
+  --secondary: #b39ddb;
+  --card-bg: rgba(24,28,38,0.96);
+  --card-shadow: 0 8px 32px 0 rgba(0,0,0,0.28);
+  --border-radius: 1.25rem;
+  --font-family: 'Vazirmatn', 'IRANSans', Arial, Helvetica, sans-serif;
+  --border-gold: 2px solid #ffd700;
 }
 
 @theme inline {
@@ -12,15 +40,26 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  min-height: 100vh;
+  background: var(--background-gradient), var(--background-pattern), var(--background);
+  color: var(--foreground);
+  font-family: var(--font-family);
+  transition: background 0.5s cubic-bezier(.4,0,.2,1), color 0.4s cubic-bezier(.4,0,.2,1);
+  background-attachment: fixed;
+  background-blend-mode: lighten;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.card, .bg-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--border-gold);
+  padding: 2rem 1.5rem;
+}
+
+.islamic-border {
+  border: var(--border-gold);
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 16px 0 rgba(255,215,0,0.08);
 }
