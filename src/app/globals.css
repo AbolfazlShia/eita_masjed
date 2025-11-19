@@ -50,6 +50,18 @@ body {
   background-blend-mode: lighten;
 }
 
+/* در تم شب، پس‌زمینه‌ی body را ساده و ثابت می‌کنیم تا اثر نوارهای تیره هنگام overscroll کمتر شود */
+:root[data-theme='dark'] body {
+  background: #040c0a;
+  background-attachment: scroll;
+  background-blend-mode: normal;
+}
+
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
 .card, .bg-card {
   background: var(--card-bg);
   border-radius: var(--border-radius);

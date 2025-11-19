@@ -17,7 +17,7 @@ const quickActions = [
   {
     title: 'وصیت‌نامه شهدا',
     description: 'مروری بر بخشی از وصایای نورانی شهدا برای تقویت روحیه جهادی',
-    icon: '🎖️',
+    icon: '📜',
     href: '/',
     accent: 'from-teal-400/30 to-emerald-500/5',
   },
@@ -277,8 +277,8 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
   const [prayerData, setPrayerData] = useState<PrayerData | null>(null);
   const [prayerLoading, setPrayerLoading] = useState(true);
   const [prayerError, setPrayerError] = useState<string | null>(null);
-  const [themePref, setThemePref] = useState<ThemePreference>('dark');
-  const [resolvedTheme, setResolvedTheme] = useState<ThemeMode>('dark');
+  const [themePref, setThemePref] = useState<ThemePreference>('light');
+  const [resolvedTheme, setResolvedTheme] = useState<ThemeMode>('light');
 
   useTelegramWebApp();
 
@@ -424,16 +424,16 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
   const layout = useMemo(() => {
     if (isMiniApp) {
       return {
-        outer: "relative min-h-screen overflow-hidden",
-        inner: "relative z-10 mx-auto flex w-full max-w-4xl flex-col gap-8 px-3 py-[calc(1.5rem+env(safe-area-inset-top))] sm:px-4",
+        outer: "relative min-h-screen overflow-hidden overscroll-y-none",
+        inner: "relative z-10 mx-auto flex w-full max-w-4xl flex-col gap-8 px-3 pt-0 pb-6 sm:px-4",
         headerPadding: "p-4",
         sectionGap: "gap-3",
         footerPadding: "p-4 text-xs",
       };
     }
     return {
-      outer: "relative min-h-screen overflow-hidden",
-      inner: "relative z-10 mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 lg:px-8 lg:py-16",
+      outer: "relative min-h-screen overflow-hidden overscroll-y-none",
+      inner: "relative z-10 mx-auto flex max-w-6xl flex-col gap-8 px-4 pt-0 pb-8 lg:px-8 lg:pt-2 lg:pb-11",
       headerPadding: "p-6",
       sectionGap: "gap-4",
       footerPadding: "p-6 text-sm",
@@ -457,70 +457,177 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
     setThemePref((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
+  const isLightTheme = resolvedTheme === 'light';
+  const footerBackground = isLightTheme
+    ? 'linear-gradient(90deg, #0b6b2b 0%, #0b6b2b 30%, #ffffff 50%, #b71c1c 70%, #b71c1c 100%)'
+    : 'linear-gradient(90deg, #09482a 0%, #09482a 30%, #000000 50%, #7b0000 70%, #7b0000 100%)';
+
   if (!mounted) {
-    return <div className="relative min-h-screen overflow-hidden bg-[#030d09]" />;
+    return <div className="relative min-h-screen overflow-hidden bg-[#fdf9f0]" />;
   }
 
   return (
     <div className={layout.outer} style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_55%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(250,204,21,0.12),_transparent_45%)]" />
+      <div
+        className={
+          isLightTheme
+            ? "absolute inset-0 bg-[linear-gradient(to_bottom,#f5e9d7_0%,#fde68a_30%,#bbf7d0_100%)]"
+            : "absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(30,64,175,0.85),_transparent_72%)]"
+        }
+      />
+      <div
+        className={
+          isLightTheme
+            ? "absolute inset-0 bg-transparent"
+            : "absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(40,53,147,0.88),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(91,33,182,0.68),_transparent_80%)]"
+        }
+      />
+      <div
+        className={
+          isLightTheme
+            ? "pointer-events-none absolute inset-0 bg-transparent"
+            : "pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.35),_transparent_78%)]"
+        }
+      />
 
-      <div className="fixed top-4 right-4 z-20 flex items-center gap-3">
-        <button
-          onClick={toggleTheme}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/60 text-lg text-white shadow-lg backdrop-blur-sm transition hover:border-white/80"
-          aria-label="تغییر حالت روز و شب"
+      <div
+        className={
+          isMiniApp
+            ? "relative z-20 flex w-full justify-start px-0 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-1"
+            : "relative z-20 flex w-full justify-start px-0 pt-3 sm:px-1 lg:px-2"
+        }
+      >
+        <div
+          className={`flex items-center gap-2 text-xs ${
+            isLightTheme ? "text-emerald-900" : "text-white"
+          }`}
         >
-          {resolvedTheme === 'dark' ? '☀️' : '🌙'}
-        </button>
-        <span className="hidden rounded-full border border-white/25 bg-black/60 px-3 py-1 text-xs font-medium text-emerald-100/90 shadow-sm backdrop-blur-sm sm:inline-flex">
-          مسجد و پایگاه امام جعفر صادق (ع) - مشهد
-        </span>
+          <button
+            onClick={toggleTheme}
+            className={
+              isLightTheme
+                ? "flex h-9 w-9 items-center justify-center rounded-full border border-emerald-300 bg-emerald-50 text-lg text-emerald-700 shadow-md shadow-emerald-200/80 backdrop-blur-sm transition hover:bg-emerald-100 hover:shadow-emerald-300/90"
+                : "flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-black/70 text-lg text-white shadow-md backdrop-blur-sm transition hover:border-white/80"
+            }
+            aria-label="تغییر حالت روز و شب"
+          >
+            {resolvedTheme === "dark" ? "☀️" : "🌙"}
+          </button>
+          <span
+            className={
+              isLightTheme
+                ? "hidden whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-medium text-emerald-900 shadow-sm shadow-emerald-100 sm:inline"
+                : "hidden whitespace-nowrap rounded-full border border-white/25 bg-black/50 px-3 py-1.5 text-[11px] font-medium text-white shadow-lg backdrop-blur-sm sm:inline"
+            }
+          >
+            مسجد و پایگاه امام جعفر صادق (ع) - مشهد
+          </span>
+        </div>
       </div>
 
       <div className={layout.inner}>
-        <section className="rounded-3xl border border-white/10 bg-black/40 p-4 text-sm text-white shadow-inner shadow-black/20">
+        <section
+          className={
+            isLightTheme
+              ? "rounded-3xl border border-emerald-200/80 bg-gradient-to-b from-white via-emerald-50 to-emerald-100 p-4 text-sm text-slate-900"
+              : "rounded-3xl border border-white/10 bg-black/30 p-4 text-sm text-white"
+          }
+        >
           <p
             className="mb-3 text-center text-3xl font-semibold leading-relaxed sm:text-4xl"
-            style={{ fontFamily: '"IranNastaliq", "IranNastaliq", serif' }}
+            style={{ fontFamily: '"Amiri", "Scheherazade New", "IranNastaliq", serif' }}
           >
-            <span className="text-amber-300">اللهم عجل</span>{' '}
-            <span className="text-emerald-200">لولیک الفرج</span>
+            <span className="bg-gradient-to-r from-[#fef9c3] via-[#facc15] to-[#f97316] bg-clip-text text-transparent drop-shadow-[0_0_36px_rgba(0,0,0,1)]">
+              اللهم عجل لولیک الفرج
+            </span>
           </p>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => moveDay(-1)}
-                  className="rounded-full border border-white/20 px-3 py-1 text-white transition hover:border-white"
+                  className={
+                    isLightTheme
+                      ? "rounded-full border border-emerald-200 bg-white px-3 py-1 text-emerald-800 transition hover:bg-emerald-50"
+                      : "rounded-full border border-white/20 px-3 py-1 text-white transition hover:border-white"
+                  }
                   aria-label="روز قبل"
                 >
                   ▶
                 </button>
-                <h2 className="text-lg font-semibold">{prayerData?.shamsiDate ?? shamsiMeta.formatted}</h2>
+                <div className="flex min-w-[220px] flex-col items-center text-center">
+                  <h2
+                    className={
+                      isLightTheme
+                        ? "text-lg font-semibold text-emerald-900"
+                        : "text-lg font-semibold"
+                    }
+                  >
+                    {prayerData?.shamsiDate ?? shamsiMeta.formatted}
+                  </h2>
+                  {combinedEvents.length ? (
+                    <p
+                      className={
+                        isLightTheme
+                          ? "mt-1 text-[11px] text-emerald-800/90"
+                          : "mt-1 text-[11px] text-amber-100"
+                      }
+                    >
+                      {combinedEvents.join(" • ")}
+                    </p>
+                  ) : (
+                    <p
+                      className={
+                        isLightTheme
+                          ? "mt-1 text-[11px] text-emerald-900/70"
+                          : "mt-1 text-[11px] text-white/70"
+                      }
+                    >
+                      مناسبت ثبت نشده است
+                    </p>
+                  )}
+                </div>
                 <button
                   onClick={() => moveDay(1)}
-                  className="rounded-full border border-white/20 px-3 py-1 text-white transition hover:border-white"
+                  className={
+                    isLightTheme
+                      ? "rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-800 transition hover:bg-emerald-100"
+                      : "rounded-full border border-emerald-200/30 bg-emerald-900/40 px-3 py-1 text-emerald-100 transition hover:border-emerald-200/60"
+                  }
                   aria-label="روز بعد"
                 >
                   ◀
                 </button>
               </div>
-              {combinedEvents.length ? (
-                <p className="mt-1 text-[11px] text-amber-100">
-                  {combinedEvents.join(' • ')}
-                </p>
-              ) : (
-                <p className="mt-1 text-[11px] text-white/60">مناسبت ثبت نشده است</p>
-              )}
             </div>
-            <div className="text-left text-xs sm:text-right">
+            <div
+              className={
+                isLightTheme
+                  ? "text-left text-xs text-emerald-900 sm:text-right"
+                  : "text-left text-xs sm:text-right"
+              }
+            >
               {hijriLabel && (
-                <p className="text-xs text-white/70">{hijriLabel}</p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "text-xs text-emerald-800/80"
+                      : "text-xs text-white/70"
+                  }
+                >
+                  {hijriLabel}
+                </p>
               )}
               {prayerData?.source?.prayer && (
-                <p className="mt-1 text-[11px] text-white/60">منبع: {prayerData.source.prayer}</p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "mt-1 text-[11px] text-emerald-900/70"
+                      : "mt-1 text-[11px] text-white/60"
+                  }
+                >
+                  منبع: {prayerData.source.prayer}
+                </p>
               )}
             </div>
           </div>
@@ -528,15 +635,43 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
             {prayerLoading ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                 {Array.from({ length: prayerDisplayOrder.length }).map((_, idx) => (
-                  <div key={idx} className="h-20 animate-pulse rounded-2xl border border-white/10 bg-white/5" />
+                  <div
+                    key={idx}
+                    className={
+                      isLightTheme
+                        ? "h-20 animate-pulse rounded-2xl border border-emerald-700 bg-lime-100/80"
+                        : "h-20 animate-pulse rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-slate-900/70 via-slate-900/50 to-slate-900/80"
+                    }
+                  />
                 ))}
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                 {prayerDisplayOrder.map((key) => (
-                  <div key={key} className="rounded-2xl border border-white/10 bg-black/30 p-3 text-center">
-                    <p className="text-xs text-white/60">{prayerLabels[key]}</p>
-                    <p className="mt-2 text-xl font-bold text-emerald-300">
+                  <div
+                    key={key}
+                    className={
+                      isLightTheme
+                        ? "rounded-2xl border border-emerald-700 bg-lime-100/90 p-3 text-center"
+                        : "rounded-2xl border border-emerald-400/50 bg-gradient-to-br from-slate-950/90 via-slate-900/70 to-slate-900/90 p-3 text-center"
+                    }
+                  >
+                    <p
+                      className={
+                        isLightTheme
+                          ? "text-xs text-sky-900"
+                          : "text-xs text-white/60"
+                      }
+                    >
+                      {prayerLabels[key]}
+                    </p>
+                    <p
+                      className={
+                        isLightTheme
+                          ? "mt-2 text-xl font-bold text-sky-800"
+                          : "mt-2 text-xl font-bold text-emerald-300"
+                      }
+                    >
                       {prayerData?.prayerTimes?.[key] ?? '—'}
                     </p>
                   </div>
@@ -547,55 +682,173 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
         </section>
 
         <header
-          className={`flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 ${layout.headerPadding} backdrop-blur`}
+          className={`flex flex-col gap-4 rounded-3xl border ${
+            isLightTheme
+              ? 'border-emerald-300/70 bg-[linear-gradient(135deg,#ecfdf5_0%,#d1fae5_40%,#bbf7d0_100%)]'
+              : 'border-white/10 bg-white/5'
+          } ${layout.headerPadding} backdrop-blur`}
         >
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl">
+              <h1
+                className={
+                  isLightTheme
+                    ? "mt-2 text-3xl font-bold leading-tight text-emerald-950 sm:text-4xl"
+                    : "mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl"
+                }
+              >
                 داشبورد هوشمند مسجد
               </h1>
-              <p className="mt-3 max-w-3xl text-base font-semibold leading-relaxed text-amber-100 sm:text-lg">
+              <p
+                className={
+                  isLightTheme
+                    ? "mt-3 max-w-3xl text-base font-semibold leading-relaxed text-emerald-900 sm:text-lg"
+                    : "mt-3 max-w-3xl text-base font-semibold leading-relaxed text-amber-100 sm:text-lg"
+                }
+              >
                 مسجد فقط محل نماز خواندن نیست؛ مسجد پایگاه توحید است؛ مسجد مرکز تصمیم‌گیری‌های بزرگ است؛ مسجد جایگاهی است که دلها در آن به نور خداوند روشن می‌شود.
                 <br />
-                <span className="mt-2 inline-block text-xs font-normal text-emerald-100/90">
+                <span
+                  className={
+                    isLightTheme
+                      ? "mt-2 inline-block text-xs font-normal text-emerald-800/80"
+                      : "mt-2 inline-block text-xs font-normal text-emerald-100/90"
+                  }
+                >
                   مقام معظم رهبری(مد ظله العالی) ۱۳۹۸/۰۷/۲۲
                 </span>
               </p>
-              <div className="mt-4 rounded-2xl border border-white/10 bg-black/40 p-5 text-sm text-white/85 shadow-inner shadow-black/40">
-                <p className="text-emerald-200/80">حدیث روز</p>
-                <p className="mt-2 text-sm leading-7 text-white/90">{todaysHadith.text}</p>
-                <p className="mt-3 text-lg font-semibold leading-8 text-emerald-100">{todaysHadith.translation}</p>
-                <p className="mt-2 text-xs text-white/60">{todaysHadith.source}</p>
+              <div
+                className={
+                  isLightTheme
+                    ? "mt-4 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50 to-emerald-100 p-5 text-sm text-emerald-950"
+                    : "mt-4 rounded-2xl border border-white/10 bg-black/40 p-5 text-sm text-white/85"
+                }
+              >
+                <p
+                  className={
+                    isLightTheme
+                      ? "text-sm font-semibold text-emerald-700"
+                      : "text-emerald-200/80"
+                  }
+                >
+                  حدیث روز
+                </p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "mt-2 text-sm leading-7 text-emerald-950"
+                      : "mt-2 text-sm leading-7 text-white/90"
+                  }
+                >
+                  {todaysHadith.text}
+                </p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "mt-3 text-lg font-semibold leading-8 text-emerald-700"
+                      : "mt-3 text-lg font-semibold leading-8 text-emerald-100"
+                  }
+                >
+                  {todaysHadith.translation}
+                </p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "mt-2 text-xs text-emerald-900/70"
+                      : "mt-2 text-xs text-white/60"
+                  }
+                >
+                  {todaysHadith.source}
+                </p>
               </div>
             </div>
-            <div className="flex w-full flex-col gap-4 rounded-2xl bg-black/30 p-5 text-sm lg:max-w-xs">
-              <p className="text-white/70">جدول ادعیه و زیارات روز</p>
+            <div
+              className={
+                isLightTheme
+                  ? "flex w-full flex-col gap-4 rounded-2xl border border-emerald-200/80 bg-white/80 p-5 text-sm text-emerald-950 lg:max-w-xs"
+                  : "flex w-full flex-col gap-4 rounded-2xl border border-white/15 bg-black/40 p-5 text-sm lg:max-w-xs"
+              }
+            >
+              <p
+                className={
+                  isLightTheme ? "text-emerald-900/80" : "text-white/70"
+                }
+              >
+                جدول ادعیه و زیارات روز
+              </p>
               <button
                 onClick={() => openDevotional('dua')}
-                className="group rounded-2xl border border-emerald-200/20 bg-gradient-to-br from-emerald-900/40 via-emerald-800/20 to-emerald-700/10 p-5 text-right shadow-xl shadow-emerald-900/30 transition hover:-translate-y-0.5 hover:border-emerald-200/60"
+                className={
+                  isLightTheme
+                    ? "group rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 text-right transition hover:bg-emerald-100"
+                    : "group rounded-2xl border border-emerald-200/30 bg-gradient-to-br from-emerald-900/40 via-emerald-800/20 to-emerald-700/10 p-5 text-right transition hover:border-emerald-200/60"
+                }
               >
-                <div className="flex items-center justify-between text-xs text-emerald-100/90">
+                <div
+                  className={
+                    isLightTheme
+                      ? "flex items-center justify-between text-xs text-emerald-800/90"
+                      : "flex items-center justify-between text-xs text-emerald-100/90"
+                  }
+                >
                   <span>دعای روز {devotionalInfo?.dayLabel}</span>
                 </div>
-                <p className="mt-3 text-sm font-semibold text-white/90">{devotionalInfo?.duaTitle}</p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "mt-3 text-sm font-semibold text-emerald-950"
+                      : "mt-3 text-sm font-semibold text-white/90"
+                  }
+                >
+                  {devotionalInfo?.duaTitle}
+                </p>
               </button>
               <button
                 onClick={() => openDevotional('ziyarat')}
-                className="rounded-xl border border-white/10 bg-white/5 p-4 text-right transition hover:border-white/40"
+                className={
+                  isLightTheme
+                    ? "rounded-xl border border-emerald-200 bg-emerald-50/70 p-4 text-right transition hover:bg-emerald-100"
+                    : "rounded-xl border border-white/10 bg-white/5 p-4 text-right transition hover:border-white/40"
+                }
               >
-                <p className="text-xs text-amber-200">زیارت روز {devotionalInfo?.dayLabel}</p>
-                <p className="mt-1 font-semibold text-white">{devotionalInfo?.ziyaratTitle}</p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "text-xs text-emerald-800"
+                      : "text-xs text-amber-200"
+                  }
+                >
+                  زیارت روز {devotionalInfo?.dayLabel}
+                </p>
+                <p
+                  className={
+                    isLightTheme
+                      ? "mt-1 font-semibold text-emerald-950"
+                      : "mt-1 font-semibold text-white"
+                  }
+                >
+                  {devotionalInfo?.ziyaratTitle}
+                </p>
               </button>
               <div className="mt-4 flex gap-3">
                 <button
                   onClick={() => router.push('/start')}
-                  className="flex-1 rounded-2xl bg-gradient-to-l from-emerald-500 via-emerald-400 to-lime-400 px-4 py-2.5 text-xs font-semibold text-black shadow-lg shadow-emerald-500/40 transition hover:-translate-y-0.5 sm:px-6 sm:text-sm"
+                  className={
+                    isLightTheme
+                      ? "flex-1 rounded-2xl bg-gradient-to-l from-emerald-500 via-emerald-400 to-lime-400 px-4 py-2.5 text-xs font-semibold text-white shadow-md shadow-emerald-400/60 transition hover:-translate-y-0.5 sm:px-6 sm:text-sm"
+                      : "flex-1 rounded-2xl bg-gradient-to-l from-emerald-500 via-emerald-400 to-lime-400 px-4 py-2.5 text-xs font-semibold text-black shadow-lg shadow-emerald-500/40 transition hover:-translate-y-0.5 sm:px-6 sm:text-sm"
+                  }
                 >
                   شروع سریع داشبورد روزانه
                 </button>
                 <button
                   onClick={() => router.push('/auth/login')}
-                  className="flex-1 rounded-2xl border border-white/30 px-4 py-2.5 text-xs font-semibold text-white transition hover:-translate-y-0.5 hover:border-white sm:px-5 sm:text-sm"
+                  className={
+                    isLightTheme
+                      ? "flex-1 rounded-2xl border border-emerald-400 px-4 py-2.5 text-xs font-semibold text-emerald-900 shadow-sm shadow-emerald-200 transition hover:-translate-y-0.5 hover:bg-emerald-50 sm:px-5 sm:text-sm"
+                      : "flex-1 rounded-2xl border border-white/30 px-4 py-2.5 text-xs font-semibold text-white transition hover:-translate-y-0.5 hover:border-white sm:px-5 sm:text-sm"
+                  }
                 >
                   ورود مدیران
                 </button>
@@ -613,9 +866,11 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
             <button
               key={action.title}
               onClick={() => router.push(action.href)}
-              className={`group flex h-full flex-col items-start gap-4 rounded-3xl border border-white/10 bg-gradient-to-br ${
-                action.accent
-              } p-5 text-right text-white transition duration-200 hover:-translate-y-1 hover:border-white/50 hover:shadow-[0_20px_45px_rgba(16,185,129,0.45)]`}
+              className={`group flex h-full flex-col items-start gap-4 rounded-3xl border ${
+                isLightTheme
+                  ? 'border-emerald-200/80 bg-gradient-to-br from-emerald-50 via-emerald-100 to-teal-50 text-emerald-950 shadow-[0_18px_40px_rgba(34,197,94,0.18)]'
+                  : `border-white/10 bg-gradient-to-br ${action.accent} text-white hover:border-white/50 hover:shadow-[0_20px_45px_rgba(16,185,129,0.45)]`
+              } p-5 text-right transition duration-200 hover:-translate-y-1`}
             >
               <div className="flex items-start gap-3">
                 {action.icon && (
@@ -624,11 +879,35 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
                   </span>
                 )}
                 <div>
-                  <p className="text-lg font-semibold">{action.title}</p>
-                  <p className="mt-1 text-sm text-white/80">{action.description}</p>
+                  <p
+                    className={
+                      isLightTheme
+                        ? "text-lg font-semibold text-emerald-950"
+                        : "text-lg font-semibold"
+                    }
+                  >
+                    {action.title}
+                  </p>
+                  <p
+                    className={
+                      isLightTheme
+                        ? "mt-1 text-sm text-emerald-900/80"
+                        : "mt-1 text-sm text-white/80"
+                    }
+                  >
+                    {action.description}
+                  </p>
                 </div>
               </div>
-              <span className="mt-auto text-xs text-white/70">رفتن به صفحه →</span>
+              <span
+                className={
+                  isLightTheme
+                    ? "mt-auto text-xs text-emerald-800/80"
+                    : "mt-auto text-xs text-white/70"
+                }
+              >
+                رفتن به صفحه →
+              </span>
             </button>
           ))}
         </section>
@@ -640,54 +919,193 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
         )}
 
         <section className={`grid gap-4 ${isMiniApp ? "" : "lg:grid-cols-[2fr,1fr]"}`}>
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-inner shadow-black/20">
+          <div
+            className={
+              isLightTheme
+                ? "rounded-3xl border border-emerald-300/80 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 p-6 shadow-[0_20px_50px_rgba(15,118,110,0.25)]"
+                : "rounded-3xl border border-white/10 bg-white/5 p-6 shadow-inner shadow-black/20"
+            }
+          >
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-emerald-200">داشبورد مدیریتی</h2>
+              <h2
+                className={
+                  isLightTheme
+                    ? "text-2xl font-bold text-emerald-900"
+                    : "text-2xl font-bold text-emerald-200"
+                }
+              >
+                داشبورد مدیریتی
+              </h2>
             </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               {impactHighlights.map((item) => (
-                <div key={item.title} className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                <div
+                  key={item.title}
+                  className={
+                    isLightTheme
+                      ? "rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-100 via-emerald-200 to-amber-200 p-4"
+                      : "rounded-2xl border border-emerald-400/40 bg-gradient-to-br from-slate-950/90 via-slate-900/70 to-slate-900/90 p-4"
+                  }
+                >
                   <div className="text-2xl">{item.icon}</div>
-                  <p className="mt-4 text-2xl font-black text-white">{item.title}</p>
-                  <p className="text-sm text-emerald-100/80">{item.subtitle}</p>
-                  <p className="mt-3 text-xs text-white/60">{item.detail}</p>
+                  <p
+                    className={
+                      isLightTheme
+                        ? "mt-4 text-2xl font-black text-emerald-950"
+                        : "mt-4 text-2xl font-black text-white"
+                    }
+                  >
+                    {item.title}
+                  </p>
+                  <p
+                    className={
+                      isLightTheme
+                        ? "text-sm text-emerald-900/80"
+                        : "text-sm text-emerald-100/80"
+                    }
+                  >
+                    {item.subtitle}
+                  </p>
+                  <p
+                    className={
+                      isLightTheme
+                        ? "mt-3 text-xs text-emerald-900/70"
+                        : "mt-3 text-xs text-white/60"
+                    }
+                  >
+                    {item.detail}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#13281e] to-[#0b1510] p-6">
-            <h3 className="mt-2 text-xl font-semibold text-white">
+          <div
+            className={
+              isLightTheme
+                ? "rounded-3xl border border-emerald-300/80 bg-gradient-to-br from-teal-100 via-emerald-100 to-amber-100 p-6 shadow-[0_18px_45px_rgba(14,116,144,0.22)]"
+                : "rounded-3xl border border-white/10 bg-gradient-to-br from-[#13281e] to-[#0b1510] p-6"
+            }
+          >
+            <h3
+              className={
+                isLightTheme
+                  ? "mt-2 text-xl font-semibold text-emerald-950"
+                  : "mt-2 text-xl font-semibold text-white"
+              }
+            >
               اطلاعیه‌های مسجد و پایگاه
             </h3>
           </div>
         </section>
 
         <section
-          className={`rounded-3xl border border-white/10 bg-black/40 p-6 ${isMiniApp ? "pb-5 text-sm" : ""}`}
+          className={`rounded-3xl border p-6 ${
+            isMiniApp ? "pb-5 text-sm" : ""
+          } ${
+            isLightTheme
+              ? "border-emerald-300/80 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 shadow-[0_20px_50px_rgba(15,118,110,0.25)]"
+              : "border-white/10 bg-black/40"
+          }`}
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-semibold text-emerald-200/90">هیئت اجرایی مسجد</h2>
+              <h2
+                className={
+                  isLightTheme
+                    ? "text-2xl font-semibold text-emerald-900"
+                    : "text-2xl font-semibold text-emerald-200/90"
+                }
+              >
+                هیئت اجرایی مسجد
+              </h2>
             </div>
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-sm text-white/70">مدیریت برنامه‌ها</p>
-              <h3 className="mt-2 text-lg font-semibold text-white">تقویم رویدادها و کلاس‌ها</h3>
-              <p className="mt-2 text-sm text-white/70">
+            <div
+              className={
+                isLightTheme
+                  ? "rounded-2xl border border-purple-900 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 p-5"
+                  : "rounded-2xl border border-purple-900 bg-gradient-to-br from-slate-950/90 via-slate-900/70 to-slate-900/90 p-5"
+              }
+            >
+              <p
+                className={
+                  isLightTheme
+                    ? "text-sm text-emerald-900/80"
+                    : "text-sm text-white/70"
+                }
+              >
+                مدیریت برنامه‌ها
+              </p>
+              <h3
+                className={
+                  isLightTheme
+                    ? "mt-2 text-lg font-semibold text-emerald-950"
+                    : "mt-2 text-lg font-semibold text-white"
+                }
+              >
+                تقویم رویدادها و کلاس‌ها
+              </h3>
+              <p
+                className={
+                  isLightTheme
+                    ? "mt-2 text-sm text-emerald-900/80"
+                    : "mt-2 text-sm text-white/70"
+                }
+              >
                 ایجاد، ویرایش و نمایش خودکار کلاس‌ها و محافل قرآنی در صفحه عمومی مسجد.
               </p>
-              <span className="mt-4 inline-flex w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/80">
+              <span
+                className={
+                  isLightTheme
+                    ? "mt-4 inline-flex w-fit rounded-full bg-emerald-50/90 px-3 py-1 text-xs text-emerald-900/90"
+                    : "mt-4 inline-flex w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/80"
+                }
+              >
                 بزودی در نسخه ۲.۱
               </span>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-sm text-white/70">پخش محتوا</p>
-              <h3 className="mt-2 text-lg font-semibold text-white">سیستم اطلاع‌رسانی چندکاناله</h3>
-              <p className="mt-2 text-sm text-white/70">
+            <div
+              className={
+                isLightTheme
+                  ? "rounded-2xl border border-purple-900 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 p-5 shadow-sm shadow-emerald-200/80"
+                  : "rounded-2xl border border-purple-900 bg-white/5 p-5"
+              }
+            >
+              <p
+                className={
+                  isLightTheme
+                    ? "text-sm text-emerald-900/80"
+                    : "text-sm text-white/70"
+                }
+              >
+                پخش محتوا
+              </p>
+              <h3
+                className={
+                  isLightTheme
+                    ? "mt-2 text-lg font-semibold text-emerald-950"
+                    : "mt-2 text-lg font-semibold text-white"
+                }
+              >
+                سیستم اطلاع‌رسانی چندکاناله
+              </h3>
+              <p
+                className={
+                  isLightTheme
+                    ? "mt-2 text-sm text-emerald-900/80"
+                    : "mt-2 text-sm text-white/70"
+                }
+              >
                 ارسال همزمان اعلان به نمایشگر مسجد، ایتا و پیامک با یک کلیک.
               </p>
-              <span className="mt-4 inline-flex w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/80">
+              <span
+                className={
+                  isLightTheme
+                    ? "mt-4 inline-flex w-fit rounded-full bg-emerald-50/90 px-3 py-1 text-xs text-emerald-900/90"
+                    : "mt-4 inline-flex w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/80"
+                }
+              >
                 در حال توسعه
               </span>
             </div>
@@ -695,7 +1113,12 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
         </section>
 
         <footer
-          className={`rounded-3xl border border-white/10 bg-gradient-to-r from-[#0b6b2b] via-[#020617] to-[#b71c1c] ${layout.footerPadding} text-center text-sm font-semibold tracking-wide text-white shadow-lg shadow-black/40 sm:text-base`}
+          className={`rounded-3xl border ${
+            isLightTheme
+              ? 'border-emerald-900/10 text-black shadow-emerald-900/5'
+              : 'border-white/20 text-white shadow-black/50'
+          } ${layout.footerPadding} text-center text-sm font-semibold tracking-wide sm:text-base`}
+          style={{ backgroundImage: footerBackground }}
         >
           تقدیم به پیشگاه ولایت مطلقه فقیه، و در انتظار ظهور حضرت بقیة‌الله الاعظم (ارواحنا فداه)
         </footer>
