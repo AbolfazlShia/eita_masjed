@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "id": "ffcb48ea-3651-4962-9a04-6fd3c7b430c8",
+      "memberId": "e5d9f9a4-1a2b-4f0a-8ad2-9d4f7c2b7bd1",
+      "amount": 9,
+      "note": "ت",
+      "createdAt": "2025-11-24T01:42:28.481Z"
+    },
+    {
+      "id": "ec55aaf5-e349-420c-bcfd-ee9de8eb99af",
+      "memberId": "cdce1d33-12df-4c5e-aab7-683b1656a011",
+      "amount": 9,
+      "note": "",
+      "createdAt": "2025-11-24T01:04:28.261Z"
+    },
+    {
+      "id": "35d24057-73c8-4023-8c63-af6145d89a06",
+      "memberId": "e5d9f9a4-1a2b-4f0a-8ad2-9d4f7c2b7bd1",
+      "amount": 0,
+      "note": "mm",
+      "createdAt": "2025-11-24T01:03:26.810Z"
+    },
+    {
+      "id": "cdc4a725-0e79-4dfe-934f-125859af9670",
+      "memberId": "e5d9f9a4-1a2b-4f0a-8ad2-9d4f7c2b7bd1",
+      "amount": 9,
+      "note": "",
+      "createdAt": "2025-11-24T01:01:34.008Z"
+    },
+    {
+      "id": "24f87a09-62a5-46ed-b0e6-e9e9c112381f",
+      "memberId": "e5d9f9a4-1a2b-4f0a-8ad2-9d4f7c2b7bd1",
+      "amount": 7,
+      "note": "m",
+      "createdAt": "2025-11-24T01:01:24.810Z"
+    }
+  ]
+}

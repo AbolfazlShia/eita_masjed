@@ -1,0 +1,34 @@
+{
+  "sessions": [
+    {
+      "id": "6cc00d50-11fd-48bc-bac0-00e2a70a215f",
+      "memberId": "f6fabe77-459d-479a-a029-91f4afbaa3d4",
+      "createdAt": "2025-11-21T19:20:44.636Z",
+      "expiresAt": "2025-12-05T19:20:44.636Z"
+    },
+    {
+      "id": "5378a593-698f-4d02-bf7b-ea643e27a823",
+      "memberId": "a4d75ff1-8553-45de-aa86-d056641b70f3",
+      "createdAt": "2025-11-21T19:21:56.768Z",
+      "expiresAt": "2025-12-05T19:21:56.768Z"
+    },
+    {
+      "id": "45ac1e37-cd12-4b93-9749-50c37c1f39ac",
+      "memberId": "296a8e5b-67a5-4bd7-bd48-495852abbb7c",
+      "createdAt": "2025-11-21T19:27:47.800Z",
+      "expiresAt": "2025-12-05T19:27:47.800Z"
+    },
+    {
+      "id": "cfc8557c-59d6-4b67-a5e5-d85ae25f622e",
+      "memberId": "cdce1d33-12df-4c5e-aab7-683b1656a011",
+      "createdAt": "2025-11-24T01:32:18.646Z",
+      "expiresAt": "2025-12-08T01:32:18.646Z"
+    },
+    {
+      "id": "baa9235d-ce28-4019-af78-c391e50ddf07",
+      "memberId": "e5d9f9a4-1a2b-4f0a-8ad2-9d4f7c2b7bd1",
+      "createdAt": "2025-11-24T13:55:45.907Z",
+      "expiresAt": "2025-12-08T13:55:45.907Z"
+    }
+  ]
+}

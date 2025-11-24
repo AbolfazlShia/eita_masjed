@@ -1,0 +1,33 @@
+{
+  "members": [
+    {
+      "id": "e5d9f9a4-1a2b-4f0a-8ad2-9d4f7c2b7bd1",
+      "firstName": "علی",
+      "lastName": "صادقی",
+      "phone": "09153004567",
+      "password": "$2a$08$gyVsojqSj.TutWHXGtrEnOwdv72hk0ugWmk1LGJ5hRFsymkeedthC",
+      "createdAt": "2025-11-21T19:38:47.934Z",
+      "qrToken": "97be3f7e-c236-4b81-8d6a-dbaad3c3fe25"
+    },
+    {
+      "id": "cdce1d33-12df-4c5e-aab7-683b1656a011",
+      "firstName": "nn",
+      "lastName": "mm",
+      "fatherName": "b",
+      "phone": "77",
+      "password": "$2a$08$KGOlO.E4u90zHe/OUOGu8OJ/KQthZlmrFpQj5k/oYnQ3pNkFaJ5ra",
+      "createdAt": "2025-11-24T01:04:14.188Z",
+      "qrToken": "919c04f9-cf7f-4fae-8ca0-e9e2c2e93135"
+    },
+    {
+      "id": "c16668c8-26d5-49b6-ae0f-dbaed4bea5e2",
+      "firstName": "بب",
+      "lastName": "ببببب",
+      "fatherName": "ب",
+      "phone": "",
+      "password": "$2a$08$X2FgPcMFvQtcjNcG6sX5fekWbaJ6q87fsr3niPma/bdnyewVCvRNK",
+      "createdAt": "2025-11-24T14:55:54.002Z",
+      "qrToken": "064054c8-1261-400b-bfe0-2b462f11a2f1"
+    }
+  ]
+}
