@@ -97,10 +97,20 @@ export default function BasijScanClient({ initialToken = "" }: BasijScanClientPr
   );
 
   useEffect(() => {
-    if (initialToken && autoTokenRef.current !== initialToken) {
-      autoTokenRef.current = initialToken;
-      setInputToken(initialToken);
-      attemptLogin(initialToken);
+    let source = initialToken;
+    if (!source && typeof window !== "undefined") {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        source = params.get("token") || "";
+      } catch {
+        source = initialToken;
+      }
+    }
+
+    if (source && autoTokenRef.current !== source) {
+      autoTokenRef.current = source;
+      setInputToken(source);
+      attemptLogin(source);
     }
   }, [initialToken, attemptLogin]);
 
