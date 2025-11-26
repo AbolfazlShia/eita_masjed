@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const statusMessages: Record<string, string> = {
@@ -10,11 +10,16 @@ const statusMessages: Record<string, string> = {
   error: "ورود انجام نشد. لطفاً دوباره تلاش کنید.",
 };
 
-export default function BasijScanClient({ token }: { token?: string }) {
+type BasijScanClientProps = {
+  initialToken?: string;
+};
+
+export default function BasijScanClient({ initialToken = "" }: BasijScanClientProps) {
   const router = useRouter();
-  const [inputToken, setInputToken] = useState(token ?? "");
-  const [status, setStatus] = useState<"idle" | "checking" | "success" | "error">(token ? "checking" : "idle");
+  const [inputToken, setInputToken] = useState(initialToken);
+  const [status, setStatus] = useState<"idle" | "checking" | "success" | "error">(initialToken ? "checking" : "idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const autoTokenRef = useRef<string | null>(null);
 
   const disabled = status === "checking" || status === "success";
 
@@ -92,11 +97,12 @@ export default function BasijScanClient({ token }: { token?: string }) {
   );
 
   useEffect(() => {
-    if (token) {
-      setInputToken(token);
-      attemptLogin(token);
+    if (initialToken && autoTokenRef.current !== initialToken) {
+      autoTokenRef.current = initialToken;
+      setInputToken(initialToken);
+      attemptLogin(initialToken);
     }
-  }, [token, attemptLogin]);
+  }, [initialToken, attemptLogin]);
 
   const helperMessage = useMemo(() => {
     if (status === "error" && errorMessage) return errorMessage;
