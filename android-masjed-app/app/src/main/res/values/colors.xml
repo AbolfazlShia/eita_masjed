@@ -5,6 +5,7 @@
     <color name="ic_launcher_background">#041013</color>
     <color name="white">#FFFFFFFF</color>
     <color name="announcement_stroke_color">#220BA360</color>
+    <color name="nightThemeTitle">#E0E6ED</color>
 
     <!-- Day palette inspired by site daytime glassmorphism (warm sand + emerald) -->
     <color name="colorPrimary">#0BA360</color>

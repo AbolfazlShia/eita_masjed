@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-def prodApiUrl = System.getenv("MASJED_API_URL") ?: "http://localhost:3000"
-def prodWebUrl = System.getenv("MASJED_WEB_URL") ?: "http://localhost:3000"
+def prodApiUrl = System.getenv("MASJED_API_URL") ?: "https://masjed-app.onrender.com"
+def prodWebUrl = System.getenv("MASJED_WEB_URL") ?: "https://masjed-app.onrender.com"
 def debugApiUrl = System.getenv("MASJED_API_URL_DEBUG") ?: "http://10.0.2.2:3000"
 def debugWebUrl = System.getenv("MASJED_WEB_URL_DEBUG") ?: "http://10.0.2.2:3000/?source=pw"
 
