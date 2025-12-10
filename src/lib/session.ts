@@ -1,34 +1,41 @@
+import fs from 'fs';
+import path from 'path';
 import db from './db';
 import { cookies } from 'next/headers';
 
-export function getUserFromCookies() {
-  try {
-  const cookieStore: any = cookies();
-  const sessionCookie = cookieStore.get?.('session')?.value;
-    if (!sessionCookie) return null;
+type SessionRow = {
+  id: string;
+  userId: string;
+};
 
-    // sessions table: id, userId
-    const sess = db.prepare('SELECT * FROM sessions WHERE id = ?').get(sessionCookie as any);
+type UserRow = Record<string, unknown> & { id: string };
+
+type JsonStore = {
+  sessions: SessionRow[];
+  users: UserRow[];
+};
+
+export async function getUserFromCookies(): Promise<UserRow | null> {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get?.('session')?.value;
+  if (!sessionCookie) return null;
+
+  try {
+    const sess = db.prepare('SELECT * FROM sessions WHERE id = ?').get(sessionCookie) as SessionRow | undefined;
     if (!sess) return null;
 
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(sess.userId);
-    return user || null;
-  } catch (e) {
-    // fallback for JSON store path: db.prepare may not support those selects; try reading file
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(sess.userId) as UserRow | undefined;
+    return user ?? null;
+  } catch {
     try {
-      const cookieStore: any = cookies();
-      const sessionCookie = cookieStore.get?.('session')?.value;
-      if (!sessionCookie) return null;
-      const fs = require('fs');
-      const path = require('path');
       const storeFile = path.join(process.cwd(), 'data', 'store.json');
       if (!fs.existsSync(storeFile)) return null;
-      const store = JSON.parse(fs.readFileSync(storeFile, 'utf8'));
-      const s = store.sessions.find((x: any) => x.id === sessionCookie);
-      if (!s) return null;
-      const u = store.users.find((x: any) => x.id === s.userId) || null;
-      return u;
-    } catch (_e) {
+
+      const store = JSON.parse(fs.readFileSync(storeFile, 'utf8')) as JsonStore;
+      const session = store.sessions.find((entry) => entry.id === sessionCookie);
+      if (!session) return null;
+      return store.users.find((entry) => entry.id === session.userId) ?? null;
+    } catch {
       return null;
     }
   }

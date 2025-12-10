@@ -1,10 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { writeAndroidDeskRememberState } from "@/lib/android";
 
 export default function BasijLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
@@ -23,10 +25,14 @@ export default function BasijLoginForm() {
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "خطا");
-      router.push("/basij/desk");
+      writeAndroidDeskRememberState(remember);
+      const inApp = searchParams?.get("inApp") === "1";
+      const source = searchParams?.get("source") || "";
+      const suffix = inApp && source === "android" ? "?inApp=1&source=android" : "";
+      router.push(`/basij/desk${suffix}`);
       router.refresh();
-    } catch (err: any) {
-      const message = err?.message || "عدم دسترسی";
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "عدم دسترسی";
       setError(message === "invalid_password" ? "گذرواژه اشتباه است" : message === "not_found" ? "عضو یافت نشد" : message);
     } finally {
       setLoading(false);

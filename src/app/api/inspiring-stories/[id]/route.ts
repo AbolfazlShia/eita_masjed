@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteInspiringStory, InspiringStoryPayload, updateInspiringStory } from "@/lib/inspiring-stories";
+import { getErrorMessage } from "@/lib/errors";
 
 type InspiringStoryRouteContext = {
   params: Promise<{ id: string }>;
@@ -19,8 +20,8 @@ export async function PUT(req: NextRequest, context: InspiringStoryRouteContext)
     };
     const story = updateInspiringStory(params.id, payload);
     return NextResponse.json({ ok: true, story });
-  } catch (error: any) {
-    const message = error?.message || "internal_error";
+  } catch (error: unknown) {
+    const message = getErrorMessage(error);
     const status = message === "not_found" ? 404 : message.startsWith("empty") ? 422 : 500;
     return jsonError(message, status);
   }
@@ -34,7 +35,7 @@ export async function DELETE(_req: NextRequest, context: InspiringStoryRouteCont
       return jsonError("not_found", 404);
     }
     return NextResponse.json({ ok: true });
-  } catch (error: any) {
-    return jsonError(error?.message || "internal_error", 500);
+  } catch (error: unknown) {
+    return jsonError(getErrorMessage(error), 500);
   }
 }

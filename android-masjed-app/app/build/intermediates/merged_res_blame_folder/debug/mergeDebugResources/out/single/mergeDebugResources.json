@@ -1,0 +1,146 @@
+[
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_chip_soft.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_chip_soft.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_chip_city.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_chip_city.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_home_header.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_home_header.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_nav_services.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_nav_services.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/menu_menu_bottom_nav.xml.flat",
+        "source": "com.masjed.app-main-51:/menu/menu_bottom_nav.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/xml_network_security_config.xml.flat",
+        "source": "com.masjed.app-main-51:/xml/network_security_config.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_prayer_nav_button.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_prayer_nav_button.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_item_prayer_time.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/item_prayer_time.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/xml_backup_rules.xml.flat",
+        "source": "com.masjed.app-main-51:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_fragment_web_page.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/fragment_web_page.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_footer_banner.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_footer_banner.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.masjed.app-main-51:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_chip.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_chip.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/navigation_nav_graph.xml.flat",
+        "source": "com.masjed.app-main-51:/navigation/nav_graph.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_signal_off.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_signal_off.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_prayer_card.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_prayer_card.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_announcement_card.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_announcement_card.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_devotion_action.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_devotion_action.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_masjed_gradient.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_masjed_gradient.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_fragment_services.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/fragment_services.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_nav_devotion.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_nav_devotion.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_app_icon_foreground.png.flat",
+        "source": "com.masjed.app-main-51:/drawable/app_icon_foreground.png"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_view_service_item.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/view_service_item.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_view_announcement.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/view_announcement.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_nav_home.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_nav_home.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_nav_content.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_nav_content.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_card_glass.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_card_glass.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_activity_main.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_item_quick_action.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/item_quick_action.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_chevron_right.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_chevron_right.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.masjed.app-main-51:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_ic_chevron_left.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/ic_chevron_left.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/layout_fragment_home.xml.flat",
+        "source": "com.masjed.app-main-51:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/drawable_bg_card_soft.xml.flat",
+        "source": "com.masjed.app-main-51:/drawable/bg_card_soft.xml"
+    },
+    {
+        "merged": "com.masjed.app-debug-49:/xml_data_extraction_rules.xml.flat",
+        "source": "com.masjed.app-main-51:/xml/data_extraction_rules.xml"
+    }
+]

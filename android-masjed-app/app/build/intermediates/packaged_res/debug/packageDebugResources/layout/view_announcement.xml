@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/announcement_padding">
+
+    <TextView
+        android:id="@+id/announcementTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#042F2F"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="اعلان" />
+
+    <TextView
+        android:id="@+id/announcementBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="#0b1f33"
+        android:textSize="14sp"
+        android:text="متن اعلان" />
+
+    <TextView
+        android:id="@+id/announcementHighlight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="#047857"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:text="هایلایت" />
+</LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="window_light_navigation_bar">false</bool>
+    <bool name="window_light_status_bar">false</bool>
+    <color name="colorBackground">#03121C</color>
+    <color name="colorNavigationBar">#041520</color>
+    <color name="colorOnBackground">#E3FCEF</color>
+    <color name="colorOnPrimary">#01261C</color>
+    <color name="colorOnSecondary">#1F1400</color>
+    <color name="colorOnSurface">#F2FFF8</color>
+    <color name="colorOutline">#4FA38A</color>
+    <color name="colorPrimary">#34D399</color>
+    <color name="colorPrimaryContainer">#064E3B</color>
+    <color name="colorSecondary">#FACC15</color>
+    <color name="colorSecondaryContainer">#422300</color>
+    <color name="colorStatusBar">#010A11</color>
+    <color name="colorSurface">#051A25</color>
+    <color name="colorSurfaceVariant">#0C2E3C</color>
+</resources>

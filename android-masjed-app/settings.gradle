@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        maven { url uri("file:///Users/abolfazl/Documents/masjed/android-masjed-app/local-maven") }
+        maven { url "https://dl.google.com/dl/android/maven2/" }
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven { url uri("file:///Users/abolfazl/Documents/masjed/android-masjed-app/local-maven") }
+        maven { url "https://dl.google.com/dl/android/maven2/" }
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "MasjedAndroid"
+include(":app")

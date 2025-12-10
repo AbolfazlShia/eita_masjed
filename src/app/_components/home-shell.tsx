@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTelegramWebApp } from "@/lib/telegram";
 import { formatShamsiDate } from "@/lib/shamsi-events";
+import { ServiceWorkerClient } from "./service-worker-client";
 import { toJalaali } from "jalaali-js";
 
 type HadithItem = {
@@ -336,6 +336,11 @@ const prayerLabels: Record<string, string> = {
 
 const prayerDisplayOrder: (keyof typeof prayerLabels)[] = ['fajr', 'sunrise', 'zuhr', 'sunset', 'maghrib', 'midnight'];
 
+interface HijriDateMeta {
+  formatted?: string | null;
+  raw?: string | null;
+}
+
 interface PrayerData {
   date: string;
   shamsiDate: string;
@@ -344,7 +349,7 @@ interface PrayerData {
   events?: string[];
   iranianEvents?: string[];
   islamicEvents?: string[];
-  hijriDate: { formatted?: string | null; raw?: any } | null;
+  hijriDate: HijriDateMeta | null;
   timezone?: string;
   shamsiDate_parts?: { year: number; month: number; day: number };
   source?: Record<string, string>;
@@ -365,8 +370,7 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
   const [prayerError, setPrayerError] = useState<string | null>(null);
   const [themePref, setThemePref] = useState<ThemePreference>('light');
   const [resolvedTheme, setResolvedTheme] = useState<ThemeMode>('light');
-
-  useTelegramWebApp();
+  const [offline, setOffline] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -402,14 +406,6 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
     window.localStorage.setItem('masjed-theme', themePref);
   }, [themePref]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.Telegram?.WebApp && isMiniApp) {
-      window.Telegram.WebApp.ready?.();
-      window.Telegram.WebApp.setBackgroundColor?.("#030d09");
-      window.Telegram.WebApp.setHeaderColor?.("#030d09");
-    }
-  }, [isMiniApp]);
-
   const shamsiMeta = useMemo(() => {
     const { jy, jm, jd } = toJalaali(
       selectedDate.getFullYear(),
@@ -425,322 +421,37 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
     };
   }, [selectedDate]);
 
-  const pad = useCallback((n: number) => n.toString().padStart(2, "0"), []);
+  const isNetworkError = (error: unknown) => {
+    if (typeof window === 'undefined') return false;
+    if (error instanceof TypeError) return true;
+    if (typeof error === 'object' && error !== null && 'message' in error) {
+      const msg = String((error as { message?: string }).message || '').toLowerCase();
+      return msg.includes('failed to fetch') || msg.includes('network');
+    }
+    return false;
+  };
 
   const fetchPrayerTimes = useCallback(async () => {
     try {
       setPrayerLoading(true);
       setPrayerError(null);
 
-      // Override برای تست لوکال بر اساس تاریخ شمسی انتخاب‌شده
-      const { year, month, day, raw, formatted } = shamsiMeta;
-      const buildLocalPrayerData = (times: string[], iranianEvents?: string[]): PrayerData => {
-        const sorted = [...times].sort();
-        const map: Record<string, string> = {};
-        prayerDisplayOrder.forEach((key, idx) => {
-          map[key] = sorted[idx] ?? '—';
-        });
-        return {
-          date: raw,
-          shamsiDate: formatted,
-          gregorianDate: selectedDate.toLocaleDateString('fa-IR-u-ca-gregory'),
-          prayerTimes: map,
-          events: [],
-          iranianEvents: iranianEvents ?? [],
-          islamicEvents: [],
-          hijriDate: { formatted: null, raw: null },
-          timezone: 'Asia/Tehran',
-          shamsiDate_parts: { year, month, day },
-          source: { prayer: 'دادهٔ دستی لوکال' },
-          city: 'مشهد',
-        };
-      };
-
-      const localOverridesAzar: Record<number, string[]> = {
-        1: ['04:47', '06:16', '11:18', '16:19', '16:39', '22:34'],
-        2: ['04:48', '06:17', '11:18', '16:19', '16:39', '22:34'],
-        3: ['04:49', '06:18', '11:18', '16:19', '16:38', '22:34'],
-        4: ['04:50', '06:19', '11:19', '16:18', '16:38', '22:34'],
-        5: ['04:51', '06:20', '11:19', '16:18', '16:38', '22:35'],
-        6: ['04:51', '06:20', '11:19', '16:18', '16:38', '22:35'],
-        7: ['04:52', '06:21', '11:19', '16:17', '16:37', '22:35'],
-        8: ['04:53', '06:22', '11:20', '16:17', '16:37', '22:35'],
-        9: ['04:54', '06:23', '11:20', '16:17', '16:37', '22:36'],
-        10: ['04:55', '06:24', '11:21', '16:17', '16:37', '22:36'],
-        11: ['04:55', '06:25', '11:21', '16:17', '16:37', '22:36'],
-        12: ['04:56', '06:26', '11:21', '16:16', '16:37', '22:37'],
-        13: ['04:57', '06:27', '11:22', '16:16', '16:37', '22:37'],
-        14: ['04:58', '06:28', '11:22', '16:16', '16:37', '22:37'],
-        15: ['04:59', '06:29', '11:23', '16:16', '16:37', '22:38'],
-        16: ['04:59', '06:29', '11:23', '16:16', '16:37', '22:38'],
-        17: ['05:00', '06:30', '11:23', '16:16', '16:37', '22:39'],
-        18: ['05:01', '06:31', '11:24', '16:16', '16:37', '22:39'],
-        19: ['05:01', '06:32', '11:24', '16:17', '16:37', '22:39'],
-        20: ['05:02', '06:33', '11:25', '16:17', '16:37', '22:40'],
-        21: ['05:03', '06:33', '11:25', '16:17', '16:37', '22:40'],
-        22: ['05:03', '06:34', '11:26', '16:17', '16:38', '22:41'],
-        23: ['05:04', '06:35', '11:26', '16:17', '16:38', '22:41'],
-        24: ['05:05', '06:35', '11:27', '16:18', '16:38', '22:42'],
-        25: ['05:05', '06:36', '11:27', '16:18', '16:39', '22:42'],
-        26: ['05:06', '06:37', '11:28', '16:18', '16:39', '22:43'],
-        27: ['05:07', '06:37', '11:28', '16:19', '16:39', '22:43'],
-        28: ['05:07', '06:38', '11:29', '16:19', '16:40', '22:43'],
-        29: ['05:08', '06:39', '11:29', '16:20', '16:40', '22:44'],
-        30: ['05:08', '06:39', '11:30', '16:20', '16:41', '22:44'],
-      };
-
-      const localIranianEventsAzar: Record<number, string[]> = {
-        1: ['روز صنعت سرب و روی'],
-        3: ['شهادت حضرت فاطمه زهرا (س) (تعطیل)'],
-        4: ['روز زیتون'],
-        5: ['تشکیل بسیج مستضعفان به فرمان امام خمینی (ره)', 'روز بسیج مستضعفان', 'سالروز قیام مردم گرگان (۱۳۵۷ هـ.ش)'],
-        6: ['روز نیروی دریایی', 'روز نوآوری و فناوری ایران‌ساخت'],
-        8: ['روز بزرگداشت شیخ مفید'],
-        9: ['شهادت آیت‌الله سید حسن مدرس', 'روز مجلس'],
-        10: ['وفات میرزا کوچک‌خان جنگلی', 'روز جهانی مبارزه با ایدز'],
-        11: ['تصویب قانون اساسی جمهوری اسلامی ایران', 'روز قانون اساسی جمهوری اسلامی ایران', 'روز جهانی معلولان', 'روز بیمه'],
-        12: ['وفات حضرت ام‌البنین (س)', 'روز تکریم مادران و همسران شهدا'],
-        13: ['روز جهانی هواپیمایی'],
-        15: ['روز حسابدار'],
-        16: ['روز دانشجو'],
-        18: ['روز سد و نیروگاه برق آبی', 'معرفی عراق به عنوان مسئول و آغازگر جنگ از سوی سازمان ملل (۱۳۷۰ هـ.ش)'],
-        19: ['تشکیل شورای عالی انقلاب فرهنگی به فرمان امام خمینی (ره)'],
-        20: [
-          'ولادت حضرت فاطمه زهرا (س) (برخی روایات)',
-          'روز زن',
-          'روز مادر',
-          'ولادت حضرت امام خمینی (ره)',
-          'سومین شهید محراب آیت‌الله دستغیب شیرازی به دست منافقان',
-        ],
-        22: ['روز صنعت مس'],
-        25: ['روز پژوهش'],
-        26: ['روز حمل و نقل و رانندگان'],
-        27: ['شهادت آیت‌الله دکتر محمد مفتح', 'روز وحدت حوزه و دانشگاه', 'روز جهانی عاری از خشونت و افراطی‌گری'],
-        29: ['روز تجلیل از شهید تندگویان'],
-        30: ['شب یلدا – ترویج فرهنگ میهمانی و پیوند با خویشان'],
-      };
-
-      const localOverridesDey: Record<number, string[]> = {
-        1: ['05:09', '06:40', '11:30', '16:21', '16:41', '22:45'],
-        2: ['05:09', '06:40', '11:31', '16:21', '16:42', '22:45'],
-        3: ['05:10', '06:40', '11:31', '16:22', '16:42', '22:46'],
-        4: ['05:10', '06:41', '11:32', '16:22', '16:43', '22:46'],
-        5: ['05:10', '06:41', '11:32', '16:23', '16:44', '22:47'],
-        6: ['05:11', '06:42', '11:33', '16:24', '16:44', '22:47'],
-        7: ['05:11', '06:42', '11:33', '16:24', '16:45', '22:48'],
-        8: ['05:12', '06:42', '11:34', '16:25', '16:45', '22:48'],
-        9: ['05:12', '06:42', '11:34', '16:26', '16:46', '22:49'],
-        10: ['05:12', '06:43', '11:35', '16:27', '16:47', '22:49'],
-        11: ['05:12', '06:43', '11:35', '16:27', '16:48', '22:50'],
-        12: ['05:13', '06:43', '11:35', '16:28', '16:48', '22:50'],
-        13: ['05:13', '06:43', '11:36', '16:29', '16:49', '22:51'],
-        14: ['05:13', '06:43', '11:36', '16:30', '16:50', '22:51'],
-        15: ['05:13', '06:43', '11:37', '16:31', '16:51', '22:52'],
-        16: ['05:13', '06:43', '11:37', '16:31', '16:52', '22:52'],
-        17: ['05:13', '06:43', '11:38', '16:32', '16:53', '22:53'],
-        18: ['05:13', '06:43', '11:38', '16:33', '16:53', '22:53'],
-        19: ['05:13', '06:43', '11:39', '16:34', '16:54', '22:54'],
-        20: ['05:13', '06:43', '11:39', '16:35', '16:55', '22:54'],
-        21: ['05:13', '06:43', '11:39', '16:36', '16:56', '22:55'],
-        22: ['05:13', '06:43', '11:40', '16:37', '16:57', '22:55'],
-        23: ['05:13', '06:43', '11:40', '16:38', '16:58', '22:56'],
-        24: ['05:13', '06:42', '11:40', '16:39', '16:59', '22:56'],
-        25: ['05:13', '06:42', '11:41', '16:40', '17:00', '22:56'],
-        26: ['05:13', '06:42', '11:41', '16:41', '17:01', '22:57'],
-        27: ['05:13', '06:42', '11:42', '16:42', '17:02', '22:57'],
-        28: ['05:13', '06:41', '11:42', '16:43', '17:03', '22:58'],
-        29: ['05:12', '06:41', '11:42', '16:44', '17:04', '22:58'],
-        30: ['05:12', '06:40', '11:42', '16:45', '17:05', '22:58'],
-      };
-
-      const localIranianEventsDey: Record<number, string[]> = {
-        1: ['ولادت حضرت امام محمد باقر علیه‌السلام (۵۷ هـ.ق)', 'روز آرایشگر'],
-        3: ['شهادت حضرت امام علی النقی علیه‌السلام (۲۵۴ هـ.ق)', 'روز ثبت احوال'],
-        4: [
-          'ولادت حضرت عیسی مسیح علیه‌السلام',
-          'روز بزرگداشت حضرت عیسی مسیح علیه‌السلام',
-          'روز ایمنی در برابر زلزله و کاهش اثرات بلایای طبیعی',
-        ],
-        6: ['روز دفاتر اسناد رسمی'],
-        7: ['تشکیل نهضت سوادآموزی به فرمان حضرت امام خمینی (ره) (۱۳۵۸ هـ.ش)', 'شهادت آیت‌الله سید حسین غفاری به دست مأموران ستم شاهی پهلوی (۱۳۵۳ هـ.ش)'],
-        8: ['روز صنعت سیمان', 'روز صنعت پتروشیمی'],
-        9: ['روز بصیرت و میثاق امت با ولایت'],
-        10: ['ولادت حضرت امام محمد تقی علیه‌السلام (جوادالائمه) (۱۹۵ هـ.ق)', 'ابلاغ پیام تاریخی حضرت امام خمینی (ره) به گورباچف، رهبر شوروی سابق (۱۳۶۷ هـ.ش)'],
-        11: ['آغاز سال ۲۰۲۶ میلادی'],
-        13: [
-          'روز بزرگداشت علامه مصباح یزدی',
-          'روز علوم سیاسی اسلامی',
-          'اجرای طرح استعماری حذف حجاب به دست رضاخان (۱۳۱۴ هـ.ش)',
-          'روز بزرگداشت خواجوی کرمانی',
-          'روز کرمان',
-        ],
-        14: [
-          'روز بزرگداشت شهید سپهبد حاج قاسم سلیمانی (شهادت ۱۳ دی ۱۳۹۸ هـ.ش)',
-          'روز مقاومت و ایثار و الگوی شجاعت در جهان اسلام',
-        ],
-        15: [
-          'روز پرستار (سالروز ولادت حضرت زینب سلام‌الله‌علیها بر اساس تقویم قمری این سال)',
-          'روز بزرگداشت نقاشان متعهد',
-        ],
-        19: ['قیام خونین مردم قم (۱۳۵۶ هـ.ش)'],
-        20: ['روز قناد، صنعت شیرینی و شکلات'],
-        23: [
-          'شهادت نواب صفوی و یارانش (۱۳۳۴ هـ.ش)',
-          'روز تجدید میثاق با آرمان‌های نهضت اسلامی',
-        ],
-        29: ['روز معاینه فنی خودرو'],
-        28: ['شهادت حضرت فاطمه زهرا سلام‌الله‌علیها (برخی روایات) (تعطیل)'],
-      };
-
-      const localOverridesBahman: Record<number, string[]> = {
-        1: ['05:12', '06:40', '11:43', '16:46', '17:06', '22:59'],
-        2: ['05:11', '06:39', '11:43', '16:47', '17:07', '22:59'],
-        3: ['05:11', '06:39', '11:43', '16:48', '17:08', '22:59'],
-        4: ['05:11', '06:38', '11:44', '16:49', '17:09', '23:00'],
-        5: ['05:10', '06:38', '11:44', '16:50', '17:10', '23:00'],
-        6: ['05:10', '06:37', '11:44', '16:51', '17:11', '23:00'],
-        7: ['05:09', '06:36', '11:44', '16:52', '17:12', '23:00'],
-        8: ['05:09', '06:36', '11:44', '16:53', '17:13', '23:01'],
-        9: ['05:08', '06:35', '11:45', '16:54', '17:14', '23:01'],
-        10: ['05:07', '06:34', '11:45', '16:55', '17:15', '23:01'],
-        11: ['05:07', '06:34', '11:45', '16:57', '17:16', '23:01'],
-        12: ['05:06', '06:33', '11:45', '16:58', '17:17', '23:02'],
-        13: ['05:06', '06:32', '11:45', '16:59', '17:18', '23:02'],
-        14: ['05:05', '06:31', '11:45', '17:00', '17:19', '23:02'],
-        15: ['05:04', '06:30', '11:45', '17:01', '17:20', '23:02'],
-        16: ['05:03', '06:30', '11:45', '17:02', '17:21', '23:02'],
-        17: ['05:03', '06:29', '11:46', '17:03', '17:22', '23:02'],
-        18: ['05:02', '06:28', '11:46', '17:04', '17:23', '23:02'],
-        19: ['05:01', '06:27', '11:46', '17:05', '17:24', '23:03'],
-        20: ['05:00', '06:26', '11:46', '17:06', '17:25', '23:03'],
-        21: ['04:59', '06:25', '11:46', '17:07', '17:26', '23:03'],
-        22: ['04:58', '06:24', '11:46', '17:08', '17:27', '23:03'],
-        23: ['04:57', '06:23', '11:46', '17:09', '17:28', '23:03'],
-        24: ['04:57', '06:22', '11:46', '17:10', '17:29', '23:03'],
-        25: ['04:56', '06:21', '11:46', '17:11', '17:30', '23:03'],
-        26: ['04:55', '06:19', '11:46', '17:12', '17:31', '23:03'],
-        27: ['04:54', '06:18', '11:46', '17:13', '17:32', '23:03'],
-        28: ['04:53', '06:17', '11:45', '17:14', '17:33', '23:03'],
-        29: ['04:51', '06:16', '11:45', '17:15', '17:34', '23:03'],
-        30: ['04:50', '06:15', '11:45', '17:16', '17:35', '23:03'],
-      };
-
-      const localIranianEventsBahman: Record<number, string[]> = {
-        1: ['ولادت حضرت امام حسین علیه‌السلام (۳ هـ.ق)', 'روز پاسدار', 'روز جهانی گمرک'],
-        2: ['ولادت حضرت ابوالفضل العباس علیه‌السلام (۴ هـ.ق)', 'روز جانباز'],
-        3: ['ولادت حضرت امام زین العابدین علیه‌السلام (۳۸ هـ.ق)', 'روز بزرگداشت سیدالساجدین'],
-        6: ['سالروز حماسه مردم آمل', 'روز بزرگداشت حماسه مردم آمل', 'روز آواها و نواهای ایرانی'],
-        9: ['ولادت حضرت علی‌اکبر علیه‌السلام (۳۳ هـ.ق)', 'روز جوان'],
-        11: ['روز ویراستار'],
-        12: ['بازگشت حضرت امام خمینی (ره) به ایران (۱۳۵۷ هـ.ش)', 'آغاز دههٔ مبارک فجر انقلاب اسلامی'],
-        14: ['روز فناوری فضایی'],
-        15: ['ولادت حضرت قائم عجل‌الله‌تعالی‌فرجه (۲۵۵ هـ.ق) (تعطیل)', 'روز جهانی مستضعفان'],
-        19: ['روز نیروی هوایی'],
-        8: ['روز سربازان گمنام امام زمان (عجل الله تعالی فرجه) (برابر با ۱۵ شعبان)'],
-        10: ['روز چهارمحال و بختیاری'],
-        20: ['شکست حصر آبادان به فرمان حضرت امام خمینی (ره) (۱۳۵۹ هـ.ش)'],
-        21: ['شکسته شدن حکومت نظامی به فرمان حضرت امام خمینی (ره) (۱۳۵۷ هـ.ش)'],
-        22: ['پیروزی انقلاب اسلامی ایران و سقوط نظام شاهنشاهی (۱۳۵۷ هـ.ش) (تعطیل)'],
-        25: ['صدور حکم تاریخی حضرت امام خمینی (ره) مبنی بر ارتداد سلمان رشدی نویسنده کتاب آیات شیطانی (۱۳۶۷ هـ.ش)'],
-        29: ['قیام مردم تبریز به مناسبت چهلمین روز شهادت شهدای قم (۱۳۵۶ هـ.ش)'],
-        30: ['روز اقتصاد مقاومتی و کارآفرینی'],
-      };
-
-      const localOverridesEsfand: Record<number, string[]> = {
-        1: ['04:49', '06:14', '11:45', '17:17', '17:36', '23:03'],
-        2: ['04:48', '06:12', '11:45', '17:18', '17:37', '23:03'],
-        3: ['04:47', '06:11', '11:45', '17:19', '17:38', '23:03'],
-        4: ['04:46', '06:10', '11:45', '17:20', '17:39', '23:02'],
-        5: ['04:45', '06:09', '11:45', '17:21', '17:40', '23:02'],
-        6: ['04:43', '06:07', '11:45', '17:22', '17:41', '23:02'],
-        7: ['04:42', '06:06', '11:44', '17:23', '17:42', '23:02'],
-        8: ['04:41', '06:05', '11:44', '17:24', '17:42', '23:02'],
-        9: ['04:40', '06:04', '11:44', '17:25', '17:43', '23:02'],
-        10: ['04:38', '06:02', '11:44', '17:26', '17:44', '23:02'],
-        11: ['04:37', '06:01', '11:44', '17:27', '17:45', '23:01'],
-        12: ['04:36', '06:00', '11:43', '17:28', '17:46', '23:01'],
-        13: ['04:34', '05:58', '11:43', '17:29', '17:47', '23:01'],
-        14: ['04:33', '05:57', '11:43', '17:30', '17:48', '23:01'],
-        15: ['04:32', '05:55', '11:43', '17:31', '17:49', '23:00'],
-        16: ['04:30', '05:54', '11:43', '17:32', '17:50', '23:00'],
-        17: ['04:29', '05:53', '11:42', '17:32', '17:51', '23:00'],
-        18: ['04:28', '05:51', '11:42', '17:33', '17:52', '23:00'],
-        19: ['04:26', '05:50', '11:42', '17:34', '17:52', '22:59'],
-        20: ['04:25', '05:49', '11:42', '17:35', '17:53', '22:59'],
-        21: ['04:23', '05:47', '11:41', '17:36', '17:54', '22:59'],
-        22: ['04:22', '05:46', '11:41', '17:37', '17:55', '22:59'],
-        23: ['04:20', '05:44', '11:41', '17:38', '17:56', '22:58'],
-        24: ['04:19', '05:43', '11:40', '17:39', '17:57', '22:58'],
-        25: ['04:17', '05:41', '11:40', '17:40', '17:58', '22:58'],
-        26: ['04:16', '05:40', '11:40', '17:40', '17:59', '22:57'],
-        27: ['04:14', '05:38', '11:40', '17:41', '18:00', '22:57'],
-        28: ['04:13', '05:37', '11:39', '17:42', '18:00', '22:57'],
-        29: ['04:11', '05:36', '11:39', '17:43', '18:01', '22:56'],
-      };
-
-      const localIranianEventsEsfand: Record<number, string[]> = {
-        3: ['کودتای انگلیسی رضاخان (۱۲۹۹ هـ.ش)'],
-        5: ['روز بزرگداشت خواجه نصیرالدین طوسی', 'روز مهندسی'],
-        8: ['روز حمایت از بیماران نادر', 'روز امور تربیتی و تربیت اسلامی', 'روز بزرگداشت حکیم حاج ملاهادی سبزواری'],
-        9: ['روز حمایت از حقوق مصرف‌کنندگان'],
-        10: ['وفات حضرت خدیجه سلام‌الله‌علیها (۳ سال پیش از هجرت)', 'روز بازاریاب و مدیر فروش'],
-        14: ['روز احسان و نیکوکاری'],
-        15: ['روز درختکاری', 'روز آموزش همگانی حفظ محیط زیست'],
-        16: ['روز کارشناس و متخصص تغذیه'],
-        18: ['روز بوشهر'],
-        21: ['روز خادمان آرامستان'],
-        23: ['روز صنعت طلا، جواهر، نقره و گوهرسنگ‌ها'],
-        22: ['صدور فرمان حضرت امام خمینی (ره) برای تأسیس بنیاد شهید انقلاب اسلامی (۱۳۵۸ هـ.ش)', 'روز بزرگداشت شهدا'],
-        25: ['روز بزرگداشت پروین اعتصامی', 'بمباران شیمیایی حلبچه به دست ارتش بعث عراق (۱۳۶۶ هـ.ش)'],
-        27: ['روز تکریم همسایگان'],
-        29: ['روز جهانی قدس (آخرین جمعهٔ ماه رمضان)', 'روز ملی شدن صنعت نفت ایران (۱۳۲۹ هـ.ش) (تعطیل)'],
-      };
-
-      if ((year === 1403 || year === 1404) && month === 9 && localOverridesAzar[day]) {
-        setPrayerData(buildLocalPrayerData(localOverridesAzar[day]!, localIranianEventsAzar[day]));
-        return;
-      }
-
-      if ((year === 1403 || year === 1404) && month === 10 && localOverridesDey[day]) {
-        setPrayerData(buildLocalPrayerData(localOverridesDey[day]!, localIranianEventsDey[day]));
-        return;
-      }
-
-      if ((year === 1403 || year === 1404) && month === 11 && localOverridesBahman[day]) {
-        setPrayerData(buildLocalPrayerData(localOverridesBahman[day]!, localIranianEventsBahman[day]));
-        return;
-      }
-
-      if ((year === 1403 || year === 1404) && month === 12 && localOverridesEsfand[day]) {
-        setPrayerData(buildLocalPrayerData(localOverridesEsfand[day]!, localIranianEventsEsfand[day]));
-        return;
-      }
-
-      // ۲۹ و ۳۰ آبان ۱۴۰۳ و ۱۴۰۴ (برای تست روی لوکال‌هاست)
-      if ((year === 1403 || year === 1404) && month === 8 && day === 29) {
-        const localTimes = ['22:33', '16:40', '16:20', '11:17', '06:14', '04:45'];
-        setPrayerData(buildLocalPrayerData(localTimes));
-        return;
-      }
-      if ((year === 1403 || year === 1404) && month === 8 && day === 30) {
-        const localTimes = ['22:34', '16:40', '16:20', '11:17', '06:15', '04:46'];
-        setPrayerData(buildLocalPrayerData(localTimes));
-        return;
-      }
-
-      const shamsiDate = raw;
-      const response = await fetch(`/api/prayer-by-date?shamsiDate=${shamsiDate}`);
+      const response = await fetch(`/api/prayer-by-date?shamsiDate=${shamsiMeta.raw}`);
       if (!response.ok) throw new Error('عدم دسترسی به اوقات شرعی');
       const result = await response.json();
       if (!result.ok) throw new Error(result.error || 'خطای ناشناخته');
       setPrayerData(result);
+      setOffline(false);
     } catch (error) {
       setPrayerError(error instanceof Error ? error.message : 'خطای ناشناخته');
       setPrayerData(null);
+      if (isNetworkError(error)) {
+        setOffline(true);
+      }
     } finally {
       setPrayerLoading(false);
     }
-  }, [selectedDate, shamsiMeta]);
+  }, [shamsiMeta.raw]);
 
   useEffect(() => {
     fetchPrayerTimes();
@@ -753,13 +464,6 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
       return next;
     });
   };
-
-  const goToday = () => setSelectedDate(new Date());
-
-  const isTodaySelected = useMemo(() => {
-    const today = new Date();
-    return today.toDateString() === selectedDate.toDateString();
-  }, [selectedDate]);
 
   const [hadiths, setHadiths] = useState<HadithItem[]>(defaultHadithBank);
   const [hadithError, setHadithError] = useState<string | null>(null);
@@ -775,10 +479,14 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
         const data = await res.json();
         if (!cancelled && Array.isArray(data.hadiths) && data.hadiths.length) {
           setHadiths(data.hadiths);
+          setOffline(false);
         }
       } catch (error) {
         if (!cancelled) {
           setHadithError('عدم دسترسی به بانک احادیث');
+          if (isNetworkError(error)) {
+            setOffline(true);
+          }
         }
       }
     };
@@ -797,10 +505,14 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
         const data = await res.json();
         if (!aborted && Array.isArray(data.announcements) && data.announcements.length) {
           setAnnouncements(data.announcements);
+          setOffline(false);
         }
       } catch (error) {
         if (!aborted) {
           setAnnouncementError('عدم دسترسی به اطلاعیه‌ها');
+          if (isNetworkError(error)) {
+            setOffline(true);
+          }
         }
       }
     };
@@ -817,30 +529,11 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
   }, [hadiths]);
 
   const devotionalInfo = devotionalSchedule[selectedDate.getDay()];
-  const [duaPreviewArabic, duaPreviewPersian] = useMemo(() => {
-    if (!devotionalInfo?.duaContent) return [null, null];
-    const lines = devotionalInfo.duaContent
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean);
-    return [lines[0] ?? null, lines[1] ?? null];
-  }, [devotionalInfo?.duaContent]);
   const [devotionalModal, setDevotionalModal] = useState<{
     title: string;
     content: string;
     metadata: string;
   } | null>(null);
-
-  const openDevotional = useCallback(
-    (type: 'dua' | 'ziyarat') => {
-      if (!devotionalInfo) return;
-      const title = type === 'dua' ? devotionalInfo.duaTitle : devotionalInfo.ziyaratTitle;
-      const content = type === 'dua' ? devotionalInfo.duaContent : devotionalInfo.ziyaratContent;
-      const metadata = `روز ${devotionalInfo.dayLabel} · ${type === 'dua' ? 'دعای اختصاصی' : 'زیارت منتخب'}`;
-      setDevotionalModal({ title, content, metadata });
-    },
-    [devotionalInfo]
-  );
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -873,10 +566,6 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
     };
   }, [isMiniApp]);
 
-  const gregorianLabel = useMemo(() => {
-    return prayerData?.gregorianDate ?? selectedDate.toLocaleDateString('fa-IR-u-ca-gregory');
-  }, [prayerData?.gregorianDate, selectedDate]);
-
   const hijriLabel = prayerData?.hijriDate?.formatted ?? '';
   const combinedEvents = useMemo(() => {
     const bucket = new Set<string>();
@@ -899,15 +588,31 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
     return <div className="relative min-h-screen overflow-hidden bg-[#fdf9f0]" />;
   }
 
+  if (offline) {
+    return (
+      <>
+        <ServiceWorkerClient />
+        <div className="flex min-h-screen items-center justify-center bg-[#030d09] px-6 text-center text-white">
+          <div>
+            <p className="text-xl font-semibold">اتصال برقرار نیست</p>
+            <p className="mt-3 text-sm text-white/70">سرور محلی یا اینترنت را بررسی کرده و دوباره تلاش کنید.</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
-    <div className={layout.outer} style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <div
-        className={
-          isLightTheme
-            ? "absolute inset-0 bg-[linear-gradient(to_bottom,#f5e9d7_0%,#fde68a_30%,#bbf7d0_100%)]"
-            : "absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(30,64,175,0.85),_transparent_72%)]"
-        }
-      />
+    <>
+      <ServiceWorkerClient />
+      <div className={layout.outer} style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+        <div
+          className={
+            isLightTheme
+              ? "absolute inset-0 bg-[linear-gradient(to_bottom,#f5e9d7_0%,#fde68a_30%,#bbf7d0_100%)]"
+              : "absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(30,64,175,0.85),_transparent_72%)]"
+          }
+        />
       <div
         className={
           isLightTheme
@@ -930,31 +635,44 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
             : "relative z-20 flex w-full justify-start px-0 pt-3 sm:px-1 lg:px-2"
         }
       >
-        <div
-          className={`flex items-center gap-2 text-xs ${
-            isLightTheme ? "text-emerald-900" : "text-white"
-          }`}
-        >
-          <button
-            onClick={toggleTheme}
-            className={
-              isLightTheme
-                ? "flex h-9 w-9 items-center justify-center rounded-full border border-emerald-300 bg-emerald-50 text-lg text-emerald-700 shadow-md shadow-emerald-200/80 backdrop-blur-sm transition hover:bg-emerald-100 hover:shadow-emerald-300/90"
-                : "flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-black/70 text-lg text-white shadow-md backdrop-blur-sm transition hover:border-white/80"
-            }
-            aria-label="تغییر حالت روز و شب"
+        <div className="flex w-full items-center justify-between gap-3">
+          <div
+            className={`flex items-center gap-2 text-xs ${
+              isLightTheme ? "text-emerald-900" : "text-white"
+            }`}
           >
-            {resolvedTheme === "dark" ? "☀️" : "🌙"}
-          </button>
-          <span
-            className={
+            <button
+              onClick={toggleTheme}
+              className={
+                isLightTheme
+                  ? "flex h-9 w-9 items-center justify-center rounded-full border border-emerald-300 bg-emerald-50 text-lg text-emerald-700 shadow-md shadow-emerald-200/80 backdrop-blur-sm transition hover:bg-emerald-100 hover:shadow-emerald-300/90"
+                  : "flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-black/70 text-lg text-white shadow-md backdrop-blur-sm transition hover:border-white/80"
+              }
+              aria-label="تغییر حالت روز و شب"
+            >
+              {resolvedTheme === "dark" ? "☀️" : "🌙"}
+            </button>
+            <span
+              className={
+                isLightTheme
+                  ? "hidden cursor-default whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-medium text-emerald-900 shadow-sm shadow-emerald-100 sm:inline"
+                  : "hidden cursor-default whitespace-nowrap rounded-full border border-white/25 bg-black/50 px-3 py-1.5 text-[11px] font-medium text-white shadow-lg backdrop-blur-sm sm:inline"
+              }
+            >
+              مسجد و پایگاه امام جعفر صادق (ع) - مشهد
+            </span>
+          </div>
+          <a
+            href="/masjed-app.apk"
+            download
+            className={`flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition ${
               isLightTheme
-                ? "hidden cursor-default whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-medium text-emerald-900 shadow-sm shadow-emerald-100 sm:inline"
-                : "hidden cursor-default whitespace-nowrap rounded-full border border-white/25 bg-black/50 px-3 py-1.5 text-[11px] font-medium text-white shadow-lg backdrop-blur-sm sm:inline"
-            }
+                ? 'border-emerald-300 bg-white/80 text-emerald-900 shadow-sm hover:bg-emerald-50'
+                : 'border-white/30 bg-black/60 text-white backdrop-blur-sm hover:border-white/70'
+            }`}
           >
-            مسجد و پایگاه امام جعفر صادق (ع) - مشهد
-          </span>
+            📱 دانلود نسخه اندروید
+          </a>
         </div>
       </div>
 
@@ -1612,5 +1330,6 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
         </div>
       )}
     </div>
+  </>
   );
 }

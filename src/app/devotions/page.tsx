@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const devotionCards = [
@@ -50,13 +50,21 @@ const devotionCards = [
 
 export default function DevotionsPage() {
   const router = useRouter();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof document === "undefined") {
+      return "light";
+    }
+    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  });
 
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const resolved = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    setTheme(resolved);
-  }, []);
+  const goHome = () => {
+    if (typeof window !== "undefined") {
+      window.location.href = "masjed://home";
+      setTimeout(() => router.push("/"), 200);
+      return;
+    }
+    router.push("/");
+  };
 
   const toggleTheme = () => {
     if (typeof document === "undefined") return;
@@ -140,14 +148,14 @@ export default function DevotionsPage() {
             </span>
           </div>
           <button
-            onClick={() => router.push("/")}
+            onClick={goHome}
             className={
               isLight
                 ? "rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-semibold text-emerald-800 shadow-sm transition hover:border-emerald-300"
                 : "rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:border-emerald-300/50"
             }
           >
-            بازگشت به داشبورد
+            بازگشت به خانه
           </button>
         </div>
 

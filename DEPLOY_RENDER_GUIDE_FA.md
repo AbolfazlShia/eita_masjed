@@ -13,7 +13,7 @@
 
 1. وارد https://dashboard.render.com شوید
 2. بر روی **"New +" > "Web Service"** کلیک کنید
-3. روی Repository فعلی شما (**eita_masjed**) کلیک کنید
+3. روی Repository فعلی شما (**masjed**) کلیک کنید
 4. تنظیمات زیر را انجام دهید:
 
 | تنظیم | مقدار |
@@ -33,20 +33,11 @@
 #### الزامی (حداقل):
 - `NODE_ENV` = `production`
 - `NODE_VERSION` = `20`
+- `NEXT_PUBLIC_API_URL` = آدرس دامنه (مثلاً `https://masjed-app.onrender.com`)
 
-#### اختیاری (اگر ازشان استفاده می‌کنید):
-
-**برای Telegram Webhook (Eitaa):**
-- `EITA_TOKEN` = (کلید webhook خود)
-- `NEXT_PUBLIC_EITA_TOKEN` = (کلید عمومی)
-- `EITA_ADMIN_TOKEN` = (کلید مدیر)
-
-**برای hCaptcha (ثبت‌نام/ورود امن):**
-- `HCAPTCHA_SECRET` = (secret key از hcaptcha.com)
-- `HCAPTCHA_SITEKEY` = (site key از hcaptcha.com)
-
-**برای اسکرِیپِر اوقات شرعی:**
-- `PRAYER_SOURCE_URL` = `https://www.bahesab.ir/` (پیش‌فرض)
+#### اختیاری
+- `NEXT_PUBLIC_APP_VERSION` = مثلا `2.0.0`
+- `HCAPTCHA_SECRET` / `HCAPTCHA_SITEKEY` (برای فعال‌کردن hCaptcha)
 
 ### 3. استقرار و مانیتورینگ
 
@@ -67,14 +58,14 @@
 - Admin با نام `مدیر` و PIN `modir5` به‌طور پیش‌فرض ساخته می‌شود
 
 ### درخواست‌های مهم API
-- `GET /` → صفحهٔ خوش‌آمدگویی با سه گزینهٔ ورود
-- `GET /start` → صفحهٔ مهمان (بدون احراز هویت)
+- `GET /` → صفحهٔ معرفی و لینک اپ اندروید
 - `GET /dashboard` → داشبورد (نیاز به login)
 - `POST /api/auth/register` → ثبت‌نام کاربر جدید
 - `POST /api/auth/login` → ورود
 - `POST /api/auth/logout` → خروج
 - `GET /api/auth/me` → اطلاعات کاربر فعلی
-- `POST /api/scrape/prayer-times` → refresh کردن اوقات شرعی (برای اجرایِ دستیِ cron)
+- `GET /api/prayer-times` → اوقات شرعی (ورودی میلادی)
+- `GET /api/prayer-by-date` → اوقات شرعی (ورودی میلادی/شمسی)
 
 ## مسائل شایع و حل‌ها
 
@@ -97,7 +88,7 @@
 2. **Custom Domain**: اگر domain شخصی دارید، آن را به Render متصل کنید
 3. **Database**: برای persistence بیشتر، یک PostgreSQL Render Postgres اضافه کنید
 4. **Monitoring**: Render Alerts را برای downtime فعال کنید
-5. **Cron Jobs**: برای refresh روزانهٔ اوقات شرعی، یک Cron Job در Render ایجاد کنید
+5. **Monitoring**: لاگ‌ها را دوره‌ای بررسی کنید؛ الگوریتم داخلی نیاز به Cron ندارد
 
 ## پیوندهای مفید
 - [Render Documentation](https://render.com/docs)

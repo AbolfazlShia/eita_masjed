@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { verifyHCaptcha } from '@/lib/captcha';
+import { getErrorMessage } from '@/lib/errors';
 
 export async function POST(req: Request) {
   try {
@@ -19,8 +20,9 @@ export async function POST(req: Request) {
     const hashed = bcrypt.hashSync(pin, 8);
     const stmt = db.prepare('INSERT INTO users (firstName,lastName,gender,birth,pin) VALUES (?,?,?,?,?)');
     const info = stmt.run(firstName || '', lastName || '', gender || '', birth || '', hashed);
-    return NextResponse.json({ ok: true, userId: info.lastInsertRowid });
-  } catch (err: any) {
-    return NextResponse.json({ ok: false, error: err?.message || String(err) }, { status: 500 });
+    const userId = 'lastInsertRowid' in info ? Number(info.lastInsertRowid) : undefined;
+    return NextResponse.json({ ok: true, userId });
+  } catch (err: unknown) {
+    return NextResponse.json({ ok: false, error: getErrorMessage(err) }, { status: 500 });
   }
 }

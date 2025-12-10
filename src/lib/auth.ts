@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { getUserFromCookies } from './session';
 
-export function requireAdmin() {
-  const user = getUserFromCookies();
+export async function requireAdmin() {
+  const user = await getUserFromCookies();
   if (!user) redirect('/start');
   if (user.role !== 'admin') redirect('/');
   return user;

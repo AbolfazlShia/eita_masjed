@@ -1,35 +1,30 @@
+import { toGregorian, toJalaali } from 'jalaali-js';
+
+const TEHRAN_TIMEZONE = 'Asia/Tehran';
+
+export function getTehranDate(date: Date): Date {
+  return new Date(
+    date.toLocaleString('en-US', {
+      timeZone: TEHRAN_TIMEZONE,
+    })
+  );
+}
+
+export function getTehranDateParts(date: Date): { year: number; month: number; day: number; weekday: number } {
+  const tehranDate = getTehranDate(date);
+  return {
+    year: tehranDate.getFullYear(),
+    month: tehranDate.getMonth() + 1,
+    day: tehranDate.getDate(),
+    weekday: tehranDate.getDay(),
+  };
+}
+
 // تبدیل تاریخ میلادی به شمسی
 export function gregorianToShamsi(date: Date): { year: number; month: number; day: number } {
-  const gy = date.getFullYear();
-  const gm = date.getMonth() + 1;
-  const gd = date.getDate();
-
-  let g_d_n = 365 * gy + Math.floor((gy + 3) / 4) - Math.floor((gy + 99) / 100) + Math.floor((gy + 399) / 400) + gd;
-
-  let j_d_n = g_d_n - 79;
-
-  let j_np = Math.floor(j_d_n / 12053);
-  j_d_n %= 12053;
-
-  let jy = 979 + 33 * j_np + 4 * Math.floor(j_d_n / 1461);
-
-  j_d_n %= 1461;
-
-  if (j_d_n >= 366) {
-    jy += Math.floor((j_d_n - 1) / 365);
-    j_d_n = (j_d_n - 1) % 365;
-  }
-
-  let jm = 1;
-  for (let i = 0; i < 12; i++) {
-    let v = i < 6 ? 31 : 30;
-    if (i === 11) v = 29;
-    if (j_d_n < v) break;
-    j_d_n -= v;
-    jm++;
-  }
-
-  return { year: jy, month: jm, day: j_d_n + 1 };
+  const { year: gy, month: gm, day: gd } = getTehranDateParts(date);
+  const { jy, jm, jd } = toJalaali(gy, gm, gd);
+  return { year: jy, month: jm, day: jd };
 }
 
 // نام ماه‌های شمسی
@@ -62,19 +57,22 @@ export const weekDays = [
 // فرمت تاریخ شمسی
 export function formatShamsiDate(date: Date): string {
   const shamsi = gregorianToShamsi(date);
-  const weekDay = weekDays[date.getDay()];
+  const { weekday } = getTehranDateParts(date);
+  const weekDay = weekDays[(weekday + 1) % 7];
   const month = shamsiMonths[shamsi.month - 1];
   return `${weekDay} ${shamsi.day} ${month} ${shamsi.year}`;
 }
 
 // دریافت نام روز هفته
 export function getWeekDayName(date: Date): string {
-  return weekDays[date.getDay()];
+  return weekDays[getWeekDayNumber(date)];
 }
 
 // دریافت شماره روز هفته (0 = شنبه، 6 = جمعه)
 export function getWeekDayNumber(date: Date): number {
-  return date.getDay();
+  const tehran = getTehranDate(date);
+  const jsDay = tehran.getDay();
+  return (jsDay + 1) % 7;
 }
 
 // فرمت ساعت
@@ -92,6 +90,12 @@ export function parseTime(timeStr: string): { hours: number; minutes: number } {
 export function toPersianNumber(num: number | string): string {
   const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
   return String(num).replace(/\d/g, (d) => persianDigits[parseInt(d)]);
+}
+
+// تبدیل تاریخ شمسی به میلادی (خروجی Date در زمان محلی سیستم)
+export function shamsiToGregorian(year: number, month: number, day: number): Date {
+  const { gy, gm, gd } = toGregorian(year, month, day);
+  return new Date(gy, gm - 1, gd);
 }
 
 // تبدیل شماره از فارسی به انگلیسی

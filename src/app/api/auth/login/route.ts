@@ -3,6 +3,7 @@ import db from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { verifyHCaptcha } from '@/lib/captcha';
+import { getErrorMessage } from '@/lib/errors';
 
 function cookieHeader(name: string, value: string, days = 1) {
   const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
     if (remember && ip) {
       try {
         db.prepare('INSERT OR REPLACE INTO ip_remember (ip,userId) VALUES (?,?)').run(ip, user.id);
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
     const res = NextResponse.json({ ok: true, sessionId });
     res.headers.set('Set-Cookie', cookieHeader('session', sessionId, remember ? 7 : 1));
     return res;
-  } catch (err: any) {
-    return NextResponse.json({ ok: false, error: err?.message || String(err) }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ ok: false, error: getErrorMessage(err) }, { status: 500 });
   }
 }

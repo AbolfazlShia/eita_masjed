@@ -16,23 +16,15 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Access-Control-Allow-Headers",
-            value: "Content-Type, Authorization, x-eita-token",
+            value: "Content-Type, Authorization",
           },
           {
-            key: "X-Frame-Options",
-            value: "ALLOWALL",
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
           },
           {
             key: "X-Content-Type-Options",
             value: "nosniff",
-          },
-          {
-            key: "X-UA-Compatible",
-            value: "IE=edge",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "no-referrer-when-downgrade",
           },
         ],
       },

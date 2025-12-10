@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 
+import { getErrorMessage } from "@/lib/errors";
+
 const DATA_DIR = path.resolve(process.cwd(), "data");
 
 function jsonError(message: string, status = 500) {
@@ -38,7 +40,7 @@ export async function GET() {
         "Cache-Control": "no-store",
       },
     });
-  } catch (error: any) {
-    return jsonError(error?.message || "internal_error");
+  } catch (error: unknown) {
+    return jsonError(getErrorMessage(error));
   }
 }

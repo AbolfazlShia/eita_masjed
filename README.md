@@ -4,26 +4,24 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 
-برنامهٔ مدیریتِ مسجد برای Telegram WebApp (Eitaa) و استفادهٔ وب عمومی. سایت تقویم شمسی، اوقات شرعی، نماز روزانه، احراز هویت، و داشبورد داخلی را ارائه می‌دهد.
+پلتفرم یکپارچهٔ «مسجد» برای وب و اپ اندروید است که تقویم شمسی، اوقات شرعی محاسبه‌شده برای مشهد، نمازهای روزانه، احراز هویت، و داشبورد داخلی را ارائه می‌دهد.
 
-**English:** A mosque management application for Telegram WebApp (Eitaa) and public web access. Provides Persian calendar, prayer times, daily prayers, authentication, and an admin dashboard.
+**English:** Masjed is a unified web + Android platform with an internal Mashhad prayer-time calculator, Jalali calendar, daily prayers, authentication, and an admin dashboard.
 
 ---
 
 ## 🚀 ویژگی‌ها | Features
 
-✅ **تقویم شمسی** - Persian calendar with Gregorian conversion  
-✅ **اوقات شرعی مشهد** - Mashhad prayer times (mock + scraper-ready)  
-✅ **نماز روزانه** - Daily prayer content per weekday  
-✅ **احراز هویت** - User registration (PIN-based), login, logout with persistent sessions  
-✅ **کاربران مهمان** - Guest access without authentication  
-✅ **رابط تاریک/روشن** - Dark/Light mode toggle with localStorage persistence  
-✅ **داشبورد داخلی** - Authenticated dashboard showing prayer times and daily prayer  
-✅ **Telegram WebApp Support** - Fragment handling, SDK initialization for Eitaa integration  
-✅ **CORS & Iframe Headers** - Configured for embedding in web-based apps  
+✅ **تقویم شمسی و گرگوری** - Persian calendar with Gregorian conversion  
+✅ **محاسبهٔ داخلی اوقات شرعی** - Astronomical calculator for Mashhad (Iranian Institute of Geophysics, فقه جعفری)  
+✅ **APIهای مستقل** - `/api/prayer-times` و `/api/prayer-by-date` با ورودی میلادی/شمسی و کش داخلی  
+✅ **نماز و مناسبت روزانه** - Daily prayer content + events per weekday  
+✅ **احراز هویت و سشن پایدار** - PIN-based registration/login with guest fallback  
+✅ **رابط تاریک/روشن** - Dark/Light mode toggle with persistence  
+✅ **داشبورد داخلی و اپ اندروید** - Shared data model consumed by web UI and Android app (smart caching)  
+✅ **Security headers & PWA** - Hardened Next.js config for standalone install  
 ✅ **Optional hCaptcha** - CAPTCHA verification on register/login (if `HCAPTCHA_SECRET` set)  
-✅ **Prayer Time Scraper API** - POST endpoint to fetch and cache prayer times  
-✅ **Admin Panel Ready** - Scaffolding for admin routes and management  
+✅ **آماده برای پنل مدیریت** - Admin scaffolding and modular data stores  
 
 ---
 
@@ -33,25 +31,13 @@
 src/
 ├── app/
 │   ├── api/
-│   │   ├── auth/
-│   │   │   ├── register/route.ts      # User registration endpoint
-│   │   │   ├── login/route.ts         # User login & session creation
-│   │   │   ├── logout/route.ts        # Session deletion
-│   │   │   └── me/route.ts            # Current user info
-│   │   ├── prayer-times/route.ts      # Prayer times (reads cache or mock)
-│   │   ├── scrape/prayer-times/route.ts # Scraper: fetch & save prayer times
-│   │   ├── eita/webhook/route.ts      # Telegram Eitaa webhook (optional)
+│   │   ├── auth/                      # Register/Login/Logout/Me endpoints
+│   │   ├── prayer-times/route.ts      # GET prayer times (Gregorian input)
+│   │   ├── prayer-by-date/route.ts    # GET prayer times (Gregorian/Jalali)
 │   │   └── health/route.ts            # Health check endpoint
-│   ├── auth/
-│   │   ├── register/page.tsx          # Register form page
-│   │   ├── login/page.tsx             # Login form page
-│   │   └── logout/page.tsx            # Logout redirect page
-│   ├── dashboard/
-│   │   ├── page.tsx                   # Protected dashboard (server-side check)
-│   │   └── DashboardClient.tsx        # Dashboard UI (client component)
-│   ├── start/page.tsx                 # Guest welcome page
-│   ├── page.tsx                       # Homepage with 3 entry options
-│   ├── layout.tsx                     # App layout (RTL, Telegram SDK, metadata)
+│   ├── dashboard/                     # Authenticated dashboard UI
+│   ├── page.tsx                       # Public landing page
+│   ├── layout.tsx                     # Root layout (RTL, PWA metadata)
 │   └── globals.css                    # Global styles
 │
 ├── lib/
@@ -60,19 +46,19 @@ src/
 │   ├── auth.ts                        # Auth utilities (requireAdmin, etc.)
 │   ├── captcha.ts                     # hCaptcha verification helper
 │   ├── calendar.ts                    # Persian calendar utilities
-│   ├── prayers.ts                     # Daily prayers & events dataset
-│   └── telegram.ts                    # Telegram WebApp SDK helper
+│   ├── prayer-times-calculator.ts     # Internal Mashhad calculator (astronomy)
+│   ├── prayer-service.ts              # Cache helpers, Jalali hydration, API payloads
+│   └── prayers.ts                     # Daily prayers & events dataset
 │
-├── types/
-│   ├── bcryptjs.d.ts                  # bcryptjs type declaration
-│   └── uuid.d.ts                      # uuid type declaration
-│
+├── types/                             # Type declarations (bcryptjs, uuid, ...)
+
 data/
-├── store.json                         # User/session JSON store (if SQLite unavailable)
-└── prayer-times.json                  # Cached prayer times (updated by scraper)
+└── store.json                         # JSON fallback for users/sessions
 
 public/
-├── favicon.ico
+├── icons/                             # PWA icons
+├── masjed-app.apk                     # Latest Android build
+└── manifest.webmanifest               # PWA manifest
 
 Deployment & Config:
 ├── render.yaml                        # Render Web Service manifest
@@ -80,9 +66,11 @@ Deployment & Config:
 ├── tsconfig.json                      # TypeScript config
 ├── package.json                       # Dependencies
 ├── postcss.config.mjs                 # PostCSS (Tailwind support)
-├── netlify.toml                       # Netlify config (legacy, now using Render)
 ├── .env.example                       # Environment variables template
 └── DEPLOY_RENDER_GUIDE_FA.md          # Render deployment guide (Persian)
+
+Android:
+└── android-masjed-app/                # Native app consuming the same APIs
 ```
 
 ---
@@ -97,8 +85,8 @@ Deployment & Config:
 
 ```bash
 # Clone repository
-git clone https://github.com/AbolfazlShia/eita_masjed.git
-cd eita_masjed
+git clone https://github.com/AbolfazlShia/masjed.git
+cd masjed
 
 # Install dependencies
 npm install
@@ -156,57 +144,22 @@ npm run start
 
 ## 🙏 اوقات شرعی | Prayer Times
 
-### Mock Data | داده‌های نمونه
-Default prayer times for Mashhad:
-- Fajr: 04:40
-- Sunrise: 06:08
-- Zuhr: 11:16
-- Asr: 14:45
-- Sunset: 16:24
-- Maghrib: 16:43
-- Isha: 18:10
-- Midnight: 22:32
+### Internal Calculator | الگوریتم داخلی
+- مبنا: مختصات مشهد (36.2605, 59.6168) و ارتفاع متوسط 999m
+- روش: موسسه ژئوفیزیک دانشگاه تهران + فقه جعفری (18° فجر، 4.5° عصر، 4° مغرب)
+- ورودی: تاریخ میلادی یا شمسی → تبدیل به UTC → محاسبه زاویه خورشید و زمان شرعی
+- خروجی: ساختار `PrayerTimesResult` با کلیدهای `fajr`, `sunrise`, `zuhr`, `asr`, `sunset`, `maghrib`, `midnight`
 
-### Scraper API | API اسکرِیپِر
-
-**POST** `/api/scrape/prayer-times`
-- Fetches HTML from `PRAYER_SOURCE_URL` (default: `https://www.bahesab.ir/`)
-- Extracts times using heuristic regex
-- Saves to `data/prayer-times.json`
-- Can be called manually or via scheduled cron job
-
-**GET** `/api/scrape/prayer-times`
-- Returns currently cached prayer times
+### Prayer Service & Cache | سرویس کش داخلی
+- `src/lib/prayer-service.ts` تاریخ ورودی را نرمال و به UTC تبدیل می‌کند.
+- کش درون‌حافظه‌ای ۳۶۶ روز جلو + ۷ روز عقب را گرم می‌کند (با تابع `ensurePrayerCachePrewarmed`).
+- APIها از این سرویس استفاده می‌کنند تا پاسخ ثابت و سریع ارائه شود.
 
 ### Daily Prayers | نماز روزانه
 
-- **API**: `GET /api/prayer-times` — returns cached times or mock fallback
-- **Data**: `src/lib/prayers.ts` — Persian prayer texts per weekday
-- **Events**: Daily events also stored in prayers dataset
-
----
-
-## 🌐 Telegram WebApp (Eitaa) Integration
-
-### Headers & CORS | هدرها و CORS
-
-Configured in `next.config.ts`:
-- `Access-Control-Allow-Origin: *`
-- `X-Frame-Options: ALLOWALL` (allows iframe embedding)
-- `X-Content-Type-Options: nosniff`
-
-### Fragment Handling | هندلینگ فرگمنت
-
-- `src/app/start/page.tsx` — detects Telegram fragment (`#tgWebAppData=...`)
-- Initializes Telegram WebApp SDK
-- Expands web app and enables back button
-
-### Client Integration | انتگریشن کلاینت
-
-`src/lib/telegram.ts` — helper hook:
-```typescript
-useTelegramWebApp() // Expands, enables closing confirmation
-```
+- **API**: `GET /api/prayer-times` و `GET /api/prayer-by-date`
+- **Data**: `src/lib/prayers.ts` — متن نمازها و رویدادهای مناسبتی هر روز هفته
+- **Events**: همان دیتا برای نمایش مناسبت‌های روز استفاده می‌شود
 
 ---
 
@@ -214,17 +167,15 @@ useTelegramWebApp() // Expands, enables closing confirmation
 
 | Method | Endpoint | Auth Required | Description |
 |--------|----------|----------------|-------------|
-| GET | `/` | No | Welcome page (3 entry options) |
-| GET | `/start` | No | Guest welcome page |
-| GET | `/dashboard` | Yes | Protected user dashboard |
+| GET | `/` | No | Public landing page with app overview |
+| GET | `/dashboard` | Yes | Authenticated dashboard |
 | POST | `/api/auth/register` | No | Create new user |
 | POST | `/api/auth/login` | No | Login & create session |
 | POST | `/api/auth/logout` | Yes | Logout & delete session |
 | GET | `/api/auth/me` | No | Current user info (or null) |
-| GET | `/api/prayer-times` | No | Get prayer times |
-| POST | `/api/scrape/prayer-times` | No | Scrape & cache prayer times |
+| GET | `/api/prayer-times` | No | Prayer times (optional `date=YYYY-MM-DD`) |
+| GET | `/api/prayer-by-date` | No | Prayer times via Gregorian or Jalali (`shamsiDate=YYYY-MM-DD`) |
 | GET | `/api/health` | No | Health check |
-| POST | `/api/eita/webhook` | Optional token | Telegram Eitaa webhook |
 
 ---
 
@@ -232,14 +183,9 @@ useTelegramWebApp() // Expands, enables closing confirmation
 
 ### صفحات | Pages
 
-1. **Home** (`/`) — 3 buttons:
-   - Guest mode (blue)
-   - Register/Login (green)
-   - Admin login (red)
+1. **Home** (`/`) — نشان‌دادن توضیح پروژه، CTA‌های عضویت/ورود، لینک اپ اندروید
 
-2. **Start** (`/start`) — Guest welcome with prayer times & daily prayer
-
-3. **Dashboard** (`/dashboard`) — Authenticated user view with:
+2. **Dashboard** (`/dashboard`) — Authenticated user view with:
    - Greeting with user's name
    - Persian date & daily events
    - Prayer times grid
@@ -247,16 +193,18 @@ useTelegramWebApp() // Expands, enables closing confirmation
    - Dark/Light mode toggle
    - Logout button
 
-4. **Register** (`/auth/register`) — Form:
+3. **Register** (`/auth/register`) — Form:
    - firstName (required)
    - lastName, gender, birth (optional)
    - PIN 4-digit (required)
    - (Optional hCaptcha if configured)
 
-5. **Login** (`/auth/login`) — Form:
+4. **Login** (`/auth/login`) — Form:
    - firstName
    - PIN
    - Remember me checkbox
+
+5. **Android App** — Native client consuming `/api/prayer-times` with smart caching
 
 ---
 
@@ -266,7 +214,7 @@ useTelegramWebApp() // Expands, enables closing confirmation
 
 1. Go to [Render Dashboard](https://dashboard.render.com)
 2. Connect your GitHub repository
-3. Select this repository (`eita_masjed`)
+3. Select this repository (`masjed`)
 4. Render automatically detects `render.yaml` and deploys
 5. Set environment variables (see below)
 
@@ -280,12 +228,10 @@ NODE_VERSION=20
 
 **Optional but recommended:**
 ```
-EITA_TOKEN=...
-NEXT_PUBLIC_EITA_TOKEN=...
-EITA_ADMIN_TOKEN=...
 HCAPTCHA_SECRET=...
 HCAPTCHA_SITEKEY=...
-PRAYER_SOURCE_URL=https://www.bahesab.ir/
+NEXT_PUBLIC_API_URL=https://your-domain
+NEXT_PUBLIC_APP_VERSION=2.0.0
 ```
 
 ### نمایش | Result
@@ -365,9 +311,9 @@ curl http://localhost:3000/api/prayer-times
 - Verify user was created via register endpoint
 
 ### Prayer times not updating
-- Manually call `POST /api/scrape/prayer-times` or set up cron job
-- Check `data/prayer-times.json` file
-- Verify `PRAYER_SOURCE_URL` is accessible
+- Check server logs (calculator errors will be logged)
+- Ensure system clock/timezone on server is correct
+- Restart service to rebuild in-memory cache if necessary
 
 ---
 
@@ -389,7 +335,7 @@ Contributions are welcome! Please:
 
 ## 📞 تماس و پشتیبانی | Contact & Support
 
-- GitHub: [AbolfazlShia/eita_masjed](https://github.com/AbolfazlShia/eita_masjed)
+- GitHub: [AbolfazlShia/masjed](https://github.com/AbolfazlShia/masjed)
 - Issues: Use GitHub Issues for bug reports and feature requests
 
 ---

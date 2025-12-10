@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+
 import { listMembers, createMember, safeMember } from "@/lib/basij-store";
+import { getErrorMessage } from "@/lib/errors";
 
 function jsonError(message: string, status = 400) {
   return NextResponse.json({ ok: false, error: message }, { status });
@@ -30,8 +32,8 @@ export async function POST(req: Request) {
 
     const member = createMember({ firstName, lastName, fatherName, phone, password });
     return NextResponse.json({ ok: true, member: safeMember(member) });
-  } catch (error: any) {
-    const message = error?.message || "internal_error";
+  } catch (error: unknown) {
+    const message = getErrorMessage(error);
     const status =
       message === "duplicate_phone"
         ? 409

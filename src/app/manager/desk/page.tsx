@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import QrPreview from "@/components/QrPreview";
+import LogoutButton from "@/components/LogoutButton";
+import DeskBridge from "@/components/DeskBridge";
 
 type HadithRecord = {
   id: string;
@@ -954,7 +956,8 @@ const ManagerDeskPage = () => {
   };
 
   return (
-    <div className={`${baseText} relative min-h-screen overflow-hidden transition-colors duration-500`} dir="rtl">
+    <div className={`${baseText} relative min-h-screen overflow-hidden transition-colors.duration-500`} dir="rtl">
+      <DeskBridge title="میز مدیر مسجد" origin="admin" path="/manager/desk?inApp=1&source=android" />
       <div
         className={`absolute inset-0 -z-10 transition-opacity.duration-500 ${
           isDayTheme
@@ -1018,6 +1021,18 @@ const ManagerDeskPage = () => {
               مسجد و پایگاه امام جعفر صادق (ع) - مشهد
             </button>
           </div>
+          <LogoutButton
+            endpoint="/api/auth/logout"
+            redirectTo="/auth/login"
+            label="خروج مدیر"
+            clearAndroidState
+            loadingLabel="در حال خروج..."
+            className={
+              isDayTheme
+                ? "border-rose-200 bg-white/90 text-rose-600 hover:border-rose-300"
+                : "border-rose-400/70 bg-white/10 text-rose-200 hover:border-rose-200"
+            }
+          />
           <button
             onClick={handleBackupDownload}
             disabled={backupLoading}

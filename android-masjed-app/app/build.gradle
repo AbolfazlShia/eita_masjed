@@ -1,0 +1,79 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+def prodApiUrl = System.getenv("MASJED_API_URL") ?: "http://localhost:3000"
+def prodWebUrl = System.getenv("MASJED_WEB_URL") ?: "http://localhost:3000"
+def debugApiUrl = System.getenv("MASJED_API_URL_DEBUG") ?: "http://10.0.2.2:3000"
+def debugWebUrl = System.getenv("MASJED_WEB_URL_DEBUG") ?: "http://10.0.2.2:3000/?source=pw"
+
+android {
+    namespace 'com.masjed.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.masjed.app"
+        minSdk 24
+        targetSdk 35
+        versionCode 4
+        versionName "1.2"
+
+        vectorDrawables {
+            useSupportLibrary true
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+            buildConfigField "String", "BASE_API_URL", "\"${prodApiUrl}\""
+            buildConfigField "String", "BASE_WEB_URL", "\"${prodWebUrl}\""
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "BASE_API_URL", "\"${debugApiUrl}\""
+            buildConfigField "String", "BASE_WEB_URL", "\"${debugWebUrl}\""
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ["META-INF/AL2.0", "META-INF/LGPL2.1"]
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.4'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.8.4'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.google.zxing:core:3.5.2'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+}

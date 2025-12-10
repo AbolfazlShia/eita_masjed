@@ -1,0 +1,127 @@
+
+> masjed@0.1.0 lint
+> eslint
+
+
+/Users/abolfazl/Documents/masjed/src/app/_components/home-shell.tsx
+  348:49  error    Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+  429:9   warning  'pad' is assigned a value but never used                @typescript-eslint/no-unused-vars
+  461:9   warning  'goToday' is assigned a value but never used            @typescript-eslint/no-unused-vars
+  463:9   warning  'isTodaySelected' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  483:16  warning  'error' is defined but never used                       @typescript-eslint/no-unused-vars
+  505:16  warning  'error' is defined but never used                       @typescript-eslint/no-unused-vars
+  524:10  warning  'duaPreviewArabic' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  524:28  warning  'duaPreviewPersian' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  538:9   warning  'openDevotional' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  580:9   warning  'gregorianLabel' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/auth/login/route.ts
+  40:16  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/auth/me/route.ts
+  10:13  warning  'pin' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/basij/members/[id]/route.ts
+  3:39  warning  'listMembers' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/cron/update-prayer-times/route.ts
+  44:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/eita/webhook/route.ts
+   4:7   warning  'MESSAGES_FILE' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   6:16  warning  'ensureDataFile' is defined but never used          @typescript-eslint/no-unused-vars
+  22:13  error    Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+  25:12  warning  'err' is defined but never used                     @typescript-eslint/no-unused-vars
+  66:31  warning  'req' is defined but never used                     @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/health/route.ts
+  5:9  warning  'url' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/inspiring-stories/[id]/route.ts
+  22:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  37:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/abolfazl/Documents/masjed/src/app/api/prayer-times/route.ts
+  6:27  warning  'req' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/api/scrape/prayer-times/route.ts
+  40:16  error  A `require()` style import is forbidden   @typescript-eslint/no-require-imports
+  41:18  error  A `require()` style import is forbidden   @typescript-eslint/no-require-imports
+  48:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  55:16  error  A `require()` style import is forbidden   @typescript-eslint/no-require-imports
+  56:18  error  A `require()` style import is forbidden   @typescript-eslint/no-require-imports
+  62:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/abolfazl/Documents/masjed/src/app/auth/login/page.tsx
+  40:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/auth/register/page.tsx
+  33:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/abolfazl/Documents/masjed/src/app/basij/login/BasijLoginForm.tsx
+  28:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/abolfazl/Documents/masjed/src/app/basij/register/BasijRegisterForm.tsx
+  29:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/abolfazl/Documents/masjed/src/app/basij/scan/BasijScanClient.tsx
+  84:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/abolfazl/Documents/masjed/src/app/dashboard/DashboardClient.tsx
+  10:50  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  11:50  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  22:5   error  Error: Cannot access variable before it is declared
+
+`fetchPrayerTimes` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/abolfazl/Documents/masjed/src/app/dashboard/DashboardClient.tsx:22:5
+  20 |     setTodayEvents(dailyEvents[weekDayNum as keyof typeof dailyEvents]);
+  21 |
+> 22 |     fetchPrayerTimes();
+     |     ^^^^^^^^^^^^^^^^ `fetchPrayerTimes` accessed before it is declared
+  23 |
+  24 |     const savedMode = localStorage.getItem('isDarkMode');
+  25 |     if (savedMode) setIsDarkMode(JSON.parse(savedMode));
+
+/Users/abolfazl/Documents/masjed/src/app/dashboard/DashboardClient.tsx:28:3
+  26 |   }, []);
+  27 |
+> 28 |   const fetchPrayerTimes = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 29 |     try {
+     | ^^^^^^^^^
+> 30 |       const response = await fetch('/api/prayer-times');
+     …
+     | ^^^^^^^^^
+> 37 |     }
+     | ^^^^^^^^^
+> 38 |   };
+     | ^^^^^ `fetchPrayerTimes` is declared here
+  39 |
+  40 |   const toggleDarkMode = () => {
+  41 |     const newMode = !isDarkMode;  react-hooks/immutability
+  78:71  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+
+/Users/abolfazl/Documents/masjed/src/app/devotional/page.tsx
+   3:31  warning  'useMemo' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  27:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/abolfazl/Documents/masjed/src/app/devotional/page.tsx:27:5
+  25 |     if (typeof document === "undefined") return;
+  26 |     const current = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+> 27 |     setTheme(current);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |   }, []);
+  29 |
+  30 |   const isLightTheme = theme === "light";  react-hooks/set-state-in-effect
+  46:9   warning  'metaSubtitle' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  47:9   warning  'metaHint' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+
+✖ 42 problems (18 errors, 24 warnings)
+

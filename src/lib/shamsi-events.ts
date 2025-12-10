@@ -1,6 +1,8 @@
 // مناسبت های شمسی سال (ماه/روز)
 import { toGregorian } from 'jalaali-js';
-export const shamsiEvents: Record<string, string[]> = {
+import { gregorianToShamsi } from './calendar';
+
+export const defaultShamsiEvents: Record<string, string[]> = {
   '1/1': ['عید نوروز', 'سال نو شمسی'],
   '1/6': ['دیدار خانوادگی'],
   '1/11': ['شهادت امام علی (ع)'],
@@ -45,6 +47,8 @@ export const shamsiEvents: Record<string, string[]> = {
   '12/30': ['شامگاه سال / پایان سال'],
 };
 
+export const shamsiEvents = defaultShamsiEvents;
+
 // مناسبت های میلادی شمسی (برای تماشای تقویم)
 export const islamicMonthNames = [
   'محرم',
@@ -85,36 +89,8 @@ export const islamicEvents: Record<string, string[]> = {
 
 // دریافت مناسبت‌های امروز (شمسی)
 export function getTodayShamsiEvents(): string[] {
-  const today = new Date();
-  const gy = today.getFullYear();
-  const gm = today.getMonth() + 1;
-  const gd = today.getDate();
-
-  let g_d_n = 365 * gy + Math.floor((gy + 3) / 4) - Math.floor((gy + 99) / 100) + Math.floor((gy + 399) / 400) + gd;
-  let j_d_n = g_d_n - 79;
-  let j_np = Math.floor(j_d_n / 12053);
-  j_d_n %= 12053;
-
-  let jy = 979 + 33 * j_np + 4 * Math.floor(j_d_n / 1461);
-  j_d_n %= 1461;
-
-  if (j_d_n >= 366) {
-    jy += Math.floor((j_d_n - 1) / 365);
-    j_d_n = (j_d_n - 1) % 365;
-  }
-
-  let jm = 1;
-  for (let i = 0; i < 12; i++) {
-    let v = i < 6 ? 31 : 30;
-    if (i === 11) v = 29;
-    if (j_d_n < v) break;
-    j_d_n -= v;
-    jm++;
-  }
-
-  const jd = j_d_n + 1;
-  const key = `${jm}/${jd}`;
-  
+  const { month, day } = gregorianToShamsi(new Date());
+  const key = `${month}/${day}`;
   return shamsiEvents[key] || [];
 }
 

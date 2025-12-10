@@ -1,46 +1,57 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { formatShamsiDate, getWeekDayNumber } from '@/lib/calendar';
 import { dailyPrayers, dailyEvents } from '@/lib/prayers';
 
+type PrayerTimes = Record<string, string>;
+
 export default function DashboardClient({ userName }: { userName?: string }) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [currentDate, setCurrentDate] = useState<string>('');
-  const [prayerTimes, setPrayerTimes] = useState<any>(null);
-  const [todayPrayer, setTodayPrayer] = useState<any>(null);
-  const [todayEvents, setTodayEvents] = useState<string[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      const saved = window.localStorage.getItem('isDarkMode');
+      return saved ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
+  });
+  const [prayerTimes, setPrayerTimes] = useState<PrayerTimes | null>(null);
+  const today = useMemo(() => new Date(), []);
+  const weekDayNum = useMemo(() => getWeekDayNumber(today), [today]);
+  const currentDate = useMemo(() => formatShamsiDate(today), [today]);
+  const todayPrayer = dailyPrayers[weekDayNum as keyof typeof dailyPrayers] ?? null;
+  const todayEvents = dailyEvents[weekDayNum as keyof typeof dailyEvents] ?? [];
 
   useEffect(() => {
-    const today = new Date();
-    setCurrentDate(formatShamsiDate(today));
-
-    const weekDayNum = getWeekDayNumber(today);
-    setTodayPrayer(dailyPrayers[weekDayNum as keyof typeof dailyPrayers]);
-    setTodayEvents(dailyEvents[weekDayNum as keyof typeof dailyEvents]);
-
-    fetchPrayerTimes();
-
-    const savedMode = localStorage.getItem('isDarkMode');
-    if (savedMode) setIsDarkMode(JSON.parse(savedMode));
-  }, []);
-
-  const fetchPrayerTimes = async () => {
-    try {
-      const response = await fetch('/api/prayer-times');
-      const data = await response.json();
-      if (data.ok) {
-        setPrayerTimes(data.prayerTimes);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const response = await fetch('/api/prayer-times');
+        const data = await response.json();
+        if (!cancelled && data.ok) {
+          setPrayerTimes(data.prayerTimes);
+        }
+      } catch (error) {
+        console.error('خطا:', error);
       }
-    } catch (error) {
-      console.error('خطا:', error);
-    }
-  };
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const toggleDarkMode = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
-    localStorage.setItem('isDarkMode', JSON.stringify(newMode));
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem('isDarkMode', JSON.stringify(newMode));
+      } catch {
+        // ignore
+      }
+    }
   };
 
   const bgColor = isDarkMode ? '#1a1a1a' : '#ffffff';
@@ -75,7 +86,7 @@ export default function DashboardClient({ userName }: { userName?: string }) {
           <div style={{ marginTop: '24px' }}>
             <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px', color: accentColor }}>اوقات شرعی مشهد</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px' }}>
-              {Object.entries(prayerTimes).map(([key, time]: [string, any]) => {
+              {Object.entries(prayerTimes).map(([key, time]) => {
                 const labels: { [key: string]: string } = {
                   fajr: 'اذان صبح',
                   sunrise: 'طلوع آفتاب',

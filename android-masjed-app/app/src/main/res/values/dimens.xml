@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="quick_action_corner_radius">24dp</dimen>
+    <dimen name="announcement_spacing">16dp</dimen>
+    <dimen name="announcement_corner">22dp</dimen>
+    <dimen name="announcement_stroke">1dp</dimen>
+    <dimen name="announcement_padding">18dp</dimen>
+    <dimen name="announcement_card_elevation">6dp</dimen>
+    <dimen name="content_card_radius">22dp</dimen>
+    <dimen name="content_card_stroke">1dp</dimen>
+</resources>

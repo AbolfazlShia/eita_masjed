@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyMember, safeMember } from "@/lib/basij-store";
 import { createBasijSession, getBasijSessionCookieName } from "@/lib/basij-session";
+import { getErrorMessage } from "@/lib/errors";
 
 function jsonError(message: string, status = 400) {
   return NextResponse.json({ ok: false, error: message }, { status });
@@ -25,8 +26,8 @@ export async function POST(req: Request) {
       expires: new Date(session.expiresAt),
     });
     return res;
-  } catch (error: any) {
-    const message = error?.message || "internal_error";
+  } catch (error: unknown) {
+    const message = getErrorMessage(error);
     const status =
       message === "not_found"
         ? 404

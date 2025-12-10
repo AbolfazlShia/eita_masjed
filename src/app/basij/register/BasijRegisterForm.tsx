@@ -26,8 +26,8 @@ export default function BasijRegisterForm() {
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "failed");
       router.push("/basij/login");
-    } catch (error: any) {
-      const message = error?.message || "خطا";
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "خطا";
       setError(
         message === "duplicate_phone"
           ? "این شماره همراه قبلاً ثبت شده است"

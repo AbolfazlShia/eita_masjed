@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 
 import BasijQrCard from "./BasijQrCard";
+import LogoutButton from "@/components/LogoutButton";
+import DeskBridge from "@/components/DeskBridge";
 import { getBasijMemberFromCookies } from "@/lib/basij-auth";
 import { listMembers } from "@/lib/basij-store";
 import { listScoreEntries } from "@/lib/basij-scores-store";
@@ -60,13 +62,26 @@ export default async function BasijDeskPage() {
 
   return (
     <div className="min-h-screen bg-[#030d14] text-white" dir="rtl">
+      <DeskBridge title="میز بسیج" origin="basij" />
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-3 py-8 sm:px-4 sm:py-10">
         <header className="rounded-[32px] border border-white/10 bg-gradient-to-br from-emerald-600/80 via-emerald-700 to-slate-900 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.65)] sm:p-8">
-          <p className="text-xs font-semibold text-white/80">پایگاه امام جعفر صادق (ع)</p>
-          <h1 className="mt-4 text-3xl font-black text-white sm:text-4xl">به میز کارت خوش اومدی!</h1>
-          <p className="mt-3 text-sm leading-7 text-white/80">
-            اینجا میز کار سادهٔ توست؛ برنامه‌های روزانه، وضعیت حضور و امتیازات شخصی‌ات را به سرعت بررسی کن و در جریان آخرین سیگنال‌های پایگاه بمان.
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-white/80">پایگاه امام جعفر صادق (ع)</p>
+              <h1 className="mt-4 text-3xl font-black text-white sm:text-4xl">به میز کارت خوش اومدی!</h1>
+              <p className="mt-3 text-sm leading-7 text-white/80">
+                اینجا میز کار سادهٔ توست؛ برنامه‌های روزانه، وضعیت حضور و امتیازات شخصی‌ات را به سرعت بررسی کن و در جریان آخرین سیگنال‌های پایگاه بمان.
+              </p>
+            </div>
+            <LogoutButton
+              endpoint="/api/basij/logout"
+              redirectTo="/basij/login"
+              label="خروج از میز کار"
+              loadingLabel="در حال خروج..."
+              className="border-white/30 bg-white/10 text-white hover:border-white/60"
+              clearAndroidState
+            />
+          </div>
           <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/75 sm:mt-6 sm:gap-4 sm:text-sm">
             <span className="rounded-2xl border border-white/30 px-3 py-1.5 sm:px-4">نام خانوادگی: {member?.lastName || "—"}</span>
             <span className="rounded-2xl border border-white/30 px-3 py-1.5 sm:px-4">نام پدر: {member?.fatherName || "—"}</span>

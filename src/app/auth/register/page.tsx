@@ -30,7 +30,7 @@ export default function RegisterPage() {
       } else {
         setError(data.error || 'خطا');
       }
-    } catch (err) {
+    } catch {
       setError('خطا در اتصال');
     } finally {
       setLoading(false);

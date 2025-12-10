@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { getShamsiEventsByMonth, formatShamsiDate } from '@/lib/shamsi-events';
+import { useState } from 'react';
+import { getShamsiEventsByMonth } from '@/lib/shamsi-events';
 import { toJalaali, toGregorian } from 'jalaali-js';
 
 const shamsiMonths = [
@@ -41,63 +41,13 @@ function getDaysInShamsiMonth(month: number, year: number): number {
   return 29;
 }
 
-// تبدیل شمسی به میلادی
-function shamsiToGregorian(jy: number, jm: number, jd: number) {
-  let j_d_n = 365 * jy + Math.floor(jy / 33) * 8 + Math.floor((jy % 33 + 3) / 4) + 78 + jd;
-
-  for (let i = 1; i < jm; i++) {
-    j_d_n += i <= 6 ? 31 : 30;
-  }
-
-  let gy = 400 * Math.floor(j_d_n / 146097);
-  j_d_n %= 146097;
-
-  let flag = true;
-  if (j_d_n >= 36525) {
-    j_d_n--;
-    gy += 100 * Math.floor(j_d_n / 36524);
-    j_d_n %= 36524;
-    if (j_d_n >= 365) j_d_n++;
-    flag = false;
-  }
-
-  gy += 4 * Math.floor(j_d_n / 1461);
-  j_d_n %= 1461;
-
-  if (flag && j_d_n >= 366) {
-    j_d_n--;
-    gy += Math.floor(j_d_n / 365);
-    j_d_n = (j_d_n % 365) + 1;
-  }
-
-  let isLeap = (gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0);
-  let sal_a = [0, 31, isLeap ? 60 : 59, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
-
-  let gm = 0;
-  for (let v = 0; v < 13; v++) {
-    if (j_d_n <= sal_a[v]) {
-      gm = v;
-      break;
-    }
-  }
-
-  let gd = j_d_n - sal_a[gm - 1];
-
-  return new Date(gy, gm - 1, gd);
-}
-
 export default function ShamsiCalendar() {
   const today = new Date();
   const todayShamsi = gregorianToShamsi(today);
 
-  const [mounted, setMounted] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(todayShamsi.month);
   const [currentYear, setCurrentYear] = useState(todayShamsi.year);
   const [selectedDay, setSelectedDay] = useState<number | null>(todayShamsi.day);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const daysInMonth = getDaysInShamsiMonth(currentMonth, currentYear);
   const firstDayGregorian = toGregorian(currentYear, currentMonth, 1);
@@ -145,16 +95,6 @@ export default function ShamsiCalendar() {
       padding: '20px',
       direction: 'rtl',
     }}>
-      {!mounted ? (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-        }}>
-          <div style={{ color: 'white', fontSize: '18px' }}>در حال بارگذاری...</div>
-        </div>
-      ) : (
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         {/* هدر */}
         <div style={{
@@ -381,7 +321,6 @@ export default function ShamsiCalendar() {
           </div>
         )}
       </div>
-      )}
     </div>
   );
 }

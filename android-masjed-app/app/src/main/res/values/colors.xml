@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="emeraldAccent">#0BA360</color>
+    <color name="emeraldAccentDark">#0C5131</color>
+    <color name="ic_launcher_background">#041013</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="announcement_stroke_color">#220BA360</color>
+
+    <!-- Day palette inspired by site daytime glassmorphism (warm sand + emerald) -->
+    <color name="colorPrimary">#0BA360</color>
+    <color name="colorOnPrimary">#FFFFFFFF</color>
+    <color name="colorPrimaryContainer">#CFFAE6</color>
+    <color name="colorSecondary">#CE7B09</color>
+    <color name="colorOnSecondary">#301600</color>
+    <color name="colorSecondaryContainer">#FFEFD8</color>
+    <color name="colorBackground">#F5EFE3</color>
+    <color name="colorOnBackground">#042F2F</color>
+    <color name="colorSurface">#FFFFFFFF</color>
+    <color name="colorOnSurface">#042F2F</color>
+    <color name="colorSurfaceVariant">#E2F5EA</color>
+    <color name="colorOutline">#88C2A4</color>
+    <color name="colorStatusBar">#0C5131</color>
+    <color name="colorNavigationBar">#F5EFE3</color>
+</resources>

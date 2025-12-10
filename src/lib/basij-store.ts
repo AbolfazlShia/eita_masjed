@@ -176,6 +176,7 @@ export function verifyMember(phone: string, password: string) {
 
 export function safeMember(member: BasijMember): BasijMemberPublic {
   const { password, ...rest } = member;
+  void password;
   return rest;
 }
 

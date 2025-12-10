@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { formatShamsiDate } from '@/lib/shamsi-events';
+import { useState, useEffect, useCallback } from 'react';
+import { toJalaali } from 'jalaali-js';
 
 interface PrayerTimes {
   fajr: string;
@@ -21,7 +21,6 @@ interface PrayerData {
   shamsiDate_parts: { year: number; month: number; day: number };
   city: string;
   prayerTimes: PrayerTimes;
-  events: string[];
   cache: string;
 }
 
@@ -40,57 +39,22 @@ const shamsiMonths = [
   'اسفند',
 ];
 
+function getShamsiFromDate(date: Date) {
+  const { jy, jm, jd } = toJalaali(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  return { year: jy, month: jm, day: jd };
+}
+
 export default function PrayerTimesSelector() {
   const [data, setData] = useState<PrayerData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const initialShamsi = getShamsiFromDate(new Date());
 
-  // تاریخ شمسی
-  const [shamsiYear, setShamsiYear] = useState(1403);
-  const [shamsiMonth, setShamsiMonth] = useState(8);
-  const [shamsiDay, setShamsiDay] = useState(24);
+  const [shamsiYear, setShamsiYear] = useState(initialShamsi.year);
+  const [shamsiMonth, setShamsiMonth] = useState(initialShamsi.month);
+  const [shamsiDay, setShamsiDay] = useState(initialShamsi.day);
 
-  useEffect(() => {
-    setMounted(true);
-    // دریافت اطلاعات امروز هنگام بارگذاری
-    const today = new Date();
-    const gy = today.getFullYear();
-    const gm = today.getMonth() + 1;
-    const gd = today.getDate();
-
-    let g_d_n = 365 * gy + Math.floor((gy + 3) / 4) - Math.floor((gy + 99) / 100) + Math.floor((gy + 399) / 400) + gd;
-    let j_d_n = g_d_n - 79;
-    let j_np = Math.floor(j_d_n / 12053);
-    j_d_n %= 12053;
-
-    let jy = 979 + 33 * j_np + 4 * Math.floor(j_d_n / 1461);
-    j_d_n %= 1461;
-
-    if (j_d_n >= 366) {
-      jy += Math.floor((j_d_n - 1) / 365);
-      j_d_n = (j_d_n - 1) % 365;
-    }
-
-    let jm = 1;
-    for (let i = 0; i < 12; i++) {
-      let v = i < 6 ? 31 : 30;
-      if (i === 11) v = 29;
-      if (j_d_n < v) break;
-      j_d_n -= v;
-      jm++;
-    }
-
-    let jd = j_d_n + 1;
-
-    setShamsiYear(jy);
-    setShamsiMonth(jm);
-    setShamsiDay(jd);
-
-    fetchPrayerTimes(jy, jm, jd);
-  }, []);
-
-  const fetchPrayerTimes = async (year: number, month: number, day: number) => {
+  const fetchPrayerTimes = useCallback(async (year: number, month: number, day: number) => {
     try {
       setLoading(true);
       setError(null);
@@ -111,61 +75,23 @@ export default function PrayerTimesSelector() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPrayerTimes(initialShamsi.year, initialShamsi.month, initialShamsi.day);
+  }, [fetchPrayerTimes, initialShamsi.day, initialShamsi.month, initialShamsi.year]);
 
   const handleDateChange = () => {
     fetchPrayerTimes(shamsiYear, shamsiMonth, shamsiDay);
   };
 
   const handleToday = () => {
-    const today = new Date();
-    const gy = today.getFullYear();
-    const gm = today.getMonth() + 1;
-    const gd = today.getDate();
-
-    let g_d_n = 365 * gy + Math.floor((gy + 3) / 4) - Math.floor((gy + 99) / 100) + Math.floor((gy + 399) / 400) + gd;
-    let j_d_n = g_d_n - 79;
-    let j_np = Math.floor(j_d_n / 12053);
-    j_d_n %= 12053;
-
-    let jy = 979 + 33 * j_np + 4 * Math.floor(j_d_n / 1461);
-    j_d_n %= 1461;
-
-    if (j_d_n >= 366) {
-      jy += Math.floor((j_d_n - 1) / 365);
-      j_d_n = (j_d_n - 1) % 365;
-    }
-
-    let jm = 1;
-    for (let i = 0; i < 12; i++) {
-      let v = i < 6 ? 31 : 30;
-      if (i === 11) v = 29;
-      if (j_d_n < v) break;
-      j_d_n -= v;
-      jm++;
-    }
-
-    let jd = j_d_n + 1;
-
-    setShamsiYear(jy);
-    setShamsiMonth(jm);
-    setShamsiDay(jd);
-    fetchPrayerTimes(jy, jm, jd);
+    const today = getShamsiFromDate(new Date());
+    setShamsiYear(today.year);
+    setShamsiMonth(today.month);
+    setShamsiDay(today.day);
+    fetchPrayerTimes(today.year, today.month, today.day);
   };
-
-  if (!mounted) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(to bottom right, rgb(34, 197, 94), rgb(250, 204, 21))',
-      }}>
-        <div style={{ color: 'white', fontSize: '18px' }}>در حال بارگذاری...</div>
-      </div>
-    );
-  }
 
   return (
     <div style={{
@@ -378,49 +304,6 @@ export default function PrayerTimesSelector() {
                 {data.gregorianDate}
               </p>
             </div>
-
-            {/* مناسبت‌ها */}
-            {data.events.length > 0 && (
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '24px',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-              }}>
-                <h2 style={{
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  color: 'rgb(22, 163, 74)',
-                  marginBottom: '16px',
-                }}>
-                  مناسبت‌های این روز
-                </h2>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                  gap: '12px',
-                }}>
-                  {data.events.map((event, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        backgroundColor: 'rgb(240, 253, 244)',
-                        border: '2px solid rgb(34, 197, 94)',
-                        borderRadius: '8px',
-                        padding: '12px',
-                        textAlign: 'center',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: 'rgb(22, 163, 74)',
-                      }}
-                    >
-                      ✨ {event}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* اوقات شرعی */}
             <div style={{

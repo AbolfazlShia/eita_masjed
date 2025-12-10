@@ -81,8 +81,8 @@ export default function BasijScanClient({ initialToken = "" }: BasijScanClientPr
         setTimeout(() => {
           router.replace("/basij/desk");
         }, 800);
-      } catch (error: any) {
-        const reason = error?.message || "invalid_token";
+      } catch (error: unknown) {
+        const reason = error instanceof Error ? error.message : "invalid_token";
         const friendly =
           reason === "invalid_token"
             ? "کد QR معتبر نیست یا منقضی شده است."

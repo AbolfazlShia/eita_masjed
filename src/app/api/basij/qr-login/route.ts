@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getMemberByQrToken, safeMember } from "@/lib/basij-store";
 import { createBasijSession, getBasijSessionCookieName } from "@/lib/basij-session";
+import { getErrorMessage } from "@/lib/errors";
 
 function jsonError(message: string, status = 400) {
   return NextResponse.json({ ok: false, error: message }, { status });
@@ -29,8 +30,7 @@ export async function POST(req: Request) {
       expires: new Date(session.expiresAt),
     });
     return res;
-  } catch (error: any) {
-    const message = error?.message || "internal_error";
-    return jsonError(message, 500);
+  } catch (error: unknown) {
+    return jsonError(getErrorMessage(error), 500);
   }
 }

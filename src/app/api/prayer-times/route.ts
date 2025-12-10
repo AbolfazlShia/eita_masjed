@@ -1,70 +1,40 @@
 import { NextResponse } from 'next/server';
-import { getTodayShamsiEvents, formatShamsiDate } from '@/lib/shamsi-events';
-import { toJalaali } from 'jalaali-js';
+import { formatShamsiDate } from '@/lib/shamsi-events';
+import { calculateMashhadPrayerTimes } from '@/lib/prayer-times-calculator';
+import { getErrorMessage } from '@/lib/errors';
 
 export async function GET(req: Request) {
   try {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const { searchParams } = new URL(req.url);
+    const dateParam = searchParams.get('date');
 
-    // دریافت تاریخ شمسی با استفاده از jalaali-js
-    const { jy, jm, jd } = toJalaali(year, parseInt(month), parseInt(day));
-    const shamsiDateStr = formatShamsiDate(jy, jm, jd, true);
-
-    // اگر فایل ذخیره‌شده وجود دارد آن را سرو کنیم
-    const fs = require('fs');
-    const path = require('path');
-    const dataFile = path.join(process.cwd(), 'data', 'prayer-times.json');
-    if (fs.existsSync(dataFile)) {
-      try {
-        const raw = fs.readFileSync(dataFile, 'utf8');
-        const obj = JSON.parse(raw);
-        if (obj && obj.date === `${year}-${month}-${day}`) {
-          const events = getTodayShamsiEvents();
-          return NextResponse.json({
-            ok: true,
-            date: obj.date,
-            shamsiDate: shamsiDateStr,
-            city: obj.city || 'مشهد',
-            prayerTimes: obj.prayerTimes,
-            events,
-            timestamp: obj.timestamp,
-          });
-        }
-      } catch (e) {
-        // fall through to default
-      }
+    const targetDate = dateParam ? new Date(dateParam) : new Date();
+    if (Number.isNaN(targetDate.getTime())) {
+      return NextResponse.json({ ok: false, error: 'invalid_date' }, { status: 400 });
     }
 
-    // اوقات شرعی نمونه برای مشهد (fallback)
-    const prayerTimes = {
-      fajr: '04:40',
-      sunrise: '06:08',
-      zuhr: '11:16',
-      asr: '14:45',
-      sunset: '16:24',
-      maghrib: '16:43',
-      isha: '18:10',
-      midnight: '22:32',
-    };
+    const isoDate = targetDate.toISOString().slice(0, 10);
+    const [jy, jm, jd] = formatShamsiDate(targetDate.getFullYear(), targetDate.getMonth() + 1, targetDate.getDate(), false)
+      .split('-')
+      .map((v) => parseInt(v, 10));
+    const shamsiDateStr = formatShamsiDate(jy, jm, jd, true);
 
-    const events = getTodayShamsiEvents();
+    const prayerTimes = calculateMashhadPrayerTimes(targetDate);
 
     return NextResponse.json({
       ok: true,
-      date: `${year}-${month}-${day}`,
+      date: isoDate,
       shamsiDate: shamsiDateStr,
       city: 'مشهد',
       prayerTimes,
-      events,
+      events: [],
+      source: { prayer: 'calculated' },
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error fetching prayer times:', error);
     return NextResponse.json(
-      { ok: false, error: 'Failed to fetch prayer times' },
+      { ok: false, error: getErrorMessage(error, 'Failed to fetch prayer times') },
       { status: 500 }
     );
   }

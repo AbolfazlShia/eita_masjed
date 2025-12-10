@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_server_wake">
+
+    <fragment
+        android:id="@+id/nav_server_wake"
+        android:name="com.masjed.app.ui.server.ServerWakeFragment"
+        android:label="بیدارباش سرور">
+        <action
+            android:id="@+id/action_serverWake_to_home"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_server_wake"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.masjed.app.ui.home.HomeFragment"
+        android:label="خانه" >
+        <action
+            android:id="@+id/action_serverWakeFragment_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_services"
+        android:name="com.masjed.app.ui.services.ServicesFragment"
+        android:label="خدمات" />
+
+    <fragment
+        android:id="@+id/nav_basij_scan"
+        android:name="com.masjed.app.ui.basij.BasijScanFragment"
+        android:label="اسکن QR بسیج" />
+
+    <fragment
+        android:id="@+id/nav_web_page"
+        android:name="com.masjed.app.ui.web.WebPageFragment"
+        android:label="صفحه وب">
+        <argument
+            android:name="arg_title"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="arg_path"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_desk"
+        android:name="com.masjed.app.ui.web.WebPageFragment"
+        android:label="میز کار">
+        <argument
+            android:name="arg_title"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="arg_path"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
+</navigation>

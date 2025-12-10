@@ -1,0 +1,34 @@
+[
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/fragment_services.xml",
+        "source": "com.masjed.app-main-51:/layout/fragment_services.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/item_prayer_time.xml",
+        "source": "com.masjed.app-main-51:/layout/item_prayer_time.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/view_service_item.xml",
+        "source": "com.masjed.app-main-51:/layout/view_service_item.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/fragment_web_page.xml",
+        "source": "com.masjed.app-main-51:/layout/fragment_web_page.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/item_quick_action.xml",
+        "source": "com.masjed.app-main-51:/layout/item_quick_action.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/fragment_home.xml",
+        "source": "com.masjed.app-main-51:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/view_announcement.xml",
+        "source": "com.masjed.app-main-51:/layout/view_announcement.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeDebugResources-48:/layout/activity_main.xml",
+        "source": "com.masjed.app-main-51:/layout/activity_main.xml"
+    }
+]

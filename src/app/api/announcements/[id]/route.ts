@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateAnnouncement, deleteAnnouncement } from "@/lib/announcements";
+import { getErrorMessage } from "@/lib/errors";
 
 type AnnouncementRouteContext = {
   params: Promise<{ id: string }>;
@@ -31,8 +32,8 @@ export async function PUT(req: NextRequest, context: AnnouncementRouteContext) {
     const { title, body, highlight } = payload ?? {};
     const announcement = updateAnnouncement(id, { title, body, highlight });
     return NextResponse.json({ ok: true, announcement });
-  } catch (error: any) {
-    const message = error?.message || "internal_error";
+  } catch (error: unknown) {
+    const message = getErrorMessage(error);
     const status = message === "not_found" ? 404 : message.startsWith("empty") ? 422 : 400;
     return jsonError(message, status);
   }
@@ -49,8 +50,8 @@ export async function DELETE(req: NextRequest, context: AnnouncementRouteContext
       return jsonError(`not_found:${id}`, 404);
     }
     return NextResponse.json({ ok: true });
-  } catch (error: any) {
-    const message = error?.message || "internal_error";
+  } catch (error: unknown) {
+    const message = getErrorMessage(error);
     const status = message === "not_found" ? 404 : 400;
     return jsonError(message, status);
   }

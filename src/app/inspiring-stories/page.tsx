@@ -11,22 +11,44 @@ type StoryRecord = {
   updatedAt: string;
 };
 
+type StoryListResponse = {
+  stories?: StoryRecord[];
+};
+
+const getErrorMessage = (error: unknown, fallback: string) => {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+  if (typeof error === "string" && error.trim()) {
+    return error;
+  }
+  return fallback;
+};
+
 export default function InspiringStoriesPage() {
   const router = useRouter();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof document === "undefined") {
+      return "light";
+    }
+    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  });
   const [stories, setStories] = useState<StoryRecord[]>([]);
   const [storyLoading, setStoryLoading] = useState(true);
   const [storyError, setStoryError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
-    const resolved = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    setTheme(resolved);
-  }, []);
-
-  useEffect(() => {
     fetchStories();
   }, []);
+
+  const goHome = () => {
+    if (typeof window !== "undefined") {
+      window.location.href = "masjed://home";
+      setTimeout(() => router.push("/"), 200);
+      return;
+    }
+    router.push("/");
+  };
 
   const fetchStories = async () => {
     setStoryLoading(true);
@@ -34,10 +56,10 @@ export default function InspiringStoriesPage() {
     try {
       const res = await fetch("/api/inspiring-stories");
       if (!res.ok) throw new Error("failed");
-      const data = await res.json();
+      const data: StoryListResponse = await res.json();
       setStories(Array.isArray(data.stories) ? data.stories : []);
-    } catch (error) {
-      setStoryError("بارگذاری داستان‌ها انجام نشد");
+    } catch (error: unknown) {
+      setStoryError(getErrorMessage(error, "بارگذاری داستان‌ها انجام نشد"));
     } finally {
       setStoryLoading(false);
     }
@@ -134,14 +156,14 @@ export default function InspiringStoriesPage() {
             </span>
           </div>
           <button
-            onClick={() => router.push("/")}
+            onClick={goHome}
             className={
               isLight
                 ? "rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-semibold text-emerald-800 shadow-sm transition hover:border-emerald-300"
                 : "rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:border-emerald-300/50"
             }
           >
-            بازگشت به داشبورد
+            بازگشت به خانه
           </button>
         </div>
 

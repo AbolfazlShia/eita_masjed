@@ -14,28 +14,12 @@ services:
         value: "20"
       - key: NODE_ENV
         value: production
-      # Telegram/Eitaa Webhook (optional: set if using webhook integration)
-      - key: EITA_TOKEN
-        sync: false
-      - key: NEXT_PUBLIC_EITA_TOKEN
-        sync: false
-      - key: EITA_ADMIN_TOKEN
-        sync: false
-      # hCaptcha (optional: enable by setting HCAPTCHA_SECRET and HCAPTCHA_SITEKEY)
-      # - key: HCAPTCHA_SECRET
-      #   sync: false
-      # - key: HCAPTCHA_SITEKEY
-      #   sync: false
-      # Prayer scraper source URL
-      - key: PRAYER_SOURCE_URL
-        value: "https://www.bahesab.ir/"
-      # Cron secret for prayer times update
-      - key: CRON_SECRET
-        sync: false
       - key: NEXT_PUBLIC_API_URL
-        value: "https://eita-masjed.onrender.com"
-
-crons:
-  - id: update-prayer-times
-    schedule: "0 0 * * *"
-    httpPath: /api/cron/update-prayer-times
+        value: "https://masjed-app.onrender.com"
+      # Optional integrations
+      - key: HCAPTCHA_SECRET
+        sync: false
+      - key: HCAPTCHA_SITEKEY
+        sync: false
+      - key: NEXT_PUBLIC_APP_VERSION
+        value: "2.0.0"

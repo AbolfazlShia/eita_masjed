@@ -4,7 +4,7 @@ import { getMemberById, safeMember } from "@/lib/basij-store";
 
 export async function getBasijMemberFromCookies() {
   try {
-    const cookieStore: any = await cookies();
+    const cookieStore = await cookies();
     const sessionId = cookieStore.get?.(getBasijSessionCookieName())?.value;
     if (!sessionId) return null;
     const session = getBasijSession(sessionId);

@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { writeAndroidDeskRememberState } from '@/lib/android';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [firstName, setFirstName] = useState('');
   const [pin, setPin] = useState('');
   const [remember, setRemember] = useState(true);
@@ -29,7 +31,11 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (data.ok) {
-        router.push('/manager/desk');
+        writeAndroidDeskRememberState(remember);
+        const inApp = searchParams?.get('inApp') === '1';
+        const source = searchParams?.get('source') || '';
+        const suffix = inApp && source === 'android' ? '?inApp=1&source=android' : '';
+        router.push(`/manager/desk${suffix}`);
       } else {
         const message =
           data.error === 'not_found'
@@ -37,7 +43,7 @@ export default function LoginPage() {
             : data.error || 'خطا';
         setError(message);
       }
-    } catch (err) {
+    } catch {
       setError('خطا در اتصال');
     } finally {
       setLoading(false);

@@ -1,0 +1,44 @@
+{
+  "name": "مسجد - داشبورد امام جعفر صادق (ع)",
+  "short_name": "مسجد مشهد",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#010b0f",
+  "theme_color": "#047857",
+  "description": "وب‌اپلیکیشن مسجد امام جعفر صادق (ع) با دسترسی آفلاین به اوقات شرعی و ادعیه",
+  "categories": ["productivity", "education", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "تقویم ادعیه",
+      "short_name": "ادعیه",
+      "url": "/devotions",
+      "description": "کامل‌ترین آرشیو دعا و زیارات"
+    },
+    {
+      "name": "دعای امروز",
+      "short_name": "امروز",
+      "url": "/devotional",
+      "description": "متن کامل دعا و زیارت روز"
+    }
+  ]
+}

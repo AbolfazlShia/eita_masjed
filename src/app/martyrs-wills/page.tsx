@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const willEntries = [
@@ -40,13 +40,21 @@ const willEntries = [
 
 export default function MartyrsWillsPage() {
   const router = useRouter();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof document === "undefined") {
+      return "light";
+    }
+    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  });
 
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const resolved = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    setTheme(resolved);
-  }, []);
+  const goHome = () => {
+    if (typeof window !== "undefined") {
+      window.location.href = "masjed://home";
+      setTimeout(() => router.push("/"), 200);
+      return;
+    }
+    router.push("/");
+  };
 
   const toggleTheme = () => {
     if (typeof document === "undefined") return;
@@ -71,9 +79,6 @@ export default function MartyrsWillsPage() {
   const glassPanel = isLight
     ? "border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 shadow-[0_22px_60px_rgba(16,185,129,0.18)]"
     : "border-white/15 bg-gradient-to-br from-[#0f172a]/80 via-[#111827]/85 to-[#030712]/90 shadow-[0_35px_90px_rgba(0,0,0,0.75)] backdrop-blur-[28px]";
-  const operationAreas = new Set(
-    willEntries.map((entry) => entry.context.split("·")[0]?.trim() ?? entry.context)
-  );
   const heroHighlights = [
     { label: "میانگین زمان مطالعه", value: "۴ دقیقه" },
     { label: "وصایای منتشرشده", value: `${willEntries.length.toLocaleString("fa-IR")} وصیت` },
@@ -135,14 +140,14 @@ export default function MartyrsWillsPage() {
             </span>
           </div>
           <button
-            onClick={() => router.push("/")}
+            onClick={goHome}
             className={
               isLight
                 ? "rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-semibold text-emerald-800 shadow-sm transition hover:border-emerald-300"
                 : "rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:border-emerald-300/50"
             }
           >
-            بازگشت به داشبورد
+            بازگشت به خانه
           </button>
         </div>
 
