@@ -5,10 +5,10 @@ import { cookies } from 'next/headers';
 
 type SessionRow = {
   id: string;
-  userId: string;
+  userId: number;
 };
 
-type UserRow = Record<string, unknown> & { id: string };
+type UserRow = Record<string, unknown> & { id: number };
 
 type JsonStore = {
   sessions: SessionRow[];
@@ -21,10 +21,12 @@ export async function getUserFromCookies(): Promise<UserRow | null> {
   if (!sessionCookie) return null;
 
   try {
-    const sess = db.prepare('SELECT * FROM sessions WHERE id = ?').get(sessionCookie) as SessionRow | undefined;
+    const sess = db.prepare('SELECT * FROM sessions WHERE id = ?')
+      .get(sessionCookie) as unknown as SessionRow | undefined;
     if (!sess) return null;
 
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(sess.userId) as UserRow | undefined;
+    const user = db.prepare('SELECT * FROM users WHERE id = ?')
+      .get(sess.userId) as unknown as UserRow | undefined;
     return user ?? null;
   } catch {
     try {

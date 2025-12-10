@@ -1,10 +1,18 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { writeAndroidDeskRememberState } from "@/lib/android";
 
 export default function BasijLoginForm() {
+  return (
+    <Suspense fallback={<div className="p-8 text-white">در حال بارگذاری...</div>}>
+      <BasijLoginFormInner />
+    </Suspense>
+  );
+}
+
+function BasijLoginFormInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [phone, setPhone] = useState("");
