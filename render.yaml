@@ -15,7 +15,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        value: "https://masjed-app.onrender.com"
+        value: "https://masjed-imam-sadegh.onrender.com"
       # Optional integrations
       - key: HCAPTCHA_SECRET
         sync: false
