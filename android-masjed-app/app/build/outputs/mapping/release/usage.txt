@@ -38375,7 +38375,7 @@ androidx.lifecycle.LiveData$AlwaysActiveObserver:
 androidx.lifecycle.LiveData:
     public final java.lang.Runnable mPostValueRunnable
     public abstract void changeActiveCounter()
-    public abstract java.lang.Object getValue()
+    public final java.lang.Object getValue()
     public abstract void observeForever()
     public abstract void onActive()
     public abstract void onInactive()
@@ -38794,6 +38794,7 @@ androidx.navigation.NavOptions$Builder:
     public final void setPopUpTo(int,boolean,boolean)
     public static androidx.navigation.NavOptions$Builder setPopUpTo$1()
     public static androidx.navigation.NavOptions$Builder setPopUpTo$2()
+    public static void setPopUpTo$default(androidx.navigation.NavOptions$Builder,int)
     public static androidx.navigation.NavOptions$Builder setRestoreState()
 androidx.navigation.NavOptions:
     public kotlin.reflect.KClass popUpToRouteClass

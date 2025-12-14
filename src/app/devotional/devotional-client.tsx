@@ -61,18 +61,6 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
   }, []);
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    const previousBodyOverflow = document.body.style.overflow;
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
     const node = scrollAreaRef.current;
     if (!node) return;
     const handleTouchMove = (event: TouchEvent) => {
@@ -85,7 +73,7 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
   }, []);
 
   const goHome = () => {
-    if (typeof window !== "undefined" && typeof document !== "undefined") {
+    if (isInApp && typeof window !== "undefined" && typeof document !== "undefined") {
       let handledDeepLink = false;
       const handleVisibilityChange = () => {
         if (document.visibilityState === "hidden") {
@@ -103,7 +91,6 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
           router.push("/");
         }
       }, 600);
-      return;
     }
 
     router.push("/");
@@ -136,9 +123,8 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
         viewportHeight
           ? {
               minHeight: viewportHeight,
-              maxHeight: viewportHeight,
             }
-          : { minHeight: "100dvh", maxHeight: "100dvh" }
+          : { minHeight: "100dvh" }
       }
     >
       <div

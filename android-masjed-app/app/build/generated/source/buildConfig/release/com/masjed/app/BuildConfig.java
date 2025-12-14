@@ -10,7 +10,7 @@ public final class BuildConfig {
   public static final int VERSION_CODE = 4;
   public static final String VERSION_NAME = "1.2";
   // Field from build type: release
-  public static final String BASE_API_URL = "https://masjed-app.onrender.com";
+  public static final String BASE_API_URL = "https://masjed-imam-sadegh.onrender.com";
   // Field from build type: release
-  public static final String BASE_WEB_URL = "https://masjed-app.onrender.com";
+  public static final String BASE_WEB_URL = "https://masjed-imam-sadegh.onrender.com";
 }

@@ -20,6 +20,7 @@
     <color name="emeraldAccent">#0BA360</color>
     <color name="emeraldAccentDark">#0C5131</color>
     <color name="ic_launcher_background">#041013</color>
+    <color name="nightThemeTitle">#E0E6ED</color>
     <color name="white">#FFFFFFFF</color>
     <dimen name="announcement_card_elevation">6dp</dimen>
     <dimen name="announcement_corner">22dp</dimen>

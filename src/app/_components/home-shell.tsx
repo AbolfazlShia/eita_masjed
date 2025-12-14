@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatShamsiDate } from "@/lib/shamsi-events";
+import { formatShamsiDate, getShamsiEventsByDate } from "@/lib/shamsi-events";
 import { ServiceWorkerClient } from "./service-worker-client";
 import { toJalaali } from "jalaali-js";
 
@@ -23,7 +23,16 @@ type AnnouncementItem = {
   updatedAt?: string;
 };
 
-const quickActions = [
+type QuickAction = {
+  title: string;
+  description: string;
+  icon: string;
+  href: string;
+  accent?: string;
+  disabled?: boolean;
+};
+
+const quickActions: QuickAction[] = [
   {
     title: 'ادعیه و زیارات',
     description: 'نمایش دعای روز و زیارت مخصوص همان روز در همین داشبورد',
@@ -47,11 +56,10 @@ const quickActions = [
   },
   {
     title: 'مدیریت خادمین و اعلان‌ها',
-    description: 'غیرفعال موقت؛ مدیریت کامل از میز مدیر',
+    description: 'اگر عضو فعال پایگاه یا مدیر مسجد هستید از اینجا وارد شوید',
     icon: '🛠️',
-    href: '/auth/login',
+    href: '/management-access',
     accent: 'from-fuchsia-500/30 to-fuchsia-500/5',
-    disabled: true,
   },
 ];
 
@@ -421,6 +429,12 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
     };
   }, [selectedDate]);
 
+  const fallbackEvents = useMemo(() => {
+    if (!prayerData?.shamsiDate_parts) return [];
+    const { year, month, day } = prayerData.shamsiDate_parts;
+    return getShamsiEventsByDate(year, month, day);
+  }, [prayerData?.shamsiDate_parts]);
+
   const isNetworkError = (error: unknown) => {
     if (typeof window === 'undefined') return false;
     if (error instanceof TypeError) return true;
@@ -572,8 +586,9 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
     (prayerData?.iranianEvents ?? []).forEach((item) => item && bucket.add(item));
     (prayerData?.islamicEvents ?? []).forEach((item) => item && bucket.add(item));
     (prayerData?.events ?? []).forEach((item) => item && bucket.add(item));
+    fallbackEvents.forEach((item) => item && bucket.add(item));
     return Array.from(bucket);
-  }, [prayerData]);
+  }, [prayerData, fallbackEvents]);
 
   const toggleTheme = () => {
     setThemePref((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -607,26 +622,29 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
       <ServiceWorkerClient />
       <div className={layout.outer} style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <div
+          aria-hidden="true"
           className={
             isLightTheme
-              ? "absolute inset-0 bg-[linear-gradient(to_bottom,#f5e9d7_0%,#fde68a_30%,#bbf7d0_100%)]"
-              : "absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(30,64,175,0.85),_transparent_72%)]"
+              ? "pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,#f5e9d7_0%,#fde68a_30%,#bbf7d0_100%)]"
+              : "pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(30,64,175,0.85),_transparent_72%)]"
           }
         />
-      <div
-        className={
-          isLightTheme
-            ? "absolute inset-0 bg-transparent"
-            : "absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(40,53,147,0.88),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(91,33,182,0.68),_transparent_80%)]"
-        }
-      />
-      <div
-        className={
-          isLightTheme
-            ? "pointer-events-none absolute inset-0 bg-transparent"
-            : "pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.35),_transparent_78%)]"
-        }
-      />
+        <div
+          aria-hidden="true"
+          className={
+            isLightTheme
+              ? "pointer-events-none absolute inset-0 bg-transparent"
+              : "pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(40,53,147,0.88),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(91,33,182,0.68),_transparent_80%)]"
+          }
+        />
+        <div
+          aria-hidden="true"
+          className={
+            isLightTheme
+              ? "pointer-events-none absolute inset-0 bg-transparent"
+              : "pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.35),_transparent_78%)]"
+          }
+        />
 
       <div
         className={
@@ -1070,8 +1088,8 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
           <div
             className={
               isLightTheme
-                ? "rounded-3xl border border-emerald-300/80 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 p-6 shadow-[0_20px_50px_rgba(15,118,110,0.25)]"
-                : "rounded-3xl border border-white/10 bg-white/5 p-6 shadow-inner shadow-black/20"
+                ? "rounded-3xl border border-emerald-300/80 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 p-3 sm:p-4 shadow-[0_20px_50px_rgba(15,118,110,0.25)]"
+                : "rounded-3xl border border-white/10 bg-white/5 p-3 sm:p-4 shadow-inner shadow-black/20"
             }
           >
             <div className="flex items-center justify-between">
@@ -1085,22 +1103,22 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
                 داشبورد مدیریتی
               </h2>
             </div>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
               {impactHighlights.map((item) => (
                 <div
                   key={item.title}
                   className={
                     isLightTheme
-                      ? "rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-100 via-emerald-200 to-amber-200 p-4"
-                      : "rounded-2xl border border-emerald-400/40 bg-gradient-to-br from-slate-950/90 via-slate-900/70 to-slate-900/90 p-4"
+                      ? "rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-100 via-emerald-200 to-amber-200 p-3"
+                      : "rounded-2xl border border-emerald-400/40 bg-gradient-to-br from-slate-950/90 via-slate-900/70 to-slate-900/90 p-3"
                   }
                 >
-                  <div className="text-2xl">{item.icon}</div>
+                  <div className="text-xl">{item.icon}</div>
                   <p
                     className={
                       isLightTheme
-                        ? "mt-4 text-2xl font-black text-emerald-950"
-                        : "mt-4 text-2xl font-black text-white"
+                        ? "mt-3 text-xl font-black text-emerald-950"
+                        : "mt-3 text-xl font-black text-white"
                     }
                   >
                     {item.title}
@@ -1267,7 +1285,7 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
                     : "text-sm text-white/70"
                 }
               >
-                پخش محتوا
+                ثبت‌نام اردو و کلاس
               </p>
               <h3
                 className={
@@ -1276,7 +1294,7 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
                     : "mt-2 text-lg font-semibold text-white"
                 }
               >
-                سیستم اطلاع‌رسانی چندکاناله
+                اردوها و کلاس‌های اوقات فراغت
               </h3>
               <p
                 className={
@@ -1285,7 +1303,7 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
                     : "mt-2 text-sm text-white/70"
                 }
               >
-                ارسال همزمان اعلان به نمایشگر مسجد، ایتا و پیامک با یک کلیک.
+                مدیریت ظرفیت، دریافت فرم‌های رضایت والدین و پیگیری وضعیت پرداخت شرکت‌کنندگان.
               </p>
               <span
                 className={
@@ -1294,7 +1312,7 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
                     : "mt-4 inline-flex w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/80"
                 }
               >
-                در حال توسعه
+                بزودی
               </span>
             </div>
           </div>

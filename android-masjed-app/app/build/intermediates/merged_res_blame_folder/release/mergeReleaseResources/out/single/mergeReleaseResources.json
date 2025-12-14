@@ -156,10 +156,6 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-43:/drawable/mtrl_checkbox_button_icon_checked_unchecked.xml"
     },
     {
-        "merged": "com.masjed.app-release-52:/drawable_ic_nav_desk.xml.flat",
-        "source": "com.masjed.app-main-53:/drawable/ic_nav_desk.xml"
-    },
-    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/layout_mtrl_alert_dialog_title.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-43:/layout/mtrl_alert_dialog_title.xml"
     },
@@ -2024,10 +2020,6 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-43:/animator/mtrl_fab_transformation_sheet_collapse_spec.xml"
     },
     {
-        "merged": "com.masjed.app-release-52:/navigation_nav_graph.xml.flat",
-        "source": "com.masjed.app-main-53:/navigation/nav_graph.xml"
-    },
-    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable-xxhdpi-v4_abc_list_selector_disabled_holo_dark.9.png.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-appcompat-1.7.0-12:/drawable-xxhdpi-v4/abc_list_selector_disabled_holo_dark.9.png"
     },
@@ -2340,6 +2332,10 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-43:/drawable-v23/m3_selection_control_ripple.xml"
     },
     {
+        "merged": "com.masjed.app-release-52:/layout_fragment_home.xml.flat",
+        "source": "com.masjed.app-main-53:/layout/fragment_home.xml"
+    },
+    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/animator_m3_chip_state_list_anim.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-43:/animator/m3_chip_state_list_anim.xml"
     },
@@ -2530,10 +2526,6 @@
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/color_material_on_background_disabled.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-43:/color/material_on_background_disabled.xml"
-    },
-    {
-        "merged": "com.masjed.app-release-52:/menu_menu_bottom_nav.xml.flat",
-        "source": "com.masjed.app-main-53:/menu/menu_bottom_nav.xml"
     },
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/raw_zxing_beep.ogg.flat",
@@ -2914,6 +2906,10 @@
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable-v23_abc_control_background_material.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-appcompat-1.7.0-12:/drawable-v23/abc_control_background_material.xml"
+    },
+    {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_ic_nav_desk.xml.flat",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/ic_nav_desk.xml"
     },
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/anim_nav_default_pop_enter_anim.xml.flat",

@@ -54,9 +54,11 @@
                         android:id="@+id/appTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="مسجد و پایگاه امام جعفر صادق (ع)"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
+                        android:gravity="center"
+                        android:text="اللهم عجل لولیک الفرج"
+                        android:textAlignment="center"
+                        android:textColor="#FFF6D0"
+                        android:textSize="26sp"
                         android:textStyle="bold" />
 
                     <TextView

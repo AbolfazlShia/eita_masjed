@@ -20,6 +20,7 @@ color colorSurfaceVariant
 color emeraldAccent
 color emeraldAccentDark
 color ic_launcher_background
+color nightThemeTitle
 color white
 dimen announcement_card_elevation
 dimen announcement_corner

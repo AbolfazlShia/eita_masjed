@@ -14,6 +14,7 @@ import com.masjed.app.data.DashboardUiState
 import com.masjed.app.data.Hadith
 import com.masjed.app.data.HomeContentRepository
 import com.masjed.app.data.QuickAction
+import com.masjed.app.data.ShamsiEventsRepository
 import com.masjed.app.data.UpdateRepository
 import com.masjed.app.util.NetworkUtils
 import com.masjed.app.R
@@ -53,7 +54,8 @@ class HomeViewModel(
     private val dashboardRepository: DashboardRepository = DashboardRepository(),
     private val contentRepository: HomeContentRepository = HomeContentRepository,
     private val announcementsRepository: AnnouncementsRepository = AnnouncementsRepository(),
-    private val updateRepository: UpdateRepository = UpdateRepository()
+    private val updateRepository: UpdateRepository = UpdateRepository(),
+    private val shamsiEventsRepository: ShamsiEventsRepository = ShamsiEventsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -159,11 +161,15 @@ class HomeViewModel(
             null
         }
         val dailyPrayer = contentRepository.dailyPrayerFor(dayIndex)
+        val (_, jalaliMonth, jalaliDay) = jalaliFromMillis(selectedDateMillis)
+        val shamsiEvents = shamsiEventsRepository.eventsFor(jalaliMonth, jalaliDay)
+        val fallbackEvents = contentRepository.dailyEventsFor(dayIndex)
+        val resolvedEvents = if (shamsiEvents.isNotEmpty()) shamsiEvents else fallbackEvents
         _uiState.value = _uiState.value.copy(
             quickActions = quickActionsCache,
             hadith = hadith,
             dailyPrayer = dailyPrayer,
-            dailyEvents = contentRepository.dailyEventsFor(dayIndex),
+            dailyEvents = resolvedEvents,
             devotionDayLabel = dailyPrayer?.dayLabel ?: dayLabelForIndex(dayIndex),
             devotionDayParam = webDayIndex(dayIndex)
         )
@@ -204,14 +210,21 @@ class HomeViewModel(
         val calendar = Calendar.getInstance(tehranTimeZone).apply {
             timeInMillis = epochMillis
         }
-        val gy = calendar.get(Calendar.YEAR)
-        val gm = calendar.get(Calendar.MONTH) + 1
-        val gd = calendar.get(Calendar.DAY_OF_MONTH)
-        val (jy, jm, jd) = gregorianToJalali(gy, gm, gd)
+        val (jy, jm, jd) = jalaliFromMillis(epochMillis)
         val weekDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale("fa")) ?: ""
         val monthName = shamsiMonths.getOrElse(jm - 1) { "" }
         val datePart = "$jd $monthName $jy"
         return if (weekDay.isBlank()) datePart else "$weekDay $datePart"
+    }
+
+    private fun jalaliFromMillis(epochMillis: Long): Triple<Int, Int, Int> {
+        val calendar = Calendar.getInstance(tehranTimeZone).apply {
+            timeInMillis = epochMillis
+        }
+        val gy = calendar.get(Calendar.YEAR)
+        val gm = calendar.get(Calendar.MONTH) + 1
+        val gd = calendar.get(Calendar.DAY_OF_MONTH)
+        return gregorianToJalali(gy, gm, gd)
     }
 
     private fun gregorianToJalali(gy: Int, gm: Int, gd: Int): Triple<Int, Int, Int> {

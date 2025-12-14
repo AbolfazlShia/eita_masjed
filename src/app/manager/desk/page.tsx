@@ -216,6 +216,9 @@ const ManagerDeskPage = () => {
     ? "border border-emerald-200/80 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 shadow-[0_25px_70px_rgba(15,118,110,0.22)] backdrop-blur-[16px]"
     : "border border-white/15 bg-gradient-to-br from-[#0f172a]/85 via-[#0b1221]/90 to-[#03060d]/95 shadow-[0_50px_120px_rgba(0,0,0,0.85)] backdrop-blur-[30px]";
   const managerGradientDay = "border-emerald-300/80 bg-gradient-to-br from-emerald-50 via-emerald-100 to-amber-100 shadow-[0_20px_50px_rgba(15,118,110,0.25)]";
+  const managerAccessSection = isDayTheme
+    ? "border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50 to-amber-100 shadow-[0_35px_80px_rgba(34,197,94,0.22)]"
+    : "border-white/15 bg-[linear-gradient(150deg,rgba(3,9,15,0.95),rgba(5,17,29,0.98))] shadow-[0_50px_120px_rgba(0,0,0,0.8)] backdrop-blur-[18px]";
 
   const persianDate = new Intl.DateTimeFormat("fa-IR", { dateStyle: "full" }).format(new Date());
   const startOfWeek = new Date();
@@ -974,28 +977,12 @@ const ManagerDeskPage = () => {
       />
       <div
         className={`pointer-events-none absolute inset-0 -z-10 transition-opacity.duration-500 ${
-          isDayTheme
-            ? "bg-transparent"
-            : "bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.35),_transparent_78%)]"
-        }`}
-      />
-      <div
-        className={`pointer-events-none absolute inset-0 -z-10 transition-opacity duration-500 ${
-          isDayTheme
-            ? "bg-transparent"
-            : "bg-[radial-gradient(circle_at_bottom,_rgba(40,53,147,0.88),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(91,33,182,0.68),_transparent_80%)]"
-        }`}
-      />
-      <div
-        className={`pointer-events-none absolute inset-0 -z-10 transition-opacity duration-500 ${
-          isDayTheme
-            ? "bg-transparent"
-            : "bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.35),_transparent_78%)]"
+          isDayTheme ? "bg-transparent" : "bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.35),_transparent_78%)]"
         }`}
       />
 
       <div className="relative z-20 flex w-full flex-col gap-2 px-0 pt-3 sm:px-1 lg:px-2">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex w-full flex-wrap items-center justify-between gap-3">
           <div className={`flex items-center gap-2 text-xs ${isDayTheme ? "text-emerald-900" : "text-white"}`}>
             <button
               onClick={() => setThemeMode((prev) => (prev === "day" ? "night" : "day"))}
@@ -1021,134 +1008,79 @@ const ManagerDeskPage = () => {
               مسجد و پایگاه امام جعفر صادق (ع) - مشهد
             </button>
           </div>
-          <LogoutButton
-            endpoint="/api/auth/logout"
-            redirectTo="/auth/login"
-            label="خروج مدیر"
-            clearAndroidState
-            loadingLabel="در حال خروج..."
-            className={
-              isDayTheme
-                ? "border-rose-200 bg-white/90 text-rose-600 hover:border-rose-300"
-                : "border-rose-400/70 bg-white/10 text-rose-200 hover:border-rose-200"
-            }
-          />
-          <button
-            onClick={handleBackupDownload}
-            disabled={backupLoading}
-            aria-hidden="true"
-            className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-semibold opacity-0"
-          >
-            {backupLoading ? "" : ""}
-          </button>
+          <div className="flex items-center gap-3">
+            <LogoutButton
+              endpoint="/api/auth/logout"
+              redirectTo="/auth/login"
+              label="خروج مدیر"
+              clearAndroidState
+              loadingLabel="در حال خروج..."
+              className={
+                isDayTheme
+                  ? "border-rose-200 bg-white/90 text-rose-600 hover:border-rose-300"
+                  : "border-rose-400/70 bg-white/10 text-rose-200 hover:border-rose-200"
+              }
+            />
+            <button
+              onClick={handleBackupDownload}
+              disabled={backupLoading}
+              aria-hidden="true"
+              className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-semibold opacity-0"
+            >
+              {backupLoading ? "" : ""}
+            </button>
+          </div>
         </div>
         {backupError && <p className="text-xs text-red-500">{backupError}</p>}
       </div>
 
       <div className="relative mx-auto max-w-6xl px-3 pb-10 pt-5 sm:px-4 sm:pt-8">
         <section className={`rounded-[36px] p-6 sm:p-8 ${panelDeep}`}>
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h1 className="text-3xl font-black leading-tight sm:text-4xl">مدیریت یکپارچه مسجد و ستاد فرهنگی</h1>
-              <p className={`mt-4 text-sm leading-7 sm:text-base ${subtleText}`}>
-                امروز {persianDate}. وضعیت سامانه پایدار است و همه‌ی سرویس‌ها بدون خطا اجرا می‌شوند. گزارش‌های لحظه‌ای زیر برای تصمیم‌گیری سریع شما آماده‌اند.
-              </p>
-              <div className={`mt-5 flex flex-wrap gap-2 text-xs sm:text-sm ${subtleText}`}>
-                <span className={`rounded-full.border ${borderSoft} px-4 py-1`}>آخرین همگام‌سازی محتوا: ۲ دقیقه پیش</span>
-                <span className={`rounded-full border ${borderSoft} px-4 py-1`}>اتصال سرور: پایدار</span>
-              </div>
-            </div>
-            <div className={`rounded-[28px] border p-5 sm:p-6 ${isDayTheme ? "border-emerald-100/80 bg-white/95 shadow-[0_25px_70px_rgba(15,118,110,0.18)]" : "border-white/10 bg-white/5 shadow-[0_35px_100px_rgba(0,0,0,0.65)]"}`}>
-              <p className={`text-sm font-semibold sm:text-base ${isDayTheme ? "text-emerald-700" : "text-emerald-200"}`}>یادآوری مدیر</p>
-              <p className={`mt-2 text-sm leading-6 ${subtleText}`}>
-                برای بروزرسانی کامل داشبورد، هر عصر یکبار همگام‌سازی کل را بررسی کنید و پس از اتمام کار نسخه پشتیبان بگیرید.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2 text-xs">
-                <span className={`rounded-full border px-3 py-1 ${isDayTheme ? "border-emerald-200 text-emerald-800" : "border-white/15 text-emerald-100"}`}>پشتیبان‌گیری روزانه</span>
-                <span className={`rounded-full.border px-3 py-1 ${isDayTheme ? "border-emerald-200 text-emerald-800" : "border-white/15 text-emerald-100"}`}>بازبینی رویدادها</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-8 grid gap-4 sm:gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <div className="space-y-6">
-            <div className={`rounded-[32px] border p-5 sm:p-6 ${isDayTheme ? managerGradientDay : panelSoftNight}`}>
-              <div className="flex flex-wrap items-center justify-between gap-3 text-sm sm:text-base">
-                <div>
-                  <p className={`text-xs font-semibold sm:text-sm ${subtleText}`}>نمای کلی فعالیت مدیر</p>
-                  <h2 className={`text-xl font-bold sm:text-2xl ${baseText}`}>آمار عملیات جاری</h2>
-                </div>
-                <div className="text-right text-[11px] sm:text-xs">
-                  <p className={`font-semibold ${subtleText}`}>به‌روزرسانی آخر</p>
-                  <p className="text-sm font-bold">{managerLastActivityLabel}</p>
-                </div>
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {managerStatCards.map((card) => (
-                  <div key={card.label} className={`rounded-3xl border p-3 sm:p-4 ${cardsBg}`}>
-                    <p className={`text-[11px] font-semibold sm:text-xs ${subtleText}`}>{card.label}</p>
-                    <p className="mt-2 text-xl font-black sm:text-2xl">{card.value}</p>
-                    <p className={`mt-1 text-[10px] sm:text-[11px] ${subtleText}`}>{card.detail}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                {controlIndicators.map((indicator) => (
-                  <div key={indicator.label} className={`rounded-3xl border p-3 sm:p-4 ${cardsBg}`}>
-                    <p className={`text-[11px] font-semibold sm:text-xs ${subtleText}`}>{indicator.label}</p>
-                    <p className="mt-2 text-base font-bold sm:text-lg">{indicator.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
           <div>
-            <div className={`rounded-[32px] border p-5 sm:p-6 ${isDayTheme ? managerGradientDay : panelSoftNight}`}>
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className={`text-xs font-semibold sm:text-sm ${subtleText}`}>پایش سامانه</p>
-                  <h2 className={`text-xl.font-bold sm:text-2xl ${baseText}`}>سیگنال‌های وضعیت</h2>
-                </div>
-                <span
-                  className={`rounded-full px-4 py-1 text-xs font-semibold ${
-                    isDayTheme ? "bg-white/80 text-emerald-900" : "bg-white/15 text-white"
-                  }`}
-                >
-                  به‌روزرسانی لحظه‌ای
-                </span>
-              </div>
-              <div className="mt-4 space-y-3 sm:space-y-4">
-                {systemSignals.map((signal) => (
-                  <div
-                    key={signal.title}
-                    className={`flex items-center justify-between gap-3 rounded-3xl border px-3 py-3 sm:px-4 ${
-                      isDayTheme ? "border-white/60 bg-white/90 shadow-[0_12px_40px_rgba(12,93,75,0.12)]" : "border-white/15 bg-white/5 shadow-[0_15px_45px_rgba(0,0,0,0.55)]"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`h-3 w-3 rounded-full ${signal.indicator}`} aria-hidden="true" />
-                      <div>
-                        <p className={`text-base font-semibold ${baseText}`}>{signal.title}</p>
-                        <p className={`text-xs ${subtleText}`}>{signal.detail}</p>
-                      </div>
-                    </div>
-                    <span className={`text-sm font-bold ${signal.tone}`}>{signal.status}</span>
-                  </div>
-                ))}
-              </div>
+            <h1 className="text-3xl font-black leading-tight sm:text-4xl">مدیریت یکپارچه مسجد و ستاد فرهنگی</h1>
+            <p className={`mt-4 text-sm leading-7 sm:text-base ${subtleText}`}>
+              امروز {persianDate}. وضعیت سامانه پایدار است و همه‌ی سرویس‌ها بدون خطا اجرا می‌شوند. گزارش‌های لحظه‌ای زیر برای تصمیم‌گیری سریع شما آماده‌اند.
+            </p>
+            <div className={`mt-5 flex flex-wrap gap-2 text-xs sm:text-sm ${subtleText}`}>
+              <span className={`rounded-full.border ${borderSoft} px-4 py-1`}>آخرین همگام‌سازی محتوا: ۲ دقیقه پیش</span>
+              <span className={`rounded-full border ${borderSoft} px-4 py-1`}>اتصال سرور: پایدار</span>
             </div>
           </div>
         </section>
 
-        <section
-          className={`mt-10 rounded-[36px] border p-8 ${
-            isDayTheme
-              ? "border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50 to-lime-100 shadow-[0_30px_80px_rgba(34,197,94,0.22)]"
-              : "border-white/15 bg-[linear-gradient(150deg,rgba(3,8,15,0.95),rgba(7,18,30,0.95))] shadow-[0_55px_120px_rgba(0,0,0,0.85)] backdrop-blur-[22px]"
-          }`}
-        >
+        <section className="mt-8">
+          <div className={`rounded-[32px] border p-5 sm:p-6 ${isDayTheme ? managerGradientDay : panelSoftNight}`}>
+            <div className="flex flex-wrap items-center justify-between gap-3 text-sm sm:text-base">
+              <div>
+                <p className={`text-xs font-semibold sm:text-sm ${subtleText}`}>نمای کلی فعالیت مدیر</p>
+                <h2 className={`text-xl font-bold sm:text-2xl ${baseText}`}>آمار عملیات جاری</h2>
+              </div>
+              <div className="text-right text-[11px] sm:text-xs">
+                <p className={`font-semibold ${subtleText}`}>به‌روزرسانی آخر</p>
+                <p className="text-sm font-bold">{managerLastActivityLabel}</p>
+              </div>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {managerStatCards.map((card) => (
+                <div key={card.label} className={`rounded-3xl border p-3 sm:p-4 ${cardsBg}`}>
+                  <p className={`text-[11px] font-semibold sm:text-xs ${subtleText}`}>{card.label}</p>
+                  <p className="mt-2 text-xl font-black sm:text-2xl">{card.value}</p>
+                  <p className={`mt-1 text-[10px] sm:text-[11px] ${subtleText}`}>{card.detail}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              {controlIndicators.map((indicator) => (
+                <div key={indicator.label} className={`rounded-3xl border p-3 sm:p-4 ${cardsBg}`}>
+                  <p className={`text-[11px] font-semibold sm:text-xs ${subtleText}`}>{indicator.label}</p>
+                  <p className="mt-2 text-base font-bold sm:text-lg">{indicator.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={`mt-10 rounded-[36px] border p-8 ${managerAccessSection}`}>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className={`text-sm font-semibold ${isDayTheme ? "text-emerald-700" : "text-emerald-200"}`}>پایش رشد معنوی</p>
@@ -1301,13 +1233,7 @@ const ManagerDeskPage = () => {
           )}
         </section>
 
-        <section
-          className={`mt-8 rounded-[36px] border p-6 sm:p-8 ${
-            isDayTheme
-              ? "border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50 to-lime-50 shadow-[0_35px_90px_rgba(34,197,94,0.24)]"
-              : "border-white/15 bg-[linear-gradient(150deg,rgba(3,8,15,0.95),rgba(11,25,36,0.98))] shadow-[0_55px_130px_rgba(0,0,0,0.85)] backdrop-blur-[20px]"
-          }`}
-        >
+        <section className={`mt-8 rounded-[36px] border p-6 sm:p-8 ${managerAccessSection}`}>
           <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
             <div>
               <p className={`text-xs font-semibold sm:text-sm ${isDayTheme ? "text-emerald-700" : "text-emerald-200"}`}>کنترل اعضای فعال</p>
@@ -1545,13 +1471,7 @@ const ManagerDeskPage = () => {
           )}
         </section>
 
-        <section
-          className={`mt-8 rounded-[36px] border p-6 sm:p-8 ${
-            isDayTheme
-              ? "border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50 to-lime-50 shadow-[0_35px_90px_rgba(34,197,94,0.24)]"
-              : "border-white/15 bg-[linear-gradient(150deg,rgba(3,8,15,0.95),rgba(11,25,36,0.98))] shadow-[0_55px_130px_rgba(0,0,0,0.85)] backdrop-blur-[20px]"
-          }`}
-        >
+        <section className={`mt-8 rounded-[36px] border p-6 sm:p-8 ${managerAccessSection}`}>
           <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
             <div>
               <p className={`text-xs font-semibold sm:text-sm ${isDayTheme ? "text-emerald-700" : "text-emerald-200"}`}>بانک وصیت‌نامه شهدا</p>
@@ -1711,13 +1631,7 @@ const ManagerDeskPage = () => {
           )}
         </section>
 
-        <section
-          className={`mt-10 rounded-[36px] border p-8 ${
-            isDayTheme
-              ? "border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50 to-amber-100 shadow-[0_35px_80px_rgba(34,197,94,0.22)]"
-              : "border-white/15 bg-[linear-gradient(150deg,rgba(3,9,15,0.95),rgba(5,17,29,0.98))] shadow-[0_50px_120px_rgba(0,0,0,0.8)] backdrop-blur-[18px]"
-          }`}
-        >
+        <section className={`mt-10 rounded-[36px] border p-8 ${managerAccessSection}`}>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className={`text-sm font-semibold ${isDayTheme ? "text-emerald-700" : "text-emerald-200"}`}>مرکز اطلاعیه‌های مسجد</p>
@@ -1878,13 +1792,7 @@ const ManagerDeskPage = () => {
           )}
         </section>
 
-        <section
-          className={`mt-10 rounded-[36px] border p-8 ${
-            isDayTheme
-              ? managerGradientDay
-              : "border-white/15 bg-[linear-gradient(155deg,rgba(2,8,14,0.95),rgba(10,20,32,0.98))] shadow-[0_45px_110px_rgba(0,0,0,0.75)] backdrop-blur-[20px]"
-          }`}
-        >
+        <section className={`mt-10 rounded-[36px] border p-8 ${managerAccessSection}`}>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className={`text-sm font-semibold ${isDayTheme ? "text-emerald-700" : "text-emerald-200"}`}>بانک حدیث روز</p>

@@ -5,9 +5,10 @@
       "firstName": "علی",
       "lastName": "صادقی",
       "phone": "09153004567",
-      "password": "$2a$08$gyVsojqSj.TutWHXGtrEnOwdv72hk0ugWmk1LGJ5hRFsymkeedthC",
+      "password": "$2a$08$61WRCDcJtC7N6nfpsWUMzuIyI11H10gm8afiUX4/XM0PdUeTFy7ZC",
       "createdAt": "2025-11-21T19:38:47.934Z",
-      "qrToken": "97be3f7e-c236-4b81-8d6a-dbaad3c3fe25"
+      "qrToken": "97be3f7e-c236-4b81-8d6a-dbaad3c3fe25",
+      "fatherName": "yy"
     },
     {
       "id": "cdce1d33-12df-4c5e-aab7-683b1656a011",

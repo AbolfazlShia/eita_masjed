@@ -47,7 +47,7 @@ export default function ShamsiCalendar() {
 
   const [currentMonth, setCurrentMonth] = useState(todayShamsi.month);
   const [currentYear, setCurrentYear] = useState(todayShamsi.year);
-  const [selectedDay, setSelectedDay] = useState<number | null>(todayShamsi.day);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const daysInMonth = getDaysInShamsiMonth(currentMonth, currentYear);
   const firstDayGregorian = toGregorian(currentYear, currentMonth, 1);

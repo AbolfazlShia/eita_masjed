@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ANDROID_DESK_REMEMBER_KEY } from "@/lib/android";
 
 type DeskBridgeProps = {
@@ -8,6 +8,8 @@ type DeskBridgeProps = {
   path?: string;
   origin: "basij" | "admin";
 };
+
+type DeskBridgeStatus = "idle" | "pending" | "success" | "error" | "skipped";
 
 function readRememberState(): boolean {
   if (typeof window === "undefined") return false;
@@ -32,9 +34,19 @@ function isAndroidInApp(): boolean {
 }
 
 export default function DeskBridge({ title, path, origin }: DeskBridgeProps) {
+  const [status, setStatus] = useState<{ state: DeskBridgeStatus; message: string }>({
+    state: "idle",
+    message: "",
+  });
+
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!isAndroidInApp()) return;
+    if (!isAndroidInApp()) {
+      setStatus({ state: "skipped", message: "" });
+      return;
+    }
+
+    setStatus({ state: "pending", message: "در حال همگام‌سازی میانبر میز کار..." });
     const resolvedPath =
       path ??
       (() => {
@@ -58,11 +70,26 @@ export default function DeskBridge({ title, path, origin }: DeskBridgeProps) {
       },
     };
     try {
-      (window as any).MasjedBridge?.postMessage?.(JSON.stringify(payload));
+      const bridge = (window as any).MasjedBridge;
+      if (!bridge || typeof bridge.postMessage !== "function") {
+        throw new Error("MasjedBridge.postMessage در دسترس نیست");
+      }
+      bridge.postMessage(JSON.stringify(payload));
+      setStatus({ state: "success", message: "میانبر میز کار در اپ اندروید به‌روزرسانی شد." });
+      console.info("DeskBridge payload sent", payload);
     } catch (error) {
       console.error("DeskBridge postMessage failed", error);
+      setStatus({ state: "error", message: "اتصال به اپ اندروید برقرار نشد." });
     }
   }, [title, path, origin]);
 
-  return null;
+  if (status.state === "skipped" || !status.message) {
+    return null;
+  }
+
+  return (
+    <span aria-live="polite" className="sr-only" data-deskbridge-status={status.state}>
+      {status.message}
+    </span>
+  );
 }

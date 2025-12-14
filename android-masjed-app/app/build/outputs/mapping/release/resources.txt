@@ -310,10 +310,10 @@ Marking id:action_context_bar:2131230779 reachable: referenced from /Users/abolf
 Marking attr:snackbarButtonStyle:2130904048 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 Marking attr:snackbarTextViewStyle:2130904050 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 Marking style:Theme_AppCompat_Empty:2131952152 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
-Marking color:zxing_viewfinder_mask:2131034910 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
-Marking color:zxing_result_view:2131034906 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
-Marking color:zxing_viewfinder_laser:2131034909 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
-Marking color:zxing_possible_result_points:2131034905 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+Marking color:zxing_viewfinder_mask:2131034911 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+Marking color:zxing_result_view:2131034907 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+Marking color:zxing_viewfinder_laser:2131034910 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+Marking color:zxing_possible_result_points:2131034906 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 Marking dimen:design_bottom_navigation_margin:2131099759 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 Marking layout:design_bottom_navigation_item:2131427358 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 Marking attr:imageButtonStyle:2130903616 reachable: referenced from /Users/abolfazl/Documents/masjed/android-masjed-app/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
@@ -560,15 +560,20 @@ UnicodeBigUnmarked
 N
 O
 P
+10/7
 Q
 TITLE_TEXT_RES_ID_KEY
 R
+10/5
 S
+10/4
 T
 MasjedBridge
+10/3
 NoPadding
 U
 V
+10/1
 W
 X
 addFontWeightStyle
@@ -577,7 +582,9 @@ Z
 completeTransition
 constructor.parameterTypes
 EXTRA_BENCHMARK_OPERATION
+10/9
 _
+10/8
 a
 b
 ACTION_CLEAR_ACCESSIBILITY_FOCUS
@@ -703,6 +710,7 @@ android:menu:presenters
 defaultViewModelProviderFactory
 drawableEnd
 linear
+shamsiEventsRepository
 ADDING
 android:support:lifecycle
 type.googleapis.com/google.crypto.tin...
@@ -766,14 +774,23 @@ UINT32
 onBackCancelled
 centerColor
 kotlinx.coroutines.scheduler.keep.ali...
+12/14
+12/16
 state
 gregorianDate
+12/15
+12/18
 CompanionObject
+12/17
 events
 element
 maghrib
+12/19
 config_viewMaxRotaryEncoderFlingVelocity
 ConstraintLayoutStates
+12/21
+12/20
+12/22
 ACTION_SCROLL_DOWN
 android.view.ViewRootImpl
 singleLine
@@ -783,8 +800,11 @@ primaryKeyId_
 242
 input
 SupportMenuInflater
+12/25
+12/26
 ERROR_CORRECTION_LEVEL
 anim
+12/29
 sunrise
 getHorizontallyScrolling
 AES/CTR/NoPadding
@@ -965,8 +985,12 @@ __androidx_security_crypto_encrypted_...
 $transitioningViews
 kotlin.Cloneable
 CTRL_PL
+11/6
 path
 closeable
+11/5
+11/4
+11/3
 ViewHolder
 Button
 CTRL_PS
@@ -1366,6 +1390,8 @@ type.googleapis.com/google.crypto.tin...
 error
 kotlin.Byte
 network
+12/5
+12/3
 shortcut
 contentRepository
 RequestPermissions
@@ -1373,7 +1399,9 @@ array
 KotlinPropertyAccess
 postfix
 ivSize_
+12/9
 value
+12/8
 com.google.crypto.tink.shaded.protobu...
 REUSABLE_CLAIMED
 android:visibility:visibility
@@ -1794,22 +1822,30 @@ getDescriptor
 com.google.crypto.tink.shaded.protobu...
 string
 bool
+10/10
 android
 description
 java.lang.module.ModuleDescriptor
 VISIBLE
 android.support.v13.view.inputmethod....
 status_bar_height
+10/19
 TINK
 androidx.view.accessibility.Accessibi...
+10/11
 HMACSHA1
+10/13
 navigationBarStyle
+10/15
+10/18
+10/17
 androidx.appcompat.app.AppLocalesMeta...
 $contract
 devotionDayLabel
 CTRL_BS
 Dispatchers.Main
 SOURCE_CLIPBOARD
+10/20
 XA
 XB
 Cancelled
@@ -1819,10 +1855,16 @@ target
 MONTHS_VIEW_GROUP_TAG
 keyInfo_
 android.intent.action.VIEW
+10/22
+10/25
 window
+10/24
 پنج‌شنبه
+10/27
 PURE_BARCODE
+10/26
 Cancelling
+10/29
 container
 tileMode
 _isCompleted
@@ -1913,9 +1955,13 @@ SHA384
 backEvent
 fillType
 firstOut.fragment.mView
+9/3
 $this$navOptions
 CURRENT_MONTH_KEY
+9/5
 ACTION_PREVIOUS_HTML_ELEMENT
+9/7
+9/9
 http://schemas.android.com/apk/res/an...
 androidx.lifecycle.savedstate.vm.tag
 WindowInsetsCompat
@@ -2188,7 +2234,9 @@ androidx.activity.result.contract.ext...
 RESULT_CANCELED
 activity
 primitive
+11/22
 INT32
+11/21
 fillAlpha
 aesCtrKey_
 android:dialogShowing
@@ -2200,12 +2248,14 @@ BASELINE
 Loading
 SHOW_MISSING_CAMERA_PERMISSION_DIALOG
 ACTION_SCROLL_TO_POSITION
+11/25
 audio
 $this$$receiver
 key
 ERASURES_CORRECTED
 LONG
 kotlin.Enum.Companion
+11/29
 RESOURCE
 profileinstaller_profileWrittenFor_la...
 ACTION_EXPAND
@@ -2234,6 +2284,7 @@ android:changeBounds:windowY
 NETWORK
 androidx.appcompat.app.AppCompatDeleg...
 cardSunrise
+11/11
 java.util.Collection
 androidx.view.accessibility.Accessibi...
 dayLabel
@@ -2242,6 +2293,10 @@ AndroidOpenSSL
 fragment_
 NOT_IN_STACK
 viewModel
+11/12
+11/15
+11/14
+11/19
 ServerWakeFragment.kt
 removeObserver
 destination
@@ -2339,19 +2394,32 @@ VERTICAL_DIMENSION
 EmojiCompat.FontRequestEmojiCompatCon...
 REMOVED
 SYNCHRONIZED
+9/15
+9/16
 اسفند
+9/13
+9/19
 newKeyAllowed_
+9/18
 kotlin.jvm.internal.EnumCompanionObject
 ACTION_COPY
 RESULT_UNSUPPORTED_ART_VERSION
+9/11
+9/12
 controlState
 $transitionInfo
+9/10
 Active
 ActivityRecreator
 kotlin.collections.Iterable
 Both
+9/26
+9/27
+9/25
 kotlin.collections.Map.Entry
 com.masjed.app.data.AnnouncementsRepo...
+9/29
+9/20
 mAccessibilityDelegate
 BASIJ
 kotlin.collections.Set
@@ -2361,6 +2429,7 @@ factory
 ConstraintOverride
 java.util.Iterator
 org.robolectric.Robolectric
+9/30
 com.masjed.app.ui.basij.BasijScanFrag...
 Parcelizer
 ON_STOP
@@ -3175,8 +3244,8 @@ Marking id:item_touch_helper_previous_elevation:2131230983 used because it match
 Marking layout:item_prayer_time:2131427380 used because it matches string pool constant item
 Marking layout:item_quick_action:2131427381 used because it matches string pool constant item
 Marking string:item_view_role_description:2131886159 used because it matches string pool constant item
-Marking color:notification_action_color_filter:2131034876 used because it matches string pool constant notification
-Marking color:notification_icon_bg_color:2131034877 used because it matches string pool constant notification
+Marking color:notification_action_color_filter:2131034877 used because it matches string pool constant notification
+Marking color:notification_icon_bg_color:2131034878 used because it matches string pool constant notification
 Marking dimen:notification_action_icon_size:2131100428 used because it matches string pool constant notification
 Marking dimen:notification_action_text_size:2131100429 used because it matches string pool constant notification
 Marking dimen:notification_big_circle_margin:2131100430 used because it matches string pool constant notification
@@ -6669,6 +6738,7 @@ Marking layout:fragment_web_page:2131427377 used because it matches string pool 
 @color/mtrl_textinput_filled_box_default_background_color : reachable=false
 @color/mtrl_textinput_focused_box_stroke_color : reachable=false
 @color/mtrl_textinput_hovered_box_stroke_color : reachable=true
+@color/nightThemeTitle : reachable=false
 @color/notification_action_color_filter : reachable=true
     @color/androidx_core_secondary_text_default_material_light
 @color/notification_icon_bg_color : reachable=true
@@ -19163,12 +19233,12 @@ The root reachable resources are:
  color:mtrl_textinput_default_box_stroke_color:2131034871
  color:mtrl_textinput_disabled_color:2131034872
  color:mtrl_textinput_hovered_box_stroke_color:2131034875
- color:notification_action_color_filter:2131034876
- color:notification_icon_bg_color:2131034877
- color:zxing_possible_result_points:2131034905
- color:zxing_result_view:2131034906
- color:zxing_viewfinder_laser:2131034909
- color:zxing_viewfinder_mask:2131034910
+ color:notification_action_color_filter:2131034877
+ color:notification_icon_bg_color:2131034878
+ color:zxing_possible_result_points:2131034906
+ color:zxing_result_view:2131034907
+ color:zxing_viewfinder_laser:2131034910
+ color:zxing_viewfinder_mask:2131034911
  dimen:abc_cascading_menus_min_smallest_width:2131099670
  dimen:abc_config_prefDialogWidth:2131099671
  dimen:abc_star_big:2131099707
@@ -20327,10 +20397,11 @@ Unused resources are:
  color:mtrl_tabs_colored_ripple_color:2131034865
  color:mtrl_tabs_icon_color_selector_colored:2131034867
  color:mtrl_textinput_filled_box_default_background_color:2131034873
- color:zxing_custom_possible_result_points:2131034901
- color:zxing_custom_result_view:2131034902
- color:zxing_custom_viewfinder_laser:2131034903
- color:zxing_custom_viewfinder_mask:2131034904
+ color:nightThemeTitle:2131034876
+ color:zxing_custom_possible_result_points:2131034902
+ color:zxing_custom_result_view:2131034903
+ color:zxing_custom_viewfinder_laser:2131034904
+ color:zxing_custom_viewfinder_mask:2131034905
  dimen:abc_action_bar_icon_vertical_padding_material:2131099654
  dimen:abc_action_bar_overflow_padding_end_material:2131099655
  dimen:abc_action_bar_overflow_padding_start_material:2131099656

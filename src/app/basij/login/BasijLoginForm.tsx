@@ -1,18 +1,10 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { writeAndroidDeskRememberState } from "@/lib/android";
 
 export default function BasijLoginForm() {
-  return (
-    <Suspense fallback={<div className="p-8 text-white">در حال بارگذاری...</div>}>
-      <BasijLoginFormInner />
-    </Suspense>
-  );
-}
-
-function BasijLoginFormInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [phone, setPhone] = useState("");
@@ -52,10 +44,9 @@ function BasijLoginFormInner() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.35),_transparent_60%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(14,165,233,0.25),_transparent_50%)]" />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-4 py-12">
-        <div className="grid gap-6 rounded-[40px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_35px_90px_rgba(0,0,0,0.65)] lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="rounded-[40px] bg-gradient-to-br from-emerald-500 via-green-700 to-slate-900 p-10 text-white">
-            <p className="text-xs tracking-[0.5em] text-white/70">یگان‌های فعال پایگاه</p>
-            <h1 className="mt-4 text-4xl font-black leading-tight">ورود سریع اعضای فعال بسیج مسجد</h1>
+            <h1 className="text-3xl font-black leading-tight">ورود سریع اعضای فعال بسیج مسجد</h1>
             <p className="mt-6 text-sm text-white/80">
               با وارد کردن شماره همراه و گذرواژه، به میز کار بسیج دسترسی پیدا می‌کنید؛ از اینجا می‌توانید برنامه‌های روزانه، مأموریت‌ها و گزارش‌های میدانی را مدیریت کنید.
             </p>
@@ -67,14 +58,20 @@ function BasijLoginFormInner() {
                 </div>
               ))}
             </div>
+            <div className="mt-6 flex items-center gap-2 rounded-2xl px-4 py-3 text-xs text-white/80">
+              <div className="flex h-14 w-14 items-center justify-center text-3xl">🕌</div>
+              <div>
+                <p className="text-sm font-semibold text-white">مسجد امام جعفر صادق (ع)</p>
+                <p className="mt-1 text-[11px] text-white/80">مشهد - نبش شهید صارمی ۴۹</p>
+              </div>
+            </div>
           </section>
 
           <section className="flex flex-col justify-center rounded-[40px] bg-[#050c16]/80 p-8 sm:p-10">
-            <p className="text-xs tracking-[0.4em] text-emerald-300">ورود اعضای فعال</p>
-            <h2 className="mt-3 text-3xl font-extrabold">کنترل مأموریت‌های بسیج</h2>
+            <h2 className="text-3xl font-extrabold">ورود اعضای فعال</h2>
             <p className="mt-2 text-sm text-white/70">لطفاً شماره همراه تایید شده و گذرواژه را وارد کنید.</p>
 
-            <form onSubmit={submit} className="mt-8 space-y-5 text-sm">
+            <form onSubmit={submit} className="mt-8 space-y-5 text-sm" suppressHydrationWarning>
               <label className="block text-white/80">
                 شماره همراه
                 <input
@@ -85,6 +82,7 @@ function BasijLoginFormInner() {
                   required
                   className="mt-2 w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-base text-white outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-400/50"
                   placeholder="مثلاً 09151234567"
+                  suppressHydrationWarning
                 />
               </label>
 
@@ -97,6 +95,7 @@ function BasijLoginFormInner() {
                   required
                   className="mt-2 w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-base text-white outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-400/50"
                   placeholder="رمز محرمانه"
+                  suppressHydrationWarning
                 />
               </label>
 
@@ -123,7 +122,6 @@ function BasijLoginFormInner() {
                 {loading ? "در حال ورود..." : "ورود به میز کار بسیج"}
               </button>
             </form>
-
 
           </section>
         </div>
