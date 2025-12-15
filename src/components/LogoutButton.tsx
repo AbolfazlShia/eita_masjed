@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { clearAndroidDeskState } from "@/lib/android";
+import { clearAndroidDeskState, exitAndroidApp } from "@/lib/android";
+import { writeStoredMembership, type MembershipRole } from "@/lib/membership-client";
 
 type LogoutButtonProps = {
   endpoint: string;
@@ -11,6 +12,7 @@ type LogoutButtonProps = {
   loadingLabel?: string;
   className?: string;
   clearAndroidState?: boolean;
+  resetMembershipTo?: MembershipRole;
 };
 
 export default function LogoutButton({
@@ -20,6 +22,7 @@ export default function LogoutButton({
   loadingLabel = "در حال خروج...",
   className = "",
   clearAndroidState = false,
+  resetMembershipTo = "guest",
 }: LogoutButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -32,11 +35,20 @@ export default function LogoutButton({
     } catch (error) {
       console.error("Logout failed", error);
     } finally {
+      if (resetMembershipTo) {
+        writeStoredMembership(resetMembershipTo);
+      }
       if (clearAndroidState) {
         clearAndroidDeskState();
       }
       router.replace(redirectTo);
       router.refresh();
+      if (clearAndroidState) {
+        setTimeout(() => {
+          exitAndroidApp();
+        }, 600);
+        return;
+      }
       setTimeout(() => setLoading(false), 400);
     }
   };

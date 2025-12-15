@@ -1447,14 +1447,12 @@ androidx.appcompat.app.AlertController:
     public android.widget.Button getButton(int)
     public void setButtonPanelLayoutHint(int)
 androidx.appcompat.app.AlertDialog$Builder:
-    public androidx.appcompat.app.AlertDialog$Builder setCancelable(boolean)
     public androidx.appcompat.app.AlertDialog$Builder setCursor(android.database.Cursor,android.content.DialogInterface$OnClickListener,java.lang.String)
     public androidx.appcompat.app.AlertDialog$Builder setIcon(int)
     public androidx.appcompat.app.AlertDialog$Builder setIconAttribute(int)
     public androidx.appcompat.app.AlertDialog$Builder setInverseBackgroundForced(boolean)
     public androidx.appcompat.app.AlertDialog$Builder setItems(int,android.content.DialogInterface$OnClickListener)
     public androidx.appcompat.app.AlertDialog$Builder setItems(java.lang.CharSequence[],android.content.DialogInterface$OnClickListener)
-    public androidx.appcompat.app.AlertDialog$Builder setMessage(int)
     public androidx.appcompat.app.AlertDialog$Builder setMessage(java.lang.CharSequence)
     public androidx.appcompat.app.AlertDialog$Builder setMultiChoiceItems(int,boolean[],android.content.DialogInterface$OnMultiChoiceClickListener)
     public androidx.appcompat.app.AlertDialog$Builder setMultiChoiceItems(android.database.Cursor,java.lang.String,java.lang.String,android.content.DialogInterface$OnMultiChoiceClickListener)
@@ -1468,14 +1466,12 @@ androidx.appcompat.app.AlertDialog$Builder:
     public androidx.appcompat.app.AlertDialog$Builder setOnCancelListener(android.content.DialogInterface$OnCancelListener)
     public androidx.appcompat.app.AlertDialog$Builder setOnDismissListener(android.content.DialogInterface$OnDismissListener)
     public androidx.appcompat.app.AlertDialog$Builder setOnItemSelectedListener(android.widget.AdapterView$OnItemSelectedListener)
-    public androidx.appcompat.app.AlertDialog$Builder setPositiveButton(int,android.content.DialogInterface$OnClickListener)
     public androidx.appcompat.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)
     public androidx.appcompat.app.AlertDialog$Builder setPositiveButtonIcon(android.graphics.drawable.Drawable)
     public androidx.appcompat.app.AlertDialog$Builder setRecycleOnMeasureEnabled(boolean)
     public androidx.appcompat.app.AlertDialog$Builder setSingleChoiceItems(int,int,android.content.DialogInterface$OnClickListener)
     public androidx.appcompat.app.AlertDialog$Builder setSingleChoiceItems(android.database.Cursor,int,java.lang.String,android.content.DialogInterface$OnClickListener)
     public androidx.appcompat.app.AlertDialog$Builder setSingleChoiceItems(java.lang.CharSequence[],int,android.content.DialogInterface$OnClickListener)
-    public androidx.appcompat.app.AlertDialog$Builder setTitle(int)
     public androidx.appcompat.app.AlertDialog$Builder setView(int)
     public androidx.appcompat.app.AlertDialog$Builder setView(android.view.View)
     public androidx.appcompat.app.AlertDialog$Builder setView(android.view.View,int,int,int,int)
@@ -34284,7 +34280,6 @@ androidx.appcompat.app.AlertController$AlertParams$2
 androidx.appcompat.app.AlertController$AlertParams$4
 androidx.appcompat.app.AlertController$AlertParams$OnPrepareListViewListener
 androidx.appcompat.app.AlertController$AlertParams:
-    public boolean mCancelable
     public boolean[] mCheckedItems
     public android.database.Cursor mCursor
     public int mIconAttrId
@@ -34293,7 +34288,6 @@ androidx.appcompat.app.AlertController$AlertParams:
     public boolean mIsMultiChoice
     public java.lang.CharSequence[] mItems
     public java.lang.String mLabelColumn
-    public java.lang.CharSequence mMessage
     public android.graphics.drawable.Drawable mNegativeButtonIcon
     public android.content.DialogInterface$OnClickListener mNegativeButtonListener
     public java.lang.CharSequence mNegativeButtonText
@@ -34306,8 +34300,6 @@ androidx.appcompat.app.AlertController$AlertParams:
     public android.widget.AdapterView$OnItemSelectedListener mOnItemSelectedListener
     public androidx.appcompat.app.AlertController$AlertParams$OnPrepareListViewListener mOnPrepareListViewListener
     public android.graphics.drawable.Drawable mPositiveButtonIcon
-    public android.content.DialogInterface$OnClickListener mPositiveButtonListener
-    public java.lang.CharSequence mPositiveButtonText
     public boolean mRecycleOnMeasure
     public android.view.View mView
     public int mViewLayoutResId
@@ -34321,7 +34313,6 @@ androidx.appcompat.app.AlertController$AlertParams:
 androidx.appcompat.app.AlertController$RecycleListView:
     public static void setHasDecor()
 androidx.appcompat.app.AlertController:
-    public final int mButtonIconDimen
     public android.graphics.drawable.Drawable mButtonNegativeIcon
     public android.os.Message mButtonNegativeMessage
     public java.lang.CharSequence mButtonNegativeText
@@ -34330,10 +34321,6 @@ androidx.appcompat.app.AlertController:
     public java.lang.CharSequence mButtonNeutralText
     public int mButtonPanelLayoutHint
     public int mButtonPanelSideLayout
-    public android.graphics.drawable.Drawable mButtonPositiveIcon
-    public android.os.Message mButtonPositiveMessage
-    public java.lang.CharSequence mButtonPositiveText
-    public java.lang.CharSequence mMessage
     public int mMultiChoiceItemLayout
     public android.view.View mView
     public int mViewLayoutResId
@@ -34350,7 +34337,7 @@ androidx.appcompat.app.AlertController:
     public static boolean onKeyDown()
     public static boolean onKeyUp()
     public static int selectContentView()
-    public static void setButton()
+    public final void setButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)
     public static void setCustomTitle()
     public static void setIcon()
     public static void setIcon$1()
@@ -34368,11 +34355,15 @@ androidx.appcompat.app.AlertController:
 androidx.appcompat.app.AlertDialog$Builder:
     public static android.content.Context getContext()
     public static androidx.appcompat.app.AlertDialog$Builder setAdapter()
+    public static androidx.appcompat.app.AlertDialog$Builder setCancelable()
     public static androidx.appcompat.app.AlertDialog$Builder setCustomTitle()
     public static androidx.appcompat.app.AlertDialog$Builder setIcon()
+    public final void setMessage(int)
     public static androidx.appcompat.app.AlertDialog$Builder setOnKeyListener()
+    public final void setPositiveButton(int,android.content.DialogInterface$OnClickListener)
     public static androidx.appcompat.app.AlertDialog$Builder setSingleChoiceItems()
     public static androidx.appcompat.app.AlertDialog$Builder setTitle()
+    public final void setTitle(int)
 androidx.appcompat.app.AlertDialog:
     public static android.widget.ListView getListView()
     public static int getThemeResId(android.view.ContextThemeWrapper,int)
@@ -38375,7 +38366,7 @@ androidx.lifecycle.LiveData$AlwaysActiveObserver:
 androidx.lifecycle.LiveData:
     public final java.lang.Runnable mPostValueRunnable
     public abstract void changeActiveCounter()
-    public final java.lang.Object getValue()
+    public abstract java.lang.Object getValue()
     public abstract void observeForever()
     public abstract void onActive()
     public abstract void onInactive()
@@ -38641,7 +38632,7 @@ androidx.navigation.NavController:
     public abstract void navigate$2()
     public final void navigateInternal(androidx.navigation.Navigator,java.util.List,androidx.navigation.NavOptions,kotlin.jvm.functions.Function1)
     public abstract void onGraphCreated()
-    public final boolean popBackStack()
+    public abstract boolean popBackStack()
     public abstract boolean popBackStack$1()
     public abstract boolean popBackStack$2()
     public abstract void popBackStackFromNavigator$navigation_runtime_release()
@@ -38794,7 +38785,6 @@ androidx.navigation.NavOptions$Builder:
     public final void setPopUpTo(int,boolean,boolean)
     public static androidx.navigation.NavOptions$Builder setPopUpTo$1()
     public static androidx.navigation.NavOptions$Builder setPopUpTo$2()
-    public static void setPopUpTo$default(androidx.navigation.NavOptions$Builder,int)
     public static androidx.navigation.NavOptions$Builder setRestoreState()
 androidx.navigation.NavOptions:
     public kotlin.reflect.KClass popUpToRouteClass
@@ -39077,6 +39067,8 @@ androidx.navigation.serialization.RouteSerializerKt$generateRouteWithArgs$1:
     public final java.lang.Object invoke$1()
     public static void invoke$7()
 androidx.navigation.ui.BottomNavigationViewKt
+androidx.navigation.ui.NavigationUI$$InternalSyntheticLambda$2$a1c2adff97283518c3c2233602c494af7a522f66397364fe2104e2fbd48d77bd$0:
+    public final boolean onNavigationItemSelected()
 androidx.navigation.ui.NavigationUI:
     public static final androidx.navigation.ui.NavigationUI INSTANCE
     static void <clinit>()
@@ -41876,6 +41868,8 @@ com.google.android.material.navigation.NavigationBarPresenter:
     public static void setUpdateSuspended()
 com.google.android.material.navigation.NavigationBarView$OnItemReselectedListener:
     public abstract void onNavigationItemReselected()
+com.google.android.material.navigation.NavigationBarView$OnItemSelectedListener:
+    public abstract boolean onNavigationItemSelected()
 com.google.android.material.navigation.NavigationBarView$SavedState$1:
     public static com.google.android.material.navigation.NavigationBarView$SavedState createFromParcel()
     public static com.google.android.material.navigation.NavigationBarView$SavedState createFromParcel$1()
@@ -41883,6 +41877,8 @@ com.google.android.material.navigation.NavigationBarView$SavedState$1:
 com.google.android.material.navigation.NavigationBarView$SavedState:
     public static void readFromParcel$2()
 com.google.android.material.navigation.NavigationBarView:
+    public com.google.android.material.navigation.NavigationBarView$OnItemReselectedListener reselectedListener
+    public static synthetic void access$000()
     public abstract com.google.android.material.navigation.NavigationBarMenuView createNavigationBarMenuView()
     public abstract void inflateMenu()
 com.google.android.material.radiobutton.MaterialRadioButton:
@@ -45326,8 +45322,6 @@ com.journeyapps.barcodescanner.camera.PreviewScalingStrategy:
     static void <clinit>()
     public abstract java.util.List getBestPreviewOrder()
     public abstract com.journeyapps.barcodescanner.Size getBestPreviewSize()
-com.masjed.app.MainActivity$$InternalSyntheticLambda$1$e1858d24cd47e784ad9d58348de16441509e9a0c5de4ca9124ecdd45fb8f9f78$2:
-    public final void onNavigationItemReselected()
 kotlin.ExceptionsKt__ExceptionsKt
 kotlin.LazyKt
 kotlin.LazyKt__LazyJVMKt$WhenMappings

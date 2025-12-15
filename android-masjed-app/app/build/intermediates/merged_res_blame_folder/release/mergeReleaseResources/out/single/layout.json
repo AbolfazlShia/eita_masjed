@@ -36,11 +36,11 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/fragment_home.xml"
     },
     {
-        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/view_service_item.xml",
-        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/view_service_item.xml"
+        "merged": "com.masjed.app-mergeReleaseResources-50:/layout/fragment_services.xml",
+        "source": "com.masjed.app-main-53:/layout/fragment_services.xml"
     },
     {
-        "merged": "com.masjed.app-mergeReleaseResources-50:/layout/fragment_home.xml",
-        "source": "com.masjed.app-main-53:/layout/fragment_home.xml"
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/view_service_item.xml",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/view_service_item.xml"
     }
 ]

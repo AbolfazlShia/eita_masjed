@@ -111,10 +111,10 @@ export default async function BasijDeskPage() {
                 <span className="rounded-2xl border border-emerald-400/30 bg-emerald-500/15 px-4 py-2 text-xs font-semibold text-emerald-200">فعالیت جاری</span>
                 <LogoutButton
                   endpoint="/api/basij/logout"
-                  redirectTo="/basij/login"
+                  redirectTo="/"
                   label="خروج از میز کار"
                   loadingLabel="در حال خروج..."
-                  className="rounded-2xl border border-white/40 bg-white/10 px-4 py-2 text-xs.font-semibold text-white transition hover:border-white/80 hover:bg-white/20 sm:px-5 sm:py-2.5 sm:text-sm"
+                  className="rounded-2xl border border-white/40 bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:border-white/80 hover:bg-white/20 sm:px-5 sm:py-2.5 sm:text-sm"
                   clearAndroidState
                 />
               </div>

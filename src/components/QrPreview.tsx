@@ -37,7 +37,7 @@ export default function QrPreview({
   copiedButtonLabel = "کپی شد",
 }: QrPreviewProps) {
   const [copied, setCopied] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasHostRef = useRef<HTMLDivElement | null>(null);
   const showMeta = !minimal;
 
   const handleCopy = async () => {
@@ -52,8 +52,8 @@ export default function QrPreview({
 
   const handleDownload = () => {
     try {
-      const canvas = canvasRef.current;
-      if (!canvas) throw new Error("missing_canvas");
+      const canvas = canvasHostRef.current?.querySelector("canvas");
+      if (!(canvas instanceof HTMLCanvasElement)) throw new Error("missing_canvas");
       const dataUrl = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       const safeFile = (downloadFileName?.trim() || "qr-code").replace(/[^a-zA-Z0-9\u0600-\u06FF_-]+/g, "-");
@@ -70,8 +70,8 @@ export default function QrPreview({
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       {showMeta && label && <p className="text-sm font-semibold text-white/80">{label}</p>}
-      <div className={frameClassName}>
-        <QRCodeCanvas ref={canvasRef} value={value} size={size} bgColor={bgColor} fgColor={fgColor} />
+      <div ref={canvasHostRef} className={frameClassName}>
+        <QRCodeCanvas value={value} size={size} bgColor={bgColor} fgColor={fgColor} />
       </div>
       {showMeta && description && <p className="text-xs text-white/70">{description}</p>}
       {showMeta && (

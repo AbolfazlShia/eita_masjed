@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.masjed.app.R
 import com.masjed.app.databinding.FragmentServicesBinding
+import com.masjed.app.storage.DeskShortcut
+import com.masjed.app.ui.common.DeskShortcutViewModel
 import com.masjed.app.ui.web.WebPageFragment
 import com.masjed.app.util.UrlUtils
 
@@ -17,6 +20,7 @@ class ServicesFragment : Fragment(R.layout.fragment_services) {
 
     private var _binding: FragmentServicesBinding? = null
     private val binding get() = _binding!!
+    private val deskShortcutViewModel: DeskShortcutViewModel by activityViewModels()
 
     private val services = listOf(
         ServiceCard(
@@ -24,14 +28,16 @@ class ServicesFragment : Fragment(R.layout.fragment_services) {
             description = "دسترسی به میز خدمت و امتیازات اعضا",
             path = "/basij/login",
             icon = "🛡️",
-            actionTextRes = R.string.service_action_login
+            actionTextRes = R.string.service_action_login,
+            clearCookiesBeforeLoad = true
         ),
         ServiceCard(
             title = "ورود مدیر مسجد",
             description = "ورود به داشبورد مدیریتی و آمار مسجد",
             path = "/auth/login",
             icon = "🛠️",
-            actionTextRes = R.string.service_action_login
+            actionTextRes = R.string.service_action_login,
+            clearCookiesBeforeLoad = true
         ),
         ServiceCard(
             title = "ورود اعضا با QR",
@@ -52,6 +58,19 @@ class ServicesFragment : Fragment(R.layout.fragment_services) {
         return binding.root
     }
 
+    private fun navigateToDeskIfNeeded(shortcut: DeskShortcut) {
+        val navController = findNavController()
+        if (navController.currentDestination?.id != R.id.nav_services) return
+        val path = appendInAppParams(shortcut.path)
+        if (path.isBlank()) return
+        val args = bundleOf(
+            WebPageFragment.ARG_TITLE to shortcut.title,
+            WebPageFragment.ARG_PATH to path,
+            WebPageFragment.ARG_FROM_DESK_SHORTCUT to true
+        )
+        navController.navigate(R.id.nav_web_page, args)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.swipeRefresh.setOnRefreshListener {
@@ -59,11 +78,23 @@ class ServicesFragment : Fragment(R.layout.fragment_services) {
             binding.swipeRefresh.isRefreshing = false
         }
         renderCards()
+        observeDeskShortcut()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        deskShortcutViewModel.shortcut.value?.let { navigateToDeskIfNeeded(it) }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun observeDeskShortcut() {
+        deskShortcutViewModel.shortcut.observe(viewLifecycleOwner) { shortcut ->
+            shortcut?.let { navigateToDeskIfNeeded(it) }
+        }
     }
 
     private fun renderCards() {

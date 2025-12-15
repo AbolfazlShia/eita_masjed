@@ -48,18 +48,4 @@
             android:defaultValue="" />
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_desk"
-        android:name="com.masjed.app.ui.web.WebPageFragment"
-        android:label="میز کار">
-        <argument
-            android:name="arg_title"
-            app:argType="string"
-            android:defaultValue="" />
-        <argument
-            android:name="arg_path"
-            app:argType="string"
-            android:defaultValue="" />
-    </fragment>
-
 </navigation>

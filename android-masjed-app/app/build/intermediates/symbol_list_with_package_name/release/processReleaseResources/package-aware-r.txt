@@ -3535,7 +3535,6 @@ id multiply
 id navHostFragment
 id nav_basij_scan
 id nav_controller_view_tag
-id nav_desk
 id nav_graph
 id nav_home
 id nav_host_fragment_container
@@ -4054,6 +4053,9 @@ string app_tagline
 string app_version
 string appbar_scrolling_view_behavior
 string basij_desk_title
+string basij_relogin_action
+string basij_relogin_message
+string basij_relogin_title
 string bottom_sheet_behavior
 string bottomsheet_action_collapse
 string bottomsheet_action_expand
@@ -4122,6 +4124,9 @@ string m3_sys_motion_easing_linear
 string m3_sys_motion_easing_standard
 string m3_sys_motion_easing_standard_accelerate
 string m3_sys_motion_easing_standard_decelerate
+string manager_relogin_action
+string manager_relogin_message
+string manager_relogin_title
 string material_clock_display_divider
 string material_clock_toggle_content_description
 string material_hour_24h_suffix
@@ -4238,6 +4243,9 @@ string server_wake_title
 string server_wake_waiting
 string service_action_login
 string service_action_scan
+string service_auto_desk_action
+string service_auto_desk_hint
+string service_auto_desk_title
 string service_cards_subtitle
 string service_cards_title
 string services_open

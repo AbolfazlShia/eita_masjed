@@ -9,8 +9,4 @@
         android:icon="@drawable/ic_nav_services"
         android:title="خدمات" />
 
-    <item
-        android:id="@+id/nav_desk"
-        android:icon="@drawable/ic_nav_desk"
-        android:title="میز کار" />
 </menu>

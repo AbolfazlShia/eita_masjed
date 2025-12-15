@@ -1011,7 +1011,7 @@ const ManagerDeskPage = () => {
           <div className="flex items-center gap-3">
             <LogoutButton
               endpoint="/api/auth/logout"
-              redirectTo="/auth/login"
+              redirectTo="/"
               label="خروج مدیر"
               clearAndroidState
               loadingLabel="در حال خروج..."
@@ -1020,6 +1020,7 @@ const ManagerDeskPage = () => {
                   ? "border-rose-200 bg-white/90 text-rose-600 hover:border-rose-300"
                   : "border-rose-400/70 bg-white/10 text-rose-200 hover:border-rose-200"
               }
+              resetMembershipTo="guest"
             />
             <button
               onClick={handleBackupDownload}

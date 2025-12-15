@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { writeAndroidDeskRememberState } from "@/lib/android";
+import {
+  exitAndroidApp,
+  hasAndroidExitAck,
+  markAndroidExitAck,
+  writeAndroidDeskRememberState,
+} from "@/lib/android";
+import { writeStoredMembership } from "@/lib/membership-client";
 
 export default function BasijLoginForm() {
   const router = useRouter();
@@ -12,6 +18,7 @@ export default function BasijLoginForm() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successPrompt, setSuccessPrompt] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,11 +33,17 @@ export default function BasijLoginForm() {
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "خطا");
       writeAndroidDeskRememberState(remember);
+      writeStoredMembership("active");
       const inApp = searchParams?.get("inApp") === "1";
       const source = searchParams?.get("source") || "";
+      const isAndroidContext = inApp && source === "android";
       const suffix = inApp && source === "android" ? "?inApp=1&source=android" : "";
-      router.push(`/basij/desk${suffix}`);
-      router.refresh();
+      if (isAndroidContext && !hasAndroidExitAck("basij")) {
+        setSuccessPrompt(true);
+      } else {
+        router.push(`/basij/desk${suffix}`);
+        router.refresh();
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "عدم دسترسی";
       setError(message === "invalid_password" ? "گذرواژه اشتباه است" : message === "not_found" ? "عضو یافت نشد" : message);
@@ -41,6 +54,24 @@ export default function BasijLoginForm() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#030d14] text-white" dir="rtl">
+      {successPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6 text-center text-white">
+          <div className="max-w-sm rounded-3xl border border-emerald-200/30 bg-gradient-to-b from-emerald-600 via-emerald-700 to-emerald-900 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.45)]">
+            <h3 className="text-xl font-extrabold">ورود بسیج انجام شد</h3>
+            <p className="mt-3 text-sm text-white/80">برای دسترسی به میز، اپ را یک‌بار ببند و دوباره باز کن.</p>
+            <button
+              type="button"
+              onClick={() => {
+                markAndroidExitAck("basij");
+                exitAndroidApp();
+              }}
+              className="mt-5 w-full rounded-2xl border border-white/30 bg-white/15 py-2.5 text-sm font-bold text-white transition hover:border-white/70 hover:bg-white/25"
+            >
+              متوجه شدم
+            </button>
+          </div>
+        </div>
+      )}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.35),_transparent_60%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(14,165,233,0.25),_transparent_50%)]" />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-4 py-12">
@@ -105,6 +136,7 @@ export default function BasijLoginForm() {
                   type="button"
                   onClick={() => setRemember((prev) => !prev)}
                   className={`relative h-7 w-12 rounded-full transition ${remember ? "bg-emerald-400/90" : "bg-white/15"}`}
+                  disabled={successPrompt}
                 >
                   <span
                     className={`absolute top-1 left-1 h-5 w-5 rounded-full bg-white transition ${remember ? "translate-x-5" : ""}`}
@@ -116,7 +148,7 @@ export default function BasijLoginForm() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || successPrompt}
                 className="w-full rounded-2xl bg-gradient-to-r from-emerald-400 via-emerald-300 to-lime-300 py-3 text-lg font-extrabold text-emerald-950 shadow-[0_25px_45px_rgba(16,185,129,0.35)] transition hover:-translate-y-0.5 disabled:opacity-50"
               >
                 {loading ? "در حال ورود..." : "ورود به میز کار بسیج"}

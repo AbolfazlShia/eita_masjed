@@ -2,7 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { writeAndroidDeskRememberState } from "@/lib/android";
+import {
+  exitAndroidApp,
+  hasAndroidExitAck,
+  markAndroidExitAck,
+  writeAndroidDeskRememberState,
+} from "@/lib/android";
+import { writeStoredMembership } from "@/lib/membership-client";
 
 const NIGHT_PALETTE = {
   outerBg: "bg-gradient-to-br from-[#030712] via-[#041124] to-[#0f182e]",
@@ -30,6 +36,7 @@ export default function LoginFormClient() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successPrompt, setSuccessPrompt] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -56,10 +63,16 @@ export default function LoginFormClient() {
       const data = await res.json();
       if (data.ok) {
         writeAndroidDeskRememberState(remember);
+        writeStoredMembership("manager");
         const inApp = searchParams?.get("inApp") === "1";
         const source = searchParams?.get("source") || "";
+        const isAndroidContext = inApp && source === "android";
         const suffix = inApp && source === "android" ? "?inApp=1&source=android" : "";
-        router.push(`/manager/desk${suffix}`);
+        if (isAndroidContext && !hasAndroidExitAck("manager")) {
+          setSuccessPrompt(true);
+        } else {
+          router.push(`/manager/desk${suffix}`);
+        }
       } else {
         const message = data.error === "not_found" ? "کاربر یافت نشد" : data.error || "خطا";
         setError(message);
@@ -77,6 +90,26 @@ export default function LoginFormClient() {
 
   return (
     <div className={`relative min-h-screen overflow-hidden ${palette.outerBg}`} dir="rtl" suppressHydrationWarning>
+      {successPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6 text-center text-white">
+          <div className="max-w-sm rounded-3xl border border-emerald-200/30 bg-gradient-to-b from-emerald-600 via-emerald-700 to-emerald-900 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.45)]">
+            <h3 className="text-xl font-extrabold">ورود انجام شد</h3>
+            <p className="mt-3 text-sm text-white/80">
+              برای دسترسی به میز کار، لطفاً یک‌بار اپلیکیشن را بسته و دوباره باز کنید.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                markAndroidExitAck("manager");
+                exitAndroidApp();
+              }}
+              className="mt-5 w-full rounded-2xl border border-white/30 bg-white/15 py-2.5 text-sm font-bold text-white transition hover:border-white/70 hover:bg-white/25"
+            >
+              متوجه شدم
+            </button>
+          </div>
+        </div>
+      )}
       <div className={`absolute inset-0 ${palette.overlayA}`} />
       <div className={`absolute inset-0 ${palette.overlayB}`} />
       <div className="absolute -top-32 -right-10 h-72 w-72 rounded-full bg-white/10 blur-[120px]" />
@@ -134,6 +167,7 @@ export default function LoginFormClient() {
                   className="mt-2 w-full rounded-2xl border border-white/30 bg-white/10 px-4 py-3 text-base text-white placeholder-white/70 outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-400/40"
                   placeholder="مثلاً علی"
                   suppressHydrationWarning
+                  disabled={successPrompt}
                 />
               </label>
 
@@ -147,6 +181,7 @@ export default function LoginFormClient() {
                   className="mt-2 w-full rounded-2xl border border-white/30 bg-white/10 px-4 py-3 text-base text-white placeholder-white/70 outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-400/40"
                   placeholder="****"
                   suppressHydrationWarning
+                  disabled={successPrompt}
                 />
               </label>
 
@@ -158,6 +193,7 @@ export default function LoginFormClient() {
                   className={`relative h-8 w-14 rounded-full border ${
                     remember ? palette.rememberOn : palette.rememberOff
                   } transition`}
+                  disabled={successPrompt}
                 >
                   <span
                     className={`absolute top-1 left-1 h-6 w-6 rounded-full bg-white shadow-lg transition ${
@@ -175,7 +211,7 @@ export default function LoginFormClient() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || successPrompt}
                 className="w-full rounded-2xl bg-gradient-to-r from-emerald-400 via-emerald-300 to-lime-300 py-3 text-lg font-extrabold text-emerald-950 shadow-[0_25px_45px_rgba(16,185,129,0.35)] transition hover:-translate-y-0.5 disabled:opacity-50"
               >
                 {loading ? "در حال ورود..." : "ورود به داشبورد"}

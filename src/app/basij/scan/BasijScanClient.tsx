@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { exitAndroidApp, hasAndroidExitAck, markAndroidExitAck } from "@/lib/android";
 
 const statusMessages: Record<string, string> = {
   idle: "لطفاً QR را اسکن کنید یا توکن را دستی وارد نمایید.",
@@ -16,12 +17,19 @@ type BasijScanClientProps = {
 
 export default function BasijScanClient({ initialToken = "" }: BasijScanClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [inputToken, setInputToken] = useState(initialToken);
   const [status, setStatus] = useState<"idle" | "checking" | "success" | "error">(initialToken ? "checking" : "idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const autoTokenRef = useRef<string | null>(null);
+  const [successPrompt, setSuccessPrompt] = useState(false);
 
-  const disabled = status === "checking" || status === "success";
+  const inApp = searchParams?.get("inApp") === "1";
+  const source = searchParams?.get("source") || "";
+  const isAndroidContext = inApp && source === "android";
+  const deskSuffix = isAndroidContext ? "?inApp=1&source=android" : "";
+
+  const disabled = status === "checking" || status === "success" || successPrompt;
 
   const extractToken = useCallback((value: string) => {
     const trimmed = value.trim();
@@ -78,9 +86,13 @@ export default function BasijScanClient({ initialToken = "" }: BasijScanClientPr
           throw new Error(data?.error || "invalid_token");
         }
         setStatus("success");
-        setTimeout(() => {
-          router.replace("/basij/desk");
-        }, 800);
+        if (isAndroidContext && !hasAndroidExitAck("basij")) {
+          setSuccessPrompt(true);
+        } else {
+          setTimeout(() => {
+            router.replace(`/basij/desk${deskSuffix}`);
+          }, 800);
+        }
       } catch (error: unknown) {
         const reason = error instanceof Error ? error.message : "invalid_token";
         const friendly =
@@ -93,7 +105,7 @@ export default function BasijScanClient({ initialToken = "" }: BasijScanClientPr
         setStatus("error");
       }
     },
-    [router, extractToken]
+    [router, extractToken, isAndroidContext, deskSuffix]
   );
 
   useEffect(() => {
@@ -121,6 +133,24 @@ export default function BasijScanClient({ initialToken = "" }: BasijScanClientPr
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#020617] px-4 py-10 text-white" dir="rtl">
+      {successPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6 text-center text-white">
+          <div className="max-w-sm rounded-3xl border border-white/20 bg-gradient-to-b from-emerald-600 via-emerald-700 to-emerald-900 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.45)]">
+            <h3 className="text-xl font-extrabold">ورود با QR انجام شد</h3>
+            <p className="mt-3 text-sm text-white/85">برای باز شدن میز بسیج، لطفاً اپ را ببند و دوباره باز کن.</p>
+            <button
+              type="button"
+              onClick={() => {
+                markAndroidExitAck("basij");
+                exitAndroidApp();
+              }}
+              className="mt-5 w-full rounded-2xl border border-white/30 bg-white/15 py-2.5 text-sm font-bold text-white transition hover:border-white/70 hover:bg-white/25"
+            >
+              متوجه شدم
+            </button>
+          </div>
+        </div>
+      )}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(16,185,129,0.3),_transparent_60%)]" />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(15,23,42,0.95),rgba(3,7,18,0.98))]" />
 

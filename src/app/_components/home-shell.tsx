@@ -1,10 +1,11 @@
-"use client";
+  "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatShamsiDate, getShamsiEventsByDate } from "@/lib/shamsi-events";
 import { ServiceWorkerClient } from "./service-worker-client";
 import { toJalaali } from "jalaali-js";
+import { readStoredMembership, writeStoredMembership, type MembershipRole } from "@/lib/membership-client";
 
 type HadithItem = {
   id?: string;
@@ -379,10 +380,41 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
   const [themePref, setThemePref] = useState<ThemePreference>('light');
   const [resolvedTheme, setResolvedTheme] = useState<ThemeMode>('light');
   const [offline, setOffline] = useState(false);
+  const [membershipRole, setMembershipRole] = useState<MembershipRole>(() => readStoredMembership());
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted || offline) return;
+    let cancelled = false;
+    const controller = new AbortController();
+
+    const syncMembership = async () => {
+      try {
+        const res = await fetch("/api/membership/role", { cache: "no-store", signal: controller.signal });
+        if (!res.ok) throw new Error("failed_membership_fetch");
+        const data = await res.json();
+        const role: MembershipRole = data?.role === "manager" || data?.role === "active" ? data.role : "guest";
+        if (cancelled) return;
+        setMembershipRole(role);
+        writeStoredMembership(role);
+      } catch (error) {
+        if (!cancelled) {
+          console.warn("membership role sync failed", error);
+          setMembershipRole((prev) => prev);
+        }
+      }
+    };
+
+    syncMembership();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [mounted, offline]);
 
   const applyTheme = useCallback((mode: ThemeMode) => {
     setResolvedTheme(mode);
@@ -595,9 +627,36 @@ export function HomeShell({ variant = "default" }: HomeShellProps) {
   };
 
   const isLightTheme = resolvedTheme === 'light';
+  const membershipBadgeClass = isLightTheme
+    ? "inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-white/80 px-3 py-1 text-[11px] font-semibold text-emerald-900 shadow-sm shadow-emerald-200/60"
+    : "inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/90 backdrop-blur-sm";
+  const membershipLabel = membershipRole === "manager" ? "مدیر" : membershipRole === "active" ? "عضو فعال" : "عادی";
+  const membershipDeskConfig = useMemo(() => {
+    if (membershipRole === "manager") {
+      return {
+        title: "میز کار مدیر مسجد",
+        description: "تمام ابزارهای ثبت اعلان، مدیریت محتوا و اعضا آماده است. بدون ورود مجدد ادامه بده.",
+        cta: "ورود به میز مدیر",
+        href: "/manager/desk",
+      };
+    }
+    if (membershipRole === "active") {
+      return {
+        title: "میز کار عضو فعال بسیج",
+        description: "امتیازات و برنامه‌هایت از همین‌جا در دسترس است؛ کافی است میز بسیج را باز کنی.",
+        cta: "ورود به میز بسیج",
+        href: "/basij/desk",
+      };
+    }
+    return null;
+  }, [membershipRole]);
+  const membershipCtaClass = isLightTheme
+    ? "rounded-2xl bg-gradient-to-l from-emerald-500 via-teal-500 to-emerald-400 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-400/40 transition hover:-translate-y-0.5"
+    : "rounded-2xl bg-gradient-to-l from-emerald-400 via-emerald-500 to-lime-400 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:-translate-y-0.5";
+  const membershipHintClass = isLightTheme ? "text-[11px] text-emerald-900/70" : "text-[11px] text-white/70";
   const footerBackground = isLightTheme
-    ? 'linear-gradient(90deg, #0b6b2b 0%, #0b6b2b 30%, #ffffff 50%, #b71c1c 70%, #b71c1c 100%)'
-    : 'linear-gradient(90deg, #09482a 0%, #09482a 30%, #000000 50%, #7b0000 70%, #7b0000 100%)';
+    ? 'linear-gradient(90deg, #0b6b2b 0%, #0b6b2b 30%, #fefefe 50%, #b71c1c 70%, #b71c1c 100%)'
+    : 'linear-gradient(90deg, #06381f 0%, #06381f 30%, #0a0a0a 50%, #7b0000 70%, #7b0000 100%)';
 
   if (!mounted) {
     return <div className="relative min-h-screen overflow-hidden bg-[#fdf9f0]" />;

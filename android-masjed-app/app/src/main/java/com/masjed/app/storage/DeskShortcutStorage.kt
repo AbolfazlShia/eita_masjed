@@ -14,6 +14,7 @@ enum class DeskOrigin { ADMIN, BASIJ }
 object DeskShortcutStorage {
 
     private const val KEY_SHORTCUT = "desk_shortcut_payload"
+    private const val KEY_EXIT_ACK_PREFIX = "desk_exit_ack_"
     private const val KEY_TITLE = "title"
     private const val KEY_PATH = "path"
     private const val KEY_ORIGIN = "origin"
@@ -38,6 +39,7 @@ object DeskShortcutStorage {
     fun clear() {
         inMemoryShortcut = null
         SecureStorage.remove(KEY_SHORTCUT)
+        DeskOrigin.values().forEach { SecureStorage.remove(exitAckKey(it)) }
     }
 
     fun current(): DeskShortcut? {
@@ -60,5 +62,19 @@ object DeskShortcutStorage {
         } catch (_: Exception) {
             null
         }
+    }
+
+    private fun exitAckKey(origin: DeskOrigin) = "$KEY_EXIT_ACK_PREFIX${origin.name.lowercase()}"
+
+    fun hasExitAck(origin: DeskOrigin): Boolean {
+        return SecureStorage.getString(exitAckKey(origin)) == "ack"
+    }
+
+    fun markExitAck(origin: DeskOrigin) {
+        SecureStorage.putString(exitAckKey(origin), "ack")
+    }
+
+    fun clearExitAck(origin: DeskOrigin) {
+        SecureStorage.remove(exitAckKey(origin))
     }
 }

@@ -89,7 +89,6 @@ id inputToken
 id inputTokenLayout
 id navHostFragment
 id nav_basij_scan
-id nav_desk
 id nav_graph
 id nav_home
 id nav_server_wake
@@ -167,6 +166,9 @@ string announcements_section_title
 string app_name
 string app_tagline
 string basij_desk_title
+string basij_relogin_action
+string basij_relogin_message
+string basij_relogin_title
 string camera_permission_required
 string content_loading
 string content_story_count
@@ -183,6 +185,9 @@ string error_network_unavailable
 string error_server_unavailable
 string home_footer_message
 string invalid_qr_token
+string manager_relogin_action
+string manager_relogin_message
+string manager_relogin_title
 string prayer_nav_next
 string prayer_nav_previous
 string prayer_nav_today
@@ -204,6 +209,9 @@ string server_wake_title
 string server_wake_waiting
 string service_action_login
 string service_action_scan
+string service_auto_desk_action
+string service_auto_desk_hint
+string service_auto_desk_title
 string service_cards_subtitle
 string service_cards_title
 string services_open

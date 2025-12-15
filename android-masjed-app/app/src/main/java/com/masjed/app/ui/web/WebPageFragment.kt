@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -38,6 +41,7 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
 
     private var _binding: FragmentWebPageBinding? = null
     private val binding get() = _binding!!
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val pageTitle: String by lazy { arguments?.getString(ARG_TITLE).orEmpty() }
     private val pagePath: String by lazy { arguments?.getString(ARG_PATH).orEmpty() }
@@ -50,6 +54,7 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
     private val authMode: AuthMode by lazy { determineAuthMode(pagePath) }
     private val forceLogout: Boolean by lazy { arguments?.getBoolean(ARG_FORCE_LOGOUT, false) ?: false }
     private val deskShortcutViewModel: DeskShortcutViewModel by activityViewModels()
+    private val launchedFromDeskShortcut: Boolean by lazy { arguments?.getBoolean(ARG_FROM_DESK_SHORTCUT, false) ?: false }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +64,6 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
         _binding = FragmentWebPageBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     private fun clearPersistedCookies() {
         val cookiesToClear = persistentCookieNames()
         if (cookiesToClear.isEmpty()) return
@@ -95,6 +99,8 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
     }
 
     override fun onDestroyView() {
+        reloginDialog?.dismiss()
+        reloginDialog = null
         binding.webContent.apply {
             stopLoading()
             webViewClient = object : WebViewClient() {}
@@ -225,8 +231,16 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
 
     private fun navigateBack() {
         val navController = findNavController()
-        if (!navController.popBackStack()) {
-            navController.navigate(R.id.nav_home)
+        val targetDest = if (launchedFromDeskShortcut) R.id.nav_services else R.id.nav_home
+        if (!navController.popBackStack(targetDest, false)) {
+            navController.navigate(targetDest)
+        }
+    }
+
+    private fun navigateToServices() {
+        val navController = findNavController()
+        if (!navController.popBackStack(R.id.nav_services, false)) {
+            navController.navigate(R.id.nav_services)
         }
     }
 
@@ -236,6 +250,15 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
             navController.navigate(R.id.nav_home)
         }
     }
+
+    private fun exitApplication() {
+        activity?.let {
+            it.finishAffinity()
+            it.finishAndRemoveTask()
+        }
+    }
+
+    private var reloginDialog: AlertDialog? = null
 
     private fun prepareCookies() {
         cookieManager.setAcceptCookie(true)
@@ -284,6 +307,8 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
                 when (json.optString("type")) {
                     "setDeskShortcut" -> handleSetShortcut(json)
                     "clearDeskShortcut" -> handleClearShortcut()
+                    "exitApp" -> exitApplication()
+                    "ackDeskExit" -> handleAckDeskExit(json)
                 }
             }.onFailure {
                 Log.e("DeskBridgeHandler", "Failed to handle payload: $payload", it)
@@ -303,12 +328,72 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
                 origin = origin,
                 persistent = persistent
             )
-            deskShortcutViewModel.setShortcut(shortcut)
+            mainHandler.post {
+                deskShortcutViewModel.setShortcut(shortcut)
+                when (shortcut.origin) {
+                    DeskOrigin.ADMIN -> if (!DeskShortcutStorage.hasExitAck(DeskOrigin.ADMIN)) {
+                        showManagerReopenDialog()
+                    }
+                    DeskOrigin.BASIJ -> if (!DeskShortcutStorage.hasExitAck(DeskOrigin.BASIJ)) {
+                        showBasijReopenDialog()
+                    }
+                }
+            }
         }
 
         private fun handleClearShortcut() {
-            deskShortcutViewModel.clearShortcut()
+            mainHandler.post {
+                clearPersistedCookies()
+                deskShortcutViewModel.clearShortcut()
+                exitApplication()
+            }
         }
+
+        private fun handleAckDeskExit(json: JSONObject) {
+            val originName = json.optString("origin").takeIf { it.isNotBlank() } ?: return
+            val origin = runCatching { DeskOrigin.valueOf(originName.uppercase()) }.getOrNull() ?: return
+            mainHandler.post {
+                DeskShortcutStorage.markExitAck(origin)
+            }
+        }
+    }
+
+    private fun showManagerReopenDialog() {
+        if (!isAdded) {
+            exitApplication()
+            return
+        }
+        reloginDialog?.dismiss()
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.manager_relogin_title)
+            .setMessage(R.string.manager_relogin_message)
+            .setPositiveButton(R.string.manager_relogin_action) { _, _ ->
+                DeskShortcutStorage.markExitAck(DeskOrigin.ADMIN)
+                exitApplication()
+            }
+            .setCancelable(false)
+            .create()
+        reloginDialog = dialog
+        dialog.show()
+    }
+
+    private fun showBasijReopenDialog() {
+        if (!isAdded) {
+            exitApplication()
+            return
+        }
+        reloginDialog?.dismiss()
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.basij_relogin_title)
+            .setMessage(R.string.basij_relogin_message)
+            .setPositiveButton(R.string.basij_relogin_action) { _, _ ->
+                DeskShortcutStorage.markExitAck(DeskOrigin.BASIJ)
+                exitApplication()
+            }
+            .setCancelable(false)
+            .create()
+        reloginDialog = dialog
+        dialog.show()
     }
 
     private fun determineAuthMode(path: String): AuthMode {
@@ -327,5 +412,6 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
         const val ARG_TITLE = "arg_title"
         const val ARG_PATH = "arg_path"
         const val ARG_FORCE_LOGOUT = "arg_force_logout"
+        const val ARG_FROM_DESK_SHORTCUT = "arg_from_desk_shortcut"
     }
 }

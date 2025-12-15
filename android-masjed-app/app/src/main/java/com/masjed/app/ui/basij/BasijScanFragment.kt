@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.ChecksumException
@@ -36,6 +37,7 @@ import com.masjed.app.storage.DeskOrigin
 import com.masjed.app.storage.DeskShortcut
 import com.masjed.app.ui.web.WebPageFragment
 import com.masjed.app.ui.common.DeskShortcutViewModel
+import com.masjed.app.storage.DeskShortcutStorage
 import com.masjed.app.util.UrlUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,6 +61,7 @@ class BasijScanFragment : Fragment(R.layout.fragment_basij_scan) {
         "${uri.scheme ?: "https"}://${uri.host.orEmpty()}"
     }
     private val deskShortcutViewModel: DeskShortcutViewModel by activityViewModels()
+    private var reloginDialog: AlertDialog? = null
 
     private var isProcessing = false
     private val barcodeCallback = object : BarcodeCallback {
@@ -127,6 +130,8 @@ class BasijScanFragment : Fragment(R.layout.fragment_basij_scan) {
 
     override fun onDestroyView() {
         binding.scannerView.pauseAndWait()
+        reloginDialog?.dismiss()
+        reloginDialog = null
         _binding = null
         super.onDestroyView()
     }
@@ -249,7 +254,11 @@ class BasijScanFragment : Fragment(R.layout.fragment_basij_scan) {
                 applyCookies(response.cookies)
                 assignDeskShortcut()
                 Toast.makeText(requireContext(), R.string.qr_login_success, Toast.LENGTH_SHORT).show()
-                openDesk()
+                if (DeskShortcutStorage.hasExitAck(DeskOrigin.BASIJ)) {
+                    openDesk()
+                } else {
+                    showBasijReopenDialog()
+                }
             } else {
                 showError(response.error ?: getString(R.string.invalid_qr_token))
                 resumeScannerWithDelay()
@@ -324,6 +333,32 @@ class BasijScanFragment : Fragment(R.layout.fragment_basij_scan) {
             persistent = false
         )
         deskShortcutViewModel.setShortcut(shortcut)
+    }
+
+    private fun showBasijReopenDialog() {
+        if (!isAdded) {
+            exitApplication()
+            return
+        }
+        reloginDialog?.dismiss()
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.basij_relogin_title)
+            .setMessage(R.string.basij_relogin_message)
+            .setPositiveButton(R.string.basij_relogin_action) { _, _ ->
+                DeskShortcutStorage.markExitAck(DeskOrigin.BASIJ)
+                exitApplication()
+            }
+            .setCancelable(false)
+            .create()
+        reloginDialog = dialog
+        dialog.show()
+    }
+
+    private fun exitApplication() {
+        activity?.let {
+            it.finishAffinity()
+            it.finishAndRemoveTask()
+        }
     }
 
     private fun showError(message: String) {

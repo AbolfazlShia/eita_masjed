@@ -54,6 +54,15 @@
     <string name="basij_desk_title">میز بسیج</string>
     <string name="service_cards_title">ورود سریع به سامانه‌ها</string>
     <string name="service_cards_subtitle">یکی از گزینه‌های زیر را برای ورود انتخاب کنید.</string>
+    <string name="service_auto_desk_title">میز آمادهٔ %1$s</string>
+    <string name="service_auto_desk_hint">به محض لمس دکمهٔ زیر، میز شخصی‌ات باز می‌شود و دیگر نیازی به ورود دوباره نیست.</string>
+    <string name="service_auto_desk_action">ورود مستقیم به میز</string>
     <string name="service_action_login">ورود</string>
     <string name="service_action_scan">اسکن</string>
+    <string name="manager_relogin_title">ورود دوباره لازم است</string>
+    <string name="manager_relogin_message">ورود مدیر انجام شد. برای باز شدن میز کار، اپلیکیشن را ببندید و دوباره باز کنید.</string>
+    <string name="manager_relogin_action">متوجه شدم</string>
+    <string name="basij_relogin_title">ورود بسیج کامل شد</string>
+    <string name="basij_relogin_message">ورود با QR انجام شد. لطفاً اپلیکیشن را ببندید و دوباره باز کنید تا میز بسیج باز شود.</string>
+    <string name="basij_relogin_action">متوجه شدم</string>
 </resources>
