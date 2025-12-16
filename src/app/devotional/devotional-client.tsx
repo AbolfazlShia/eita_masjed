@@ -96,7 +96,7 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
     router.push("/");
   };
 
-  const isLightTheme = theme === "light";
+  const isLightTheme = isInApp ? true : theme === "light";
 
   const lines = content.split("\n");
 
@@ -107,6 +107,29 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
   const scrollSurface = isLightTheme
     ? "bg-gradient-to-br from-emerald-50 via-white to-amber-50"
     : "bg-gradient-to-br from-[#031c18] via-[#04161a] to-[#050e18]";
+
+  const inAppPanelStyle = isInApp
+    ? {
+        background: "linear-gradient(135deg,#fdfaf4 0%,#f4eedf 60%,#fefdf8 100%)",
+        border: "1px solid rgba(16,185,129,0.35)",
+        boxShadow: "0 20px 60px rgba(15,23,42,0.35)",
+      }
+    : undefined;
+
+  const scrollBaseStyle: React.CSSProperties = {
+    fontFamily: '"Amiri", "Scheherazade New", "IranNastaliq", serif',
+    WebkitOverflowScrolling: "touch",
+    overscrollBehavior: "contain",
+    touchAction: "pan-y",
+  };
+
+  const scrollStyle = isInApp
+    ? {
+        ...scrollBaseStyle,
+        background: "linear-gradient(180deg,#fbf2df 0%,#fff7ea 55%,#ffffff 100%)",
+        color: "#0b1f33",
+      }
+    : scrollBaseStyle;
 
   const innerTextColor = isLightTheme ? "text-[#0b1f33]" : "text-white";
   const backButtonClass = isLightTheme
@@ -162,6 +185,7 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
                   ? "text-[11px] text-emerald-700/80"
                   : "text-[11px] text-emerald-200/80"
               }
+              style={inAppPanelStyle}
             >
               {isDua ? "دعای روز" : "زیارت روز"} {dayLabel}
             </p>
@@ -172,6 +196,7 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
         <div className="flex flex-1 min-h-0 flex-col">
           <main
             className={`flex-1 min-h-0 overflow-hidden rounded-3xl p-5 sm:p-7 ${panelSurface}`}
+            style={inAppPanelStyle}
             data-devotional-panel="surface"
           >
             <div className="mb-4 flex items-center justify-between gap-3">
@@ -192,12 +217,7 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
               <section
                 ref={scrollAreaRef}
                 className={`h-full overflow-y-auto rounded-2xl p-4 text-right tracking-wide sm:p-6 ${scrollSurface}`}
-                style={{
-                  fontFamily: '"Amiri", "Scheherazade New", "IranNastaliq", serif',
-                  WebkitOverflowScrolling: "touch",
-                  overscrollBehavior: "contain",
-                  touchAction: "pan-y",
-                }}
+                style={scrollStyle}
                 data-devotional-scroll="content"
               >
                 {lines.map((line, idx) => {
