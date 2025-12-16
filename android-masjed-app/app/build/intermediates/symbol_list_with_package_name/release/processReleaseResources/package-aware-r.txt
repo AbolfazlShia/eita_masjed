@@ -3302,6 +3302,7 @@ id bounce
 id bounceBoth
 id bounceEnd
 id bounceStart
+id buttonCloseDebug
 id buttonDailyPrayer
 id buttonDailyZiyarat
 id buttonForceUpdate
@@ -3360,6 +3361,10 @@ id customPanel
 id cut
 id dashboardScroll
 id date_picker_actions
+id debugHint
+id debugLog
+id debugPanel
+id debugTitle
 id decelerate
 id decelerateAndComplete
 id decor_content_parent

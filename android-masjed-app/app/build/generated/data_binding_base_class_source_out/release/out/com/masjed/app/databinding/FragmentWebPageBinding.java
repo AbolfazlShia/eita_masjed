@@ -24,7 +24,22 @@ public final class FragmentWebPageBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final MaterialButton buttonCloseDebug;
+
+  @NonNull
   public final MaterialButton buttonRetry;
+
+  @NonNull
+  public final TextView debugHint;
+
+  @NonNull
+  public final TextView debugLog;
+
+  @NonNull
+  public final LinearLayout debugPanel;
+
+  @NonNull
+  public final TextView debugTitle;
 
   @NonNull
   public final LinearLayout offlineContainer;
@@ -45,12 +60,19 @@ public final class FragmentWebPageBinding implements ViewBinding {
   public final WebView webContent;
 
   private FragmentWebPageBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton buttonRetry, @NonNull LinearLayout offlineContainer,
+      @NonNull MaterialButton buttonCloseDebug, @NonNull MaterialButton buttonRetry,
+      @NonNull TextView debugHint, @NonNull TextView debugLog, @NonNull LinearLayout debugPanel,
+      @NonNull TextView debugTitle, @NonNull LinearLayout offlineContainer,
       @NonNull ProgressBar progressBar, @NonNull TextView textOfflineBody,
       @NonNull TextView textOfflineTitle, @NonNull MaterialToolbar toolbar,
       @NonNull WebView webContent) {
     this.rootView = rootView;
+    this.buttonCloseDebug = buttonCloseDebug;
     this.buttonRetry = buttonRetry;
+    this.debugHint = debugHint;
+    this.debugLog = debugLog;
+    this.debugPanel = debugPanel;
+    this.debugTitle = debugTitle;
     this.offlineContainer = offlineContainer;
     this.progressBar = progressBar;
     this.textOfflineBody = textOfflineBody;
@@ -86,9 +108,39 @@ public final class FragmentWebPageBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.buttonCloseDebug;
+      MaterialButton buttonCloseDebug = ViewBindings.findChildViewById(rootView, id);
+      if (buttonCloseDebug == null) {
+        break missingId;
+      }
+
       id = R.id.buttonRetry;
       MaterialButton buttonRetry = ViewBindings.findChildViewById(rootView, id);
       if (buttonRetry == null) {
+        break missingId;
+      }
+
+      id = R.id.debugHint;
+      TextView debugHint = ViewBindings.findChildViewById(rootView, id);
+      if (debugHint == null) {
+        break missingId;
+      }
+
+      id = R.id.debugLog;
+      TextView debugLog = ViewBindings.findChildViewById(rootView, id);
+      if (debugLog == null) {
+        break missingId;
+      }
+
+      id = R.id.debugPanel;
+      LinearLayout debugPanel = ViewBindings.findChildViewById(rootView, id);
+      if (debugPanel == null) {
+        break missingId;
+      }
+
+      id = R.id.debugTitle;
+      TextView debugTitle = ViewBindings.findChildViewById(rootView, id);
+      if (debugTitle == null) {
         break missingId;
       }
 
@@ -128,8 +180,9 @@ public final class FragmentWebPageBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentWebPageBinding((LinearLayout) rootView, buttonRetry, offlineContainer,
-          progressBar, textOfflineBody, textOfflineTitle, toolbar, webContent);
+      return new FragmentWebPageBinding((LinearLayout) rootView, buttonCloseDebug, buttonRetry,
+          debugHint, debugLog, debugPanel, debugTitle, offlineContainer, progressBar,
+          textOfflineBody, textOfflineTitle, toolbar, webContent);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

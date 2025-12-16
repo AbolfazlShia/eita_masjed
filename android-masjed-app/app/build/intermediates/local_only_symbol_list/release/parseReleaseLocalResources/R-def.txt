@@ -61,6 +61,7 @@ id announcementsList
 id appTitle
 id backgroundImage
 id bottomNav
+id buttonCloseDebug
 id buttonDailyPrayer
 id buttonDailyZiyarat
 id buttonForceUpdate
@@ -79,6 +80,10 @@ id cardSunrise
 id cardSunset
 id cardZuhr
 id dashboardScroll
+id debugHint
+id debugLog
+id debugPanel
+id debugTitle
 id footerBannerCard
 id gradientOverlay
 id heroCard

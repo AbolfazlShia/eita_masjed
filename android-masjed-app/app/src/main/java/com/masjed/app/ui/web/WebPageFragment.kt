@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
@@ -35,6 +36,8 @@ import com.masjed.app.ui.common.DeskShortcutViewModel
 import com.masjed.app.util.NetworkUtils
 import com.masjed.app.util.UrlUtils
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class WebPageFragment : Fragment(R.layout.fragment_web_page) {
 
@@ -56,6 +59,9 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
     private val forceLogout: Boolean by lazy { arguments?.getBoolean(ARG_FORCE_LOGOUT, false) ?: false }
     private val deskShortcutViewModel: DeskShortcutViewModel by activityViewModels()
     private val launchedFromDeskShortcut: Boolean by lazy { arguments?.getBoolean(ARG_FROM_DESK_SHORTCUT, false) ?: false }
+    private val debugLogs = mutableListOf<String>()
+    private val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    private var debugPanelVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,6 +89,7 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
         setupToolbar()
         setupWebView()
         setupRetry()
+        setupDebugPanel()
         if (forceLogout) {
             clearPersistedCookies()
         }
@@ -115,6 +122,10 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
     private fun setupToolbar() {
         binding.toolbar.title = if (pageTitle.isBlank()) getString(R.string.app_name) else pageTitle
         binding.toolbar.setNavigationOnClickListener { navigateBack() }
+        binding.toolbar.setOnLongClickListener {
+            toggleDebugPanel(!debugPanelVisible)
+            true
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -127,11 +138,27 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
             settings.setSupportZoom(true)
             settings.builtInZoomControls = true
             settings.displayZoomControls = false
+            @Suppress("DEPRECATION")
+            settings.layoutAlgorithm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+            } else {
+                WebSettings.LayoutAlgorithm.NORMAL
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             }
             addJavascriptInterface(DeskBridgeHandler(), "MasjedBridge")
-            webChromeClient = WebChromeClient()
+            webChromeClient = object : WebChromeClient() {
+                override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                    consoleMessage?.let {
+                        appendDebugLog(
+                            "console [${it.messageLevel()}] ${it.sourceId()}:${it.lineNumber()} → ${it.message()}",
+                            autoShow = it.messageLevel() == ConsoleMessage.MessageLevel.ERROR
+                        )
+                    }
+                    return super.onConsoleMessage(consoleMessage)
+                }
+            }
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(
                     view: WebView?,
@@ -158,6 +185,7 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
                     if (shouldPersistCookies()) {
                         persistCookies(url)
                     }
+                    injectDebugBridge()
                 }
 
                 override fun onReceivedError(
@@ -172,6 +200,12 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
                             loadUrl("about:blank")
                         }
                         showOffline(determineOfflineReason())
+                        appendDebugLog("صفحه اصلی دچار خطا شد: ${error?.description}", autoShow = true)
+                    } else {
+                        appendDebugLog(
+                            "منبع ${request?.url} بارگذاری نشد: ${error?.description}",
+                            autoShow = true
+                        )
                     }
                 }
 
@@ -184,6 +218,15 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
                         binding.progressBar.visibility = View.GONE
                         view?.stopLoading()
                         showOffline(OfflineReason.SERVER)
+                        appendDebugLog(
+                            "HTTP ${errorResponse?.statusCode} برای صفحه اصلی",
+                            autoShow = true
+                        )
+                    } else {
+                        appendDebugLog(
+                            "HTTP ${errorResponse?.statusCode} برای ${request?.url}",
+                            autoShow = true
+                        )
                     }
                 }
             }
@@ -204,12 +247,129 @@ class WebPageFragment : Fragment(R.layout.fragment_web_page) {
     private fun loadUrl() {
         val finalUrl = UrlUtils.buildWebUrl(pagePath)
         Log.d("WebPageFragment", "Loading URL: $finalUrl")
+        appendDebugLog("Loading $finalUrl")
         binding.webContent.loadUrl(finalUrl)
     }
 
     private fun setupRetry() {
         binding.buttonRetry.setOnClickListener {
             attemptLoad()
+        }
+    }
+
+    private fun setupDebugPanel() {
+        binding.buttonCloseDebug.setOnClickListener {
+            toggleDebugPanel(false)
+        }
+        binding.debugPanel.setOnClickListener { /* block clicks from passing through */ }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun injectDebugBridge() {
+        val script = """
+            (function() {
+                if (window.__masjedDebugHookInstalled) {
+                    try {
+                        if (typeof window.__masjedDumpState === 'function') {
+                            window.__masjedDumpState('refresh');
+                        }
+                    } catch (_) {}
+                    return;
+                }
+                window.__masjedDebugHookInstalled = true;
+                var log = function(level, msg) {
+                    try {
+                        console[level]('[masjed-debug] ' + msg);
+                    } catch (err) {
+                        console.error('[masjed-debug] failed to log message: ' + err);
+                    }
+                };
+                function capturePanelState(context) {
+                    var surface = document.querySelector('[data-devotional-panel=\"surface\"]');
+                    var scroll = document.querySelector('[data-devotional-scroll=\"content\"]');
+                    if (!surface || !scroll) {
+                        log('log', 'panel(' + context + '): missing surface=' + !!surface + ', scroll=' + !!scroll);
+                        return false;
+                    }
+                    var surfaceStyle = window.getComputedStyle(surface);
+                    var scrollStyle = window.getComputedStyle(scroll);
+                    log('log', 'panel(' + context + '): surfaceBg=' + surfaceStyle.backgroundImage + ', surfaceColor=' + surfaceStyle.backgroundColor + ', surfaceShadow=' + surfaceStyle.boxShadow);
+                    log('log', 'panel(' + context + '): scrollBg=' + scrollStyle.backgroundImage + ', scrollColor=' + scrollStyle.backgroundColor + ', font=' + scrollStyle.fontFamily);
+                    var gradientSupport = surfaceStyle.backgroundImage && surfaceStyle.backgroundImage.indexOf('gradient') !== -1;
+                    log('log', 'panel(' + context + '): gradientSupport=' + gradientSupport + ', scrollHeight=' + scroll.scrollHeight + ', clientHeight=' + scroll.clientHeight);
+                    return true;
+                }
+
+                window.__masjedDumpState = function(context) {
+                    try {
+                        var sheets = Array.prototype.map.call(document.styleSheets || [], function(sheet) {
+                            var href = sheet.href || 'inline';
+                            return href;
+                        });
+                        log('log', 'state(' + context + '): ua=' + navigator.userAgent + ', sheets=' + sheets.join(' | '));
+                        var bodyBg = window.getComputedStyle(document.body || document.documentElement).backgroundImage;
+                        log('log', 'state(' + context + '): bodyBg=' + bodyBg);
+                        capturePanelState(context);
+                    } catch (err) {
+                        log('error', 'state(' + context + ') failed: ' + err);
+                    }
+                };
+                window.__masjedDumpState('initial');
+                window.addEventListener('error', function(event) {
+                    try {
+                        if (event.target && event.target !== window && event.target.tagName) {
+                            var url = event.target.src || event.target.href || event.target.currentSrc || '';
+                            log('error', 'resource error tag=' + event.target.tagName + ', url=' + url);
+                        } else {
+                            log('error', 'js error message=' + event.message + ' at ' + event.filename + ':' + event.lineno + ':' + event.colno);
+                        }
+                    } catch (err) {
+                        log('error', 'listener error: ' + err);
+                    }
+                }, true);
+                window.addEventListener('load', function() {
+                    window.__masjedDumpState('load');
+                });
+                var panelWatcherAttempts = 0;
+                var panelWatcher = setInterval(function() {
+                    panelWatcherAttempts++;
+                    var context = 'watch' + panelWatcherAttempts;
+                    var captured = false;
+                    try {
+                        captured = capturePanelState(context);
+                    } catch (err) {
+                        log('error', 'panel(' + context + ') failed: ' + err);
+                    }
+                    if (captured || panelWatcherAttempts >= 20) {
+                        clearInterval(panelWatcher);
+                    }
+                }, 600);
+            })();
+        """.trimIndent()
+        binding.webContent.evaluateJavascript(script, null)
+    }
+
+    private fun toggleDebugPanel(show: Boolean) {
+        if (debugPanelVisible == show) return
+        debugPanelVisible = show
+        binding.debugPanel.visibility = if (show) View.VISIBLE else View.GONE
+        binding.webContent.visibility = if (show) View.GONE else View.VISIBLE
+        if (show) {
+            binding.offlineContainer.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun appendDebugLog(message: String, autoShow: Boolean = false) {
+        val timestamp = timeFormatter.format(System.currentTimeMillis())
+        val entry = "[$timestamp] $message"
+        debugLogs.add(entry)
+        if (debugLogs.size > 200) {
+            debugLogs.removeAt(0)
+        }
+        binding.debugLog.text = debugLogs.joinToString("\n")
+        if (autoShow) {
+            toggleDebugPanel(true)
         }
     }
 
