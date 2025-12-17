@@ -146,32 +146,29 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
       maxHeight: "60vh",
       overflowY: "auto",
       boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.4)",
-    };
-
-    const paragraphStyle: React.CSSProperties = {
-      marginBottom: 14,
-      lineHeight: "2.4rem",
+      lineHeight: "2.3rem",
       fontSize: "1.25rem",
       fontWeight: 600,
       color: "#0b1728",
+      fontFamily: '"Amiri", "Scheherazade New", "IranNastaliq", serif',
     };
 
     return (
       <div style={outerStyle} dir="rtl">
         <div style={shellStyle}>
-          <div style={badgeStyle}>{isDua ? "دعای روز" : "زیارت روز"} {dayLabel}</div>
+          <div style={badgeStyle}>
+            {isDua ? "دعای روز" : "زیارت روز"} {dayLabel}
+          </div>
           <div style={cardStyle} data-devotional-panel="surface">
             <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{title}</h1>
-            <p style={{ fontSize: 13, color: "#0f5132", marginBottom: 10 }}>{isDua ? "متن کامل دعا" : "متن کامل زیارت"}</p>
+            <p style={{ fontSize: 13, color: "#0f5132", marginBottom: 10 }}>
+              {isDua ? "متن کامل دعا" : "متن کامل زیارت"}
+            </p>
             <div style={scrollBoxStyle} data-devotional-scroll="content">
               {lines.map((line, idx) => {
                 const trimmed = line.trim();
                 if (!trimmed) return null;
-                return (
-                  <p key={idx} style={paragraphStyle}>
-                    {trimmed}
-                  </p>
-                );
+                return <p key={idx} style={{ marginBottom: 14 }}>{trimmed}</p>;
               })}
             </div>
             <p style={{ marginTop: 18, fontSize: 11, textAlign: "center", fontWeight: 700 }}>
@@ -187,108 +184,6 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
     return renderInAppLayout();
   }
 
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { devotionalSchedule } from "@/app/_components/home-shell";
-
-type DevotionalClientProps = {
-  initialParams: {
-    type?: string | null;
-    day?: string | null;
-    inApp?: string | null;
-  };
-};
-
-export default function DevotionalClient({ initialParams }: DevotionalClientProps) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
-
-  const currentTypeParam = (searchParams.get("type") ?? initialParams.type ?? "dua") as "dua" | "ziyarat";
-  const currentDayParam = searchParams.get("day") ?? initialParams.day ?? undefined;
-  const isInApp = (searchParams.get("inApp") ?? initialParams.inApp ?? "") === "1";
-
-  const dayIndex = Number.isInteger(Number(currentDayParam))
-    ? parseInt(currentDayParam as string, 10)
-    : new Date().getDay();
-  const info = devotionalSchedule[dayIndex];
-
-  const isDua = currentTypeParam === "dua";
-  const title = info ? (isDua ? info.duaTitle : info.ziyaratTitle) : "متن یافت نشد";
-  const dayLabel = info?.dayLabel ?? "";
-  const content = info ? (isDua ? info.duaContent : info.ziyaratContent) : "موردی برای این روز پیدا نشد.";
-
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof document === "undefined") return "light";
-    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-  });
-
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const getTheme = () => (document.documentElement.dataset.theme === "dark" ? "dark" : "light");
-    setTheme(getTheme());
-    const observer = new MutationObserver(() => setTheme(getTheme()));
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const updateViewport = () => {
-      setViewportHeight(window.innerHeight);
-    };
-    updateViewport();
-    window.addEventListener("resize", updateViewport);
-    window.addEventListener("orientationchange", updateViewport);
-    return () => {
-      window.removeEventListener("resize", updateViewport);
-      window.removeEventListener("orientationchange", updateViewport);
-    };
-  }, []);
-
-  useEffect(() => {
-    const node = scrollAreaRef.current;
-    if (!node) return;
-    const handleTouchMove = (event: TouchEvent) => {
-      event.stopPropagation();
-    };
-    node.addEventListener("touchmove", handleTouchMove, { passive: true });
-    return () => {
-      node.removeEventListener("touchmove", handleTouchMove);
-    };
-  }, []);
-
-  const goHome = () => {
-    if (isInApp && typeof window !== "undefined" && typeof document !== "undefined") {
-      let handledDeepLink = false;
-      const handleVisibilityChange = () => {
-        if (document.visibilityState === "hidden") {
-          handledDeepLink = true;
-          document.removeEventListener("visibilitychange", handleVisibilityChange);
-        }
-      };
-
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-      window.location.href = "masjed://home";
-
-      setTimeout(() => {
-        document.removeEventListener("visibilitychange", handleVisibilityChange);
-        if (!handledDeepLink) {
-          router.push("/");
-        }
-      }, 600);
-    }
-
-    router.push("/");
-  };
-
-  const isLightTheme = isInApp ? true : theme === "light";
-
-  const lines = content.split("\n");
-
   const panelSurface = isLightTheme
     ? "border border-emerald-200/80 bg-white/90 shadow-[0_30px_80px_rgba(34,197,94,0.22)]"
     : "border border-white/15 bg-[#07131f]/85 shadow-[0_35px_95px_rgba(0,0,0,0.7)] backdrop-blur";
@@ -296,6 +191,14 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
   const scrollSurface = isLightTheme
     ? "bg-gradient-to-br from-emerald-50 via-white to-amber-50"
     : "bg-gradient-to-br from-[#031c18] via-[#04161a] to-[#050e18]";
+
+  const scrollStyle: React.CSSProperties = {
+    fontFamily: '"Amiri", "Scheherazade New", "IranNastaliq", serif',
+    WebkitOverflowScrolling: "touch",
+    overscrollBehavior: "contain",
+    touchAction: "pan-y",
+    color: isLightTheme ? "#0b1f33" : "#f8fafc",
+  };
 
   const innerTextColor = isLightTheme ? "text-[#0b1f33]" : "text-white";
   const backButtonClass = isLightTheme
@@ -351,7 +254,6 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
                   ? "text-[11px] text-emerald-700/80"
                   : "text-[11px] text-emerald-200/80"
               }
-              style={inAppPanelStyle}
             >
               {isDua ? "دعای روز" : "زیارت روز"} {dayLabel}
             </p>
@@ -362,7 +264,6 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
         <div className="flex flex-1 min-h-0 flex-col">
           <main
             className={`flex-1 min-h-0 overflow-hidden rounded-3xl p-5 sm:p-7 ${panelSurface}`}
-            style={inAppPanelStyle}
             data-devotional-panel="surface"
           >
             <div className="mb-4 flex items-center justify-between gap-3">
