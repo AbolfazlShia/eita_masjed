@@ -1,19 +1,11 @@
 [
     {
-        "merged": "com.masjed.app-mergeReleaseResources-50:/layout/fragment_web_page.xml",
-        "source": "com.masjed.app-main-53:/layout/fragment_web_page.xml"
-    },
-    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/view_announcement.xml",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/view_announcement.xml"
     },
     {
-        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/fragment_services.xml",
-        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/fragment_services.xml"
-    },
-    {
-        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/fragment_basij_scan.xml",
-        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/fragment_basij_scan.xml"
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/fragment_devotions.xml",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/fragment_devotions.xml"
     },
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/fragment_server_wake.xml",
@@ -38,6 +30,18 @@
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/fragment_home.xml",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/fragment_services.xml",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/fragment_services.xml"
+    },
+    {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/fragment_basij_scan.xml",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/layout/fragment_basij_scan.xml"
+    },
+    {
+        "merged": "com.masjed.app-mergeReleaseResources-50:/layout/fragment_devotions.xml",
+        "source": "com.masjed.app-main-53:/layout/fragment_devotions.xml"
     },
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-mergeReleaseResources-50:/layout/view_service_item.xml",

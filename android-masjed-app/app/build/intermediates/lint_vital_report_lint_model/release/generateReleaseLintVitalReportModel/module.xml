@@ -1,6 +1,6 @@
 <lint-module
     format="1"
-    dir="/Users/abolfazl/Documents/masjed/android-masjed-app/app"
+    dir="/Users/abolfazl/Documents/مسجد/android-masjed-app/app"
     name=":app"
     type="APP"
     maven="MasjedAndroid:app:unspecified"

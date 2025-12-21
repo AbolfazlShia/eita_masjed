@@ -50,6 +50,17 @@
     <string name="devotion_card_title">برنامه معنوی روز %1$s</string>
     <string name="devotion_prayer_button">دعای روز %1$s</string>
     <string name="devotion_ziyarat_button">زیارت روز %1$s</string>
+    <string name="devotional_daily_label">امروز %1$s</string>
+    <string name="devotional_error">دریافت متن با مشکل مواجه شد.</string>
+    <string name="devotional_evening_dedication">تلاوت را هدیه کنید به سلامتی امام زمان (عج)</string>
+    <string name="devotional_go_today">بازگشت به امروز</string>
+    <string name="devotional_loading">در حال دریافت متن دعا…</string>
+    <string name="devotional_retry">تلاش دوباره</string>
+    <string name="devotional_screen_title">ادعیه و زیارات امروز</string>
+    <string name="devotional_subtitle_dua">متن کامل دعا به همراه ترجمه</string>
+    <string name="devotional_subtitle_ziyarat">متن کامل زیارت ویژهٔ امروز</string>
+    <string name="devotional_switch_prayer">دعای روز</string>
+    <string name="devotional_switch_ziyarat">زیارت روز</string>
     <string name="devotions_selected_day">برنامه روز %1$s</string>
     <string name="error_loading_dashboard">بارگذاری سایت با خطا مواجه شد. دوباره تلاش کنید.</string>
     <string name="error_network_unavailable">اتصال اینترنت برقرار نیست.</string>
@@ -59,6 +70,7 @@
     <string name="manager_relogin_action">متوجه شدم</string>
     <string name="manager_relogin_message">ورود مدیر انجام شد. برای باز شدن میز کار، اپلیکیشن را ببندید و دوباره باز کنید.</string>
     <string name="manager_relogin_title">ورود دوباره لازم است</string>
+    <string name="nav_devotions">ادعیه</string>
     <string name="prayer_nav_next">روز بعد</string>
     <string name="prayer_nav_previous">روز قبل</string>
     <string name="prayer_nav_today">بازگشت به امروز</string>

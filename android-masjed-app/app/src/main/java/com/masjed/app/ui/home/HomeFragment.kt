@@ -23,8 +23,10 @@ import com.masjed.app.IntentHelper
 import com.masjed.app.R
 import com.masjed.app.data.DashboardData
 import com.masjed.app.data.DashboardUiState
+import com.masjed.app.data.DevotionalType
 import com.masjed.app.data.QuickAction
 import com.masjed.app.ui.home.UpdateState
+import com.masjed.app.ui.devotions.DevotionsFragment
 import com.masjed.app.ui.web.WebPageFragment
 import com.masjed.app.databinding.FragmentHomeBinding
 import com.masjed.app.databinding.ItemPrayerTimeBinding
@@ -134,7 +136,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     renderQuickActions(state.quickActions)
                     renderAnnouncements(state.announcements)
                     renderHadith(state.hadith)
-                    renderDevotionLinks(state.devotionDayLabel, state.devotionDayParam)
+                    renderDevotionLinks(state.devotionDayLabel, state.devotionDayParam, state.selectedDateMillis)
                     renderUpdateState(state.updateState)
                 }
             }
@@ -202,7 +204,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             itemBinding.quickActionCard.isEnabled = !action.disabled
             itemBinding.quickActionCard.setOnClickListener {
                 if (!action.disabled) {
+                    if (action.destination == "internal_devotional") {
+                        openDevotionsNative(viewModel.uiState.value.selectedDateMillis, null)
+                    } else {
                         openWebPage(action.title, action.destination)
+                    }
                 }
             }
             binding.quickActionsList.addView(itemBinding.root)
@@ -263,7 +269,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.textHadithSource.text = hadith.source
     }
 
-    private fun renderDevotionLinks(dayLabel: String, dayParam: Int) {
+    private fun renderDevotionLinks(dayLabel: String, dayParam: Int, selectedDateMillis: Long) {
         val hasData = dayLabel.isNotBlank()
         binding.heroDevotionContainer.isVisible = hasData
         if (!hasData) {
@@ -277,18 +283,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         binding.buttonDailyPrayer.text = getString(R.string.devotion_prayer_button, dayLabel)
         binding.buttonDailyPrayer.setOnClickListener {
-            openWebPage(
-                title = getString(R.string.devotion_prayer_button, dayLabel),
-                path = "/devotional?type=dua&day=$dayParam"
-            )
+            openDevotionsNative(selectedDateMillis, DevotionalType.Dua)
         }
 
         binding.buttonDailyZiyarat.text = getString(R.string.devotion_ziyarat_button, dayLabel)
         binding.buttonDailyZiyarat.setOnClickListener {
-            openWebPage(
-                title = getString(R.string.devotion_ziyarat_button, dayLabel),
-                path = "/devotional?type=ziyarat&day=$dayParam"
-            )
+            openDevotionsNative(selectedDateMillis, DevotionalType.Ziyarat)
         }
     }
 
@@ -348,5 +348,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             WebPageFragment.ARG_PATH to finalPath
         )
         findNavController().navigate(R.id.nav_web_page, args)
+    }
+
+    private fun openDevotionsNative(dateMillis: Long?, type: DevotionalType?) {
+        val args = android.os.Bundle()
+        dateMillis?.takeIf { it > 0L }?.let {
+            args.putLong(DevotionsFragment.ARG_INITIAL_DATE, it)
+        }
+        type?.let {
+            args.putString(DevotionsFragment.ARG_INITIAL_TYPE, it.queryValue)
+        }
+        findNavController().navigate(R.id.nav_devotions, args)
     }
 }

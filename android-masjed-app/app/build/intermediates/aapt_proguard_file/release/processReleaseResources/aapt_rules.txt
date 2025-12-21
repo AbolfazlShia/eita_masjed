@@ -108,6 +108,8 @@
 
 -keep class com.masjed.app.ui.basij.BasijScanFragment { <init>(...); }
 
+-keep class com.masjed.app.ui.devotions.DevotionsFragment { <init>(...); }
+
 -keep class com.masjed.app.ui.home.HomeFragment { <init>(...); }
 
 -keep class com.masjed.app.ui.server.ServerWakeFragment { <init>(...); }

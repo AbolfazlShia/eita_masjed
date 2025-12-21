@@ -29,6 +29,6 @@
       applicationId="com.masjed.app"
       generatedSourceFolders="build/generated/ap_generated_sources/release/out:build/generated/source/buildConfig/release:build/generated/data_binding_base_class_source_out/release/out"
       generatedResourceFolders="build/generated/res/resValues/release"
-      desugaredMethodsFiles="/Users/abolfazl/.gradle/caches/transforms-4/9b567de11e486fa6d3c32cdb4770429b/transformed/D8BackportedDesugaredMethods.txt">
+      desugaredMethodsFiles="/Users/abolfazl/.gradle/caches/transforms-4/e088d1868d412a0ce5042e54a452f78f/transformed/D8BackportedDesugaredMethods.txt">
   </artifact>
 </variant>

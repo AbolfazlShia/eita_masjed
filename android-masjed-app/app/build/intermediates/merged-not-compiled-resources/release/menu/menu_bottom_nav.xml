@@ -5,6 +5,10 @@
         android:icon="@drawable/ic_nav_home"
         android:title="خانه" />
     <item
+        android:id="@+id/nav_devotions"
+        android:icon="@drawable/ic_nav_devotion"
+        android:title="@string/nav_devotions" />
+    <item
         android:id="@+id/nav_services"
         android:icon="@drawable/ic_nav_services"
         android:title="خدمات" />

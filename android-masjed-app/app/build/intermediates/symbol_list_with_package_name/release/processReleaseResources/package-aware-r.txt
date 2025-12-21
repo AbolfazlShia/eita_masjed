@@ -3074,6 +3074,14 @@ drawable bg_chip
 drawable bg_chip_city
 drawable bg_chip_soft
 drawable bg_devotion_action
+drawable bg_devotion_chip_active
+drawable bg_devotion_nav
+drawable bg_devotion_toggle_inactive
+drawable bg_devotional_dawn
+drawable bg_devotional_dawn_card
+drawable bg_devotional_glow
+drawable bg_devotional_sunrise_card
+drawable bg_devotional_wall
 drawable bg_footer_banner
 drawable bg_home_header
 drawable bg_masjed_gradient
@@ -3117,8 +3125,12 @@ drawable ic_nav_desk
 drawable ic_nav_devotion
 drawable ic_nav_home
 drawable ic_nav_services
+drawable ic_prayer
 drawable ic_search_black_24
 drawable ic_signal_off
+drawable ic_star
+drawable ic_sunrise
+drawable illustration_devotional_sunrise
 drawable m3_avd_hide_password
 drawable m3_avd_show_password
 drawable m3_bottom_sheet_drag_handle
@@ -3297,6 +3309,7 @@ id beginning
 id bestChoice
 id blocking
 id bottom
+id bottomGlow
 id bottomNav
 id bounce
 id bounceBoth
@@ -3310,6 +3323,7 @@ id buttonNextDay
 id buttonOpenFullSite
 id buttonPanel
 id buttonPickImage
+id buttonPrevDay
 id buttonPreviousDay
 id buttonRetry
 id buttonRetryScan
@@ -3376,6 +3390,7 @@ id design_menu_item_action_area
 id design_menu_item_action_area_stub
 id design_menu_item_text
 id design_navigation_view
+id devotionCard
 id dialog_button
 id dimensions
 id direct
@@ -3406,6 +3421,8 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id errorGroup
+id errorMessage
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3436,6 +3453,7 @@ id graph_wrap
 id group_divider
 id grouping
 id groups
+id headerDateRow
 id header_title
 id heroCard
 id heroDevotionContainer
@@ -3453,6 +3471,7 @@ id ifRoom
 id ignore
 id ignoreRequest
 id image
+id imageDevotionArt
 id immediateStop
 id included
 id indeterminate
@@ -3540,6 +3559,7 @@ id multiply
 id navHostFragment
 id nav_basij_scan
 id nav_controller_view_tag
+id nav_devotions
 id nav_graph
 id nav_home
 id nav_host_fragment_container
@@ -3668,6 +3688,7 @@ id showTitle
 id sin
 id skipCollapsed
 id skipped
+id skyIllustration
 id slide
 id sliding_pane_detail_container
 id sliding_pane_layout
@@ -3704,6 +3725,8 @@ id submenuarrow
 id submit_area
 id supportScrollUp
 id swipeRefresh
+id switchPrayer
+id switchZiyarat
 id tabMode
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
@@ -3722,7 +3745,10 @@ id text
 id text2
 id textCity
 id textCityChip
+id textDevotionBody
+id textDevotionDay
 id textDevotionDescription
+id textDevotionSubtitle
 id textDevotionTitle
 id textEnd
 id textError
@@ -3736,6 +3762,8 @@ id textPrayerSelectedDate
 id textQuickActionsTitle
 id textScanSubtitle
 id textScanTitle
+id textSelectedCalendar
+id textSelectedDate
 id textShamsiDate
 id textSpacerNoButtons
 id textSpacerNoTitle
@@ -3758,8 +3786,10 @@ id title
 id titleDividerNoCustom
 id title_template
 id toggle
+id toggleRow
 id toolbar
 id top
+id topGlow
 id topPanel
 id touch_outside
 id transitionToEnd
@@ -3942,6 +3972,7 @@ layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout fragment_basij_scan
+layout fragment_devotions
 layout fragment_home
 layout fragment_server_wake
 layout fragment_services
@@ -4090,6 +4121,17 @@ string devotion_card_subtitle
 string devotion_card_title
 string devotion_prayer_button
 string devotion_ziyarat_button
+string devotional_daily_label
+string devotional_error
+string devotional_evening_dedication
+string devotional_go_today
+string devotional_loading
+string devotional_retry
+string devotional_screen_title
+string devotional_subtitle_dua
+string devotional_subtitle_ziyarat
+string devotional_switch_prayer
+string devotional_switch_ziyarat
 string devotions_selected_day
 string error_a11y_label
 string error_icon_content_description
@@ -4218,6 +4260,7 @@ string mtrl_timepicker_cancel
 string mtrl_timepicker_confirm
 string nav_app_bar_navigate_up_description
 string nav_app_bar_open_drawer_description
+string nav_devotions
 string password_toggle_content_description
 string path_password_eye
 string path_password_eye_mask_strike_through

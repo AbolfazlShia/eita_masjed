@@ -2069,6 +2069,17 @@
     <string name="devotion_card_title">برنامه معنوی روز %1$s</string>
     <string name="devotion_prayer_button">دعای روز %1$s</string>
     <string name="devotion_ziyarat_button">زیارت روز %1$s</string>
+    <string name="devotional_daily_label">امروز %1$s</string>
+    <string name="devotional_error">دریافت متن با مشکل مواجه شد.</string>
+    <string name="devotional_evening_dedication">تلاوت را هدیه کنید به سلامتی امام زمان (عج)</string>
+    <string name="devotional_go_today">بازگشت به امروز</string>
+    <string name="devotional_loading">در حال دریافت متن دعا…</string>
+    <string name="devotional_retry">تلاش دوباره</string>
+    <string name="devotional_screen_title">ادعیه و زیارات امروز</string>
+    <string name="devotional_subtitle_dua">متن کامل دعا به همراه ترجمه</string>
+    <string name="devotional_subtitle_ziyarat">متن کامل زیارت ویژهٔ امروز</string>
+    <string name="devotional_switch_prayer">دعای روز</string>
+    <string name="devotional_switch_ziyarat">زیارت روز</string>
     <string name="devotions_selected_day">برنامه روز %1$s</string>
     <string description="Screen reader announcement for when a checkbox is on error. [CHAR LIMIT=NONE]" name="error_a11y_label">
     Error: invalid
@@ -2205,6 +2216,7 @@
     <string description="Button text to indicate that the widget will save the user&apos;s selection [CHAR_LIMIT=16]" name="mtrl_timepicker_confirm">OK</string>
     <string name="nav_app_bar_navigate_up_description">Navigate up</string>
     <string name="nav_app_bar_open_drawer_description">Open navigation drawer</string>
+    <string name="nav_devotions">ادعیه</string>
     <string name="password_toggle_content_description">Show password</string>
     <string name="path_password_eye" translatable="false">M12,4.5C7,4.5 2.73,7.61 1,12c1.73,4.39 6,7.5 11,7.5s9.27,-3.11 11,-7.5c-1.73,-4.39 -6,-7.5 -11,-7.5zM12,17c-2.76,0 -5,-2.24 -5,-5s2.24,-5 5,-5 5,2.24 5,5 -2.24,5 -5,5zM12,9c-1.66,0 -3,1.34 -3,3s1.34,3 3,3 3,-1.34 3,-3 -1.34,-3 -3,-3z</string>
     <string name="path_password_eye_mask_strike_through" translatable="false">M2,4.27 L19.73,22 L22.27,19.46 L4.54,1.73 L4.54,1 L23,1 L23,23 L1,23 L1,4.27 Z</string>

@@ -4,7 +4,7 @@
             "outputFile": "com.masjed.app-mergeReleaseResources-49:/values-id/values-id.xml",
             "map": [
                 {
-                    "source": "/Users/abolfazl/.gradle/caches/transforms-4/e9c6a7e012ba81a32189e00f08a69d2d/transformed/jetified-zxing-android-embedded-4.3.0/res/values-id/values-id.xml",
+                    "source": "/Users/abolfazl/.gradle/caches/transforms-4/974b538b41208320dcc2a1604d7cd363/transformed/jetified-zxing-android-embedded-4.3.0/res/values-id/values-id.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
