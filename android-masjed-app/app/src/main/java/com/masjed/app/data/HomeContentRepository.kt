@@ -43,7 +43,7 @@ object HomeContentRepository {
             title = "ادعیه و زیارات",
             description = "نمایش دعای روز و زیارت مخصوص همان روز",
             icon = "📿",
-            destination = "internal_devotional",
+            destination = "/devotions",
             accentStart = 0x4DE2F3EA.toInt(),
             accentEnd = 0x19DCFCE7.toInt()
         ),

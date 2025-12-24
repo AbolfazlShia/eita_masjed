@@ -3,41 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
+    android:padding="16dp"
     android:clipChildren="false"
-    android:background="@drawable/bg_devotional_wall"
-    android:padding="20dp">
+    android:clipToPadding="false"
+    android:background="@drawable/bg_devotional_aurora">
 
     <View
-        android:id="@+id/topGlow"
-        android:layout_width="320dp"
-        android:layout_height="320dp"
+        android:id="@+id/auroraHalo"
+        android:layout_width="360dp"
+        android:layout_height="360dp"
         android:alpha="0.55"
         android:background="@drawable/bg_devotional_glow"
-        android:translationY="-60dp"
+        android:translationY="-80dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <View
-        android:id="@+id/bottomGlow"
-        android:layout_width="420dp"
-        android:layout_height="420dp"
-        android:alpha="0.35"
+        android:id="@+id/auroraBottom"
+        android:layout_width="460dp"
+        android:layout_height="520dp"
+        android:alpha="0.3"
         android:background="@drawable/bg_devotional_glow"
-        android:translationY="40dp"
+        android:translationY="120dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/skyIllustration"
-        android:layout_width="0dp"
-        android:layout_height="220dp"
-        android:alpha="0.4"
-        android:src="@drawable/illustration_devotional_sunrise"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -45,39 +34,73 @@
         android:id="@+id/headerDateRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:elevation="6dp"
-        app:cardCornerRadius="32dp"
-        app:cardUseCompatPadding="true"
-        app:strokeColor="#1AFFFFFF"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:clipToPadding="false"
+        app:cardCornerRadius="40dp"
+        app:cardUseCompatPadding="false"
+        app:cardElevation="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="14dp"
-            android:background="@drawable/bg_devotional_sunrise_card">
+            android:background="@drawable/bg_devotional_hero"
+            android:padding="22dp">
 
-            <ImageButton
-                android:id="@+id/buttonPrevDay"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:background="@drawable/bg_devotion_nav"
-                android:contentDescription="@string/prayer_nav_previous"
-                android:src="@drawable/ic_chevron_left"
-                android:tint="@android:color/white" />
+            <TextView
+                android:id="@+id/textHeroChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_devotion_chip_active"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="6dp"
+                android:text="@string/devotional_badge_dua"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/textHeroTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginTop="12dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/devotional_hero_title_dua"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/textHeroChip"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/heroIllustration"
+                app:layout_constraintHorizontal_bias="0" />
+
+            <TextView
+                android:id="@+id/textHeroSubtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/devotional_hero_subtitle_dua"
+                android:textColor="#EAFEF6"
+                android:textSize="15sp"
+                android:lineSpacingExtra="4dp"
+                app:layout_constraintTop_toBottomOf="@id/textHeroTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/heroIllustration" />
+
+            <LinearLayout
+                android:id="@+id/dateInfoGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/textHeroSubtitle"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
                     android:id="@+id/textSelectedDate"
@@ -85,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:text="سه شنبه ۲۳ آبان" />
 
@@ -98,58 +121,127 @@
                     android:text="13 ربیع الاول 1445"
                     android:textColor="#E7FFED"
                     android:textSize="13sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/heroIllustration"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/illustration_devotional_mihrab"
+                android:scaleType="fitCenter"
+                android:alpha="0.95"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/heroActionRow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                app:layout_constraintTop_toBottomOf="@id/dateInfoGroup"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonToday"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/buttonPrevDay"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/devotional_go_today"
-                    android:textColor="@android:color/white"
-                    app:icon="@drawable/ic_sunrise"
-                    app:iconTint="@android:color/white"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/prayer_nav_previous"
+                    android:textAllCaps="false"
+                    android:textColor="#0C402C"
+                    app:icon="@drawable/ic_chevron_left"
+                    app:iconGravity="textStart"
+                    app:iconTint="#0C402C"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    app:cornerRadius="50dp" />
-            </LinearLayout>
+                    app:cornerRadius="999dp" />
 
-            <ImageButton
-                android:id="@+id/buttonNextDay"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:background="@drawable/bg_devotion_nav"
-                android:contentDescription="@string/prayer_nav_next"
-                android:src="@drawable/ic_chevron_right"
-                android:tint="@android:color/white" />
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonToday"
+                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FCEAA6"
+                    android:text="@string/devotional_go_today"
+                    android:textAllCaps="false"
+                    android:textColor="#0F422F"
+                    app:icon="@drawable/ic_sunrise"
+                    app:iconGravity="textStart"
+                    app:iconTint="#0F422F"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="999dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonNextDay"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/prayer_nav_next"
+                    android:textAllCaps="false"
+                    android:textColor="#0C402C"
+                    app:icon="@drawable/ic_chevron_right"
+                    app:iconGravity="textStart"
+                    app:iconTint="#0C402C"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="999dp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/toggleTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/devotional_toggle_title"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/headerDateRow"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/toggleRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:weightSum="2"
-        android:background="@drawable/bg_devotional_sunrise_card"
-        android:padding="12dp"
-        android:elevation="4dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_devotional_toggle_panel"
         android:clipToOutline="true"
-        app:layout_constraintTop_toBottomOf="@id/headerDateRow"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:weightSum="2"
+        app:layout_constraintTop_toBottomOf="@id/toggleTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/switchPrayer"
             android:layout_width="0dp"
-            android:layout_height="54dp"
+            android:layout_height="58dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bg_devotion_toggle_inactive"
             android:fontFamily="sans-serif-medium"
             android:text="@string/devotional_switch_prayer"
             android:textAllCaps="false"
@@ -160,43 +252,51 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             app:icon="@drawable/ic_prayer"
-            app:iconPadding="8dp"
+            app:iconPadding="10dp"
             app:iconTint="@android:color/white"
-            app:cornerRadius="999dp"
-            style="@style/Widget.Material3.Button" />
+            app:cornerRadius="999dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/switchZiyarat"
             android:layout_width="0dp"
-            android:layout_height="54dp"
+            android:layout_height="58dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bg_devotion_toggle_inactive"
             android:fontFamily="sans-serif-medium"
-            android:textColor="@color/colorOnBackground"
             android:text="@string/devotional_switch_ziyarat"
             android:textAllCaps="false"
+            android:textColor="@color/colorOnBackground"
             android:stateListAnimator="@null"
             android:insetLeft="0dp"
             android:insetRight="0dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             app:icon="@drawable/ic_star"
-            app:iconPadding="8dp"
+            app:iconPadding="10dp"
             app:iconTint="@android:color/white"
-            app:cornerRadius="999dp"
-            style="@style/Widget.Material3.Button" />
+            app:cornerRadius="999dp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/toggleSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/devotional_toggle_description"
+        android:textColor="#D6FFE9"
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@id/toggleRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressIndicator"
         style="@style/Widget.Material3.CircularProgressIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/toggleRow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="18dp"
+        app:layout_constraintTop_toBottomOf="@id/toggleSubtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/errorGroup"
@@ -207,7 +307,7 @@
         android:orientation="vertical"
         android:padding="12dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/toggleRow"
+        app:layout_constraintTop_toBottomOf="@id/toggleSubtitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -232,41 +332,48 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="0dp"
         app:cardBackgroundColor="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/toggleRow"
+        app:layout_constraintTop_toBottomOf="@id/toggleSubtitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:cardCornerRadius="28dp">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="24dp"
-            android:background="@drawable/bg_devotional_sunrise_card">
+            android:clipToPadding="false"
+            android:padding="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@drawable/bg_devotional_content"
+                android:padding="24dp">
 
-                <ImageView
-                    android:id="@+id/imageDevotionArt"
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/illustration_devotional_sunrise"
-                    android:alpha="0.9" />
+                <TextView
+                    android:id="@+id/textDevotionBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_devotion_chip_active"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/devotional_badge_dua"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textDevotionDay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="sans-serif-medium"
                     android:textColor="#0F5E3D"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:text="@string/devotional_daily_label" />
 
@@ -274,10 +381,10 @@
                     android:id="@+id/textDevotionTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="6dp"
                     android:fontFamily="sans-serif-medium"
-                    android:textColor="#06231A"
-                    android:textSize="24sp"
+                    android:textColor="#0A1E16"
+                    android:textSize="26sp"
                     android:textStyle="bold"
                     android:text="@string/devotional_screen_title" />
 
@@ -287,26 +394,62 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:fontFamily="sans-serif"
-                    android:text="@string/devotional_subtitle_dua"
                     android:textColor="#3B5B44"
-                    android:textSize="15sp" />
+                    android:textSize="16sp"
+                    android:text="@string/devotional_subtitle_dua" />
+
+                <ImageView
+                    android:id="@+id/imageDevotionArt"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_marginTop="16dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/illustration_devotional_mihrab"
+                    android:alpha="0.95" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:background="#22FFFFFF" />
+                    android:layout_marginTop="20dp"
+                    android:background="#26FFFFFF" />
 
                 <TextView
                     android:id="@+id/textDevotionBody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:lineSpacingExtra="6dp"
+                    android:layout_marginTop="18dp"
                     android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="6dp"
                     android:textColor="#0A3122"
-                    android:textSize="19sp"
+                    android:textSize="18sp"
                     android:text="@string/devotional_evening_dedication" />
+
+                <LinearLayout
+                    android:id="@+id/devotionHintRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_devotion_chip_active"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_sunrise"
+                        android:tint="@android:color/white" />
+
+                    <TextView
+                        android:id="@+id/textDevotionHint"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="@string/devotional_focus_hint_dua"
+                        android:textColor="#0F2B1C"
+                        android:textSize="14sp" />
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </com.google.android.material.card.MaterialCardView>

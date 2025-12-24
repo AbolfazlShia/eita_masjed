@@ -1020,6 +1020,10 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-38:/drawable-v21/material_cursor_drawable.xml"
     },
     {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_bg_devotional_content.xml.flat",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/bg_devotional_content.xml"
+    },
+    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/color_m3_button_ripple_color.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-38:/color/m3_button_ripple_color.xml"
     },
@@ -2076,6 +2080,10 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-appcompat-1.7.0-10:/drawable-hdpi-v4/abc_list_longpressed_holo.9.png"
     },
     {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_bg_devotional_toggle_panel.xml.flat",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/bg_devotional_toggle_panel.xml"
+    },
+    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_ic_chevron_left.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/ic_chevron_left.xml"
     },
@@ -2380,6 +2388,10 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-appcompat-1.7.0-10:/drawable-hdpi-v4/abc_tab_indicator_mtrl_alpha.9.png"
     },
     {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_bg_devotional_hero.xml.flat",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/bg_devotional_hero.xml"
+    },
+    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_bg_card_glass.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/bg_card_glass.xml"
     },
@@ -2410,6 +2422,10 @@
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/color_mtrl_outlined_stroke_color.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-38:/color/mtrl_outlined_stroke_color.xml"
+    },
+    {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_bg_devotional_aurora.xml.flat",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/bg_devotional_aurora.xml"
     },
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/anim_btn_radio_to_off_mtrl_dot_group_animation.xml.flat",
@@ -2656,6 +2672,10 @@
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-appcompat-1.7.0-10:/layout/abc_popup_menu_header_item_layout.xml"
     },
     {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_illustration_devotional_constellation.xml.flat",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/illustration_devotional_constellation.xml"
+    },
+    {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_abc_cab_background_top_material.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-appcompat-1.7.0-10:/drawable/abc_cab_background_top_material.xml"
     },
@@ -2666,6 +2686,10 @@
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/color_material_on_background_emphasis_high_type.xml.flat",
         "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-material-1.11.0-38:/color/material_on_background_emphasis_high_type.xml"
+    },
+    {
+        "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable_illustration_devotional_mihrab.xml.flat",
+        "source": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-main-53:/drawable/illustration_devotional_mihrab.xml"
     },
     {
         "merged": "/Users/abolfazl/.gradle/daemon/8.7/com.masjed.app-release-52:/drawable-xxxhdpi-v4_abc_text_select_handle_right_mtrl.png.flat",

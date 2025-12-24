@@ -50,10 +50,18 @@
     <string name="devotion_card_title">برنامه معنوی روز %1$s</string>
     <string name="devotion_prayer_button">دعای روز %1$s</string>
     <string name="devotion_ziyarat_button">زیارت روز %1$s</string>
+    <string name="devotional_badge_dua">دعای روز</string>
+    <string name="devotional_badge_ziyarat">زیارت روز</string>
     <string name="devotional_daily_label">امروز %1$s</string>
     <string name="devotional_error">دریافت متن با مشکل مواجه شد.</string>
     <string name="devotional_evening_dedication">تلاوت را هدیه کنید به سلامتی امام زمان (عج)</string>
+    <string name="devotional_focus_hint_dua">برای غرق شدن در دعا، نور صفحه را کم کن و هر بند را با مکث کوتاه بخوان.</string>
+    <string name="devotional_focus_hint_ziyarat">در زیارت امروز نام امامان را آرام زمزمه کن و نیتت را پیش از شروع مشخص کن.</string>
     <string name="devotional_go_today">بازگشت به امروز</string>
+    <string name="devotional_hero_subtitle_dua">نسیم طلوع را با ذکر امروز همراه کن</string>
+    <string name="devotional_hero_subtitle_ziyarat">زیارت امروز را آرام و با تمرکز بر نیت بخوان</string>
+    <string name="devotional_hero_title_dua">سپیده‌گاه دعا</string>
+    <string name="devotional_hero_title_ziyarat">سلام و زیارت سپیده</string>
     <string name="devotional_loading">در حال دریافت متن دعا…</string>
     <string name="devotional_retry">تلاش دوباره</string>
     <string name="devotional_screen_title">ادعیه و زیارات امروز</string>
@@ -61,6 +69,8 @@
     <string name="devotional_subtitle_ziyarat">متن کامل زیارت ویژهٔ امروز</string>
     <string name="devotional_switch_prayer">دعای روز</string>
     <string name="devotional_switch_ziyarat">زیارت روز</string>
+    <string name="devotional_toggle_description">هر حالت، متن کامل همراه ترجمه و نشانه‌گذاری ویژهٔ همان روز را نمایش می‌دهد.</string>
+    <string name="devotional_toggle_title">انتخاب حالت قرائت</string>
     <string name="devotions_selected_day">برنامه روز %1$s</string>
     <string name="error_loading_dashboard">بارگذاری سایت با خطا مواجه شد. دوباره تلاش کنید.</string>
     <string name="error_network_unavailable">اتصال اینترنت برقرار نیست.</string>

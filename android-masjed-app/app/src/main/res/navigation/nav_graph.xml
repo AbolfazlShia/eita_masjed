@@ -25,20 +25,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_devotions"
-        android:name="com.masjed.app.ui.devotions.DevotionsFragment"
-        android:label="ادعیه" >
-        <argument
-            android:name="arg_initial_date"
-            app:argType="long"
-            android:defaultValue="-1" />
-        <argument
-            android:name="arg_initial_type"
-            app:argType="string"
-            android:defaultValue="" />
-    </fragment>
-
-    <fragment
         android:id="@+id/nav_services"
         android:name="com.masjed.app.ui.services.ServicesFragment"
         android:label="خدمات" />

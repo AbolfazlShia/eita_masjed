@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { devotionalSchedule } from "@/lib/devotional-data";
+import { devotionalSchedule } from "@/app/_components/home-shell";
 
 type DevotionalClientProps = {
   initialParams: {
@@ -23,75 +23,14 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
   const isInApp = (searchParams.get("inApp") ?? initialParams.inApp ?? "") === "1";
 
   const dayIndex = Number.isInteger(Number(currentDayParam))
-    ? (parseInt(currentDayParam as string, 10) % 7 + 7) % 7
+    ? parseInt(currentDayParam as string, 10)
     : new Date().getDay();
+  const info = devotionalSchedule[dayIndex];
+
   const isDua = currentTypeParam === "dua";
-  const fallbackEntry = devotionalSchedule[dayIndex];
-  const fallbackDayLabel = fallbackEntry?.dayLabel ?? "";
-  const fallbackTitle = fallbackEntry ? (isDua ? fallbackEntry.duaTitle : fallbackEntry.ziyaratTitle) : "متن یافت نشد";
-  const fallbackContent = fallbackEntry
-    ? isDua
-      ? fallbackEntry.duaContent
-      : fallbackEntry.ziyaratContent
-    : "موردی برای این روز پیدا نشد.";
-
-  const [devotionalData, setDevotionalData] = useState({
-    dayLabel: fallbackDayLabel,
-    title: fallbackTitle,
-    content: fallbackContent,
-  });
-  const [devotionalLoading, setDevotionalLoading] = useState(false);
-  const [devotionalError, setDevotionalError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setDevotionalData({
-      dayLabel: fallbackDayLabel,
-      title: fallbackTitle,
-      content: fallbackContent,
-    });
-  }, [fallbackDayLabel, fallbackTitle, fallbackContent]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const fetchDevotional = async () => {
-      setDevotionalLoading(true);
-      setDevotionalError(null);
-      try {
-        const response = await fetch(`/api/devotional?type=${currentTypeParam}&day=${dayIndex}`, {
-          cache: "no-store",
-        });
-        if (!response.ok) {
-          throw new Error("عدم دسترسی به متن دعا و زیارت");
-        }
-        const payload = await response.json();
-        if (!payload?.ok) {
-          throw new Error(payload?.error || "خطا در دریافت متن دعا یا زیارت");
-        }
-        if (!cancelled) {
-          setDevotionalData({
-            dayLabel: payload.dayLabel ?? fallbackDayLabel,
-            title: payload.title ?? fallbackTitle,
-            content: payload.content ?? fallbackContent,
-          });
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setDevotionalError(
-            error instanceof Error ? error.message : "خطای ناشناخته در دریافت متن دعا یا زیارت"
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setDevotionalLoading(false);
-        }
-      }
-    };
-
-    fetchDevotional();
-    return () => {
-      cancelled = true;
-    };
-  }, [currentTypeParam, dayIndex, fallbackDayLabel, fallbackTitle, fallbackContent]);
+  const title = info ? (isDua ? info.duaTitle : info.ziyaratTitle) : "متن یافت نشد";
+  const dayLabel = info?.dayLabel ?? "";
+  const content = info ? (isDua ? info.duaContent : info.ziyaratContent) : "موردی برای این روز پیدا نشد.";
 
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof document === "undefined") return "light";
@@ -158,7 +97,6 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
   };
 
   const isLightTheme = isInApp ? true : theme === "light";
-  const { dayLabel, title, content } = devotionalData;
   const lines = content.split("\n");
 
   const renderInAppLayout = () => {
@@ -223,12 +161,9 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
           </div>
           <div style={cardStyle} data-devotional-panel="surface">
             <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{title}</h1>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-              <p style={{ fontSize: 13, color: "#0f5132" }}>{isDua ? "متن کامل دعا" : "متن کامل زیارت"}</p>
-              {devotionalLoading && (
-                <span style={{ fontSize: 11, color: "#0f5132", opacity: 0.8 }}>در حال بروزرسانی...</span>
-              )}
-            </div>
+            <p style={{ fontSize: 13, color: "#0f5132", marginBottom: 10 }}>
+              {isDua ? "متن کامل دعا" : "متن کامل زیارت"}
+            </p>
             <div style={scrollBoxStyle} data-devotional-scroll="content">
               {lines.map((line, idx) => {
                 const trimmed = line.trim();
@@ -236,9 +171,6 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
                 return <p key={idx} style={{ marginBottom: 14 }}>{trimmed}</p>;
               })}
             </div>
-            {devotionalError && (
-              <p style={{ marginTop: 12, fontSize: 11, textAlign: "center", color: "#a10f2b" }}>{devotionalError}</p>
-            )}
             <p style={{ marginTop: 18, fontSize: 11, textAlign: "center", fontWeight: 700 }}>
               تلاوت این متن را به نیت سلامتی و تعجیل در فرج حضرت ولی‌عصر (عج) هدیه کنید.
             </p>
@@ -345,17 +277,7 @@ export default function DevotionalClient({ initialParams }: DevotionalClientProp
                 >
                   {isDua ? "متن کامل دعا" : "متن کامل زیارت"}
                 </p>
-                {devotionalError && (
-                  <p className="mt-1 text-[11px] text-rose-400">
-                    {devotionalError}
-                  </p>
-                )}
               </div>
-              {devotionalLoading && (
-                <span className="text-[11px] font-semibold text-emerald-900/80 dark:text-emerald-200/80">
-                  در حال بروزرسانی...
-                </span>
-              )}
             </div>
 
             <div className="mt-4 flex-1 min-h-0 overflow-hidden">

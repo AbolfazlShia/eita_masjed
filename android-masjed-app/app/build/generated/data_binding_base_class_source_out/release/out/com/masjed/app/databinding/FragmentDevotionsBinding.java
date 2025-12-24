@@ -4,7 +4,6 @@ package com.masjed.app.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -26,13 +25,16 @@ public final class FragmentDevotionsBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final View bottomGlow;
+  public final View auroraBottom;
 
   @NonNull
-  public final ImageButton buttonNextDay;
+  public final View auroraHalo;
 
   @NonNull
-  public final ImageButton buttonPrevDay;
+  public final MaterialButton buttonNextDay;
+
+  @NonNull
+  public final MaterialButton buttonPrevDay;
 
   @NonNull
   public final MaterialButton buttonRetry;
@@ -41,7 +43,13 @@ public final class FragmentDevotionsBinding implements ViewBinding {
   public final MaterialButton buttonToday;
 
   @NonNull
+  public final LinearLayout dateInfoGroup;
+
+  @NonNull
   public final MaterialCardView devotionCard;
+
+  @NonNull
+  public final LinearLayout devotionHintRow;
 
   @NonNull
   public final LinearLayout errorGroup;
@@ -53,13 +61,16 @@ public final class FragmentDevotionsBinding implements ViewBinding {
   public final MaterialCardView headerDateRow;
 
   @NonNull
+  public final LinearLayout heroActionRow;
+
+  @NonNull
+  public final ImageView heroIllustration;
+
+  @NonNull
   public final ImageView imageDevotionArt;
 
   @NonNull
   public final ProgressBar progressIndicator;
-
-  @NonNull
-  public final ImageView skyIllustration;
 
   @NonNull
   public final MaterialButton switchPrayer;
@@ -68,16 +79,31 @@ public final class FragmentDevotionsBinding implements ViewBinding {
   public final MaterialButton switchZiyarat;
 
   @NonNull
+  public final TextView textDevotionBadge;
+
+  @NonNull
   public final TextView textDevotionBody;
 
   @NonNull
   public final TextView textDevotionDay;
 
   @NonNull
+  public final TextView textDevotionHint;
+
+  @NonNull
   public final TextView textDevotionSubtitle;
 
   @NonNull
   public final TextView textDevotionTitle;
+
+  @NonNull
+  public final TextView textHeroChip;
+
+  @NonNull
+  public final TextView textHeroSubtitle;
+
+  @NonNull
+  public final TextView textHeroTitle;
 
   @NonNull
   public final TextView textSelectedCalendar;
@@ -89,42 +115,61 @@ public final class FragmentDevotionsBinding implements ViewBinding {
   public final LinearLayout toggleRow;
 
   @NonNull
-  public final View topGlow;
+  public final TextView toggleSubtitle;
 
-  private FragmentDevotionsBinding(@NonNull ConstraintLayout rootView, @NonNull View bottomGlow,
-      @NonNull ImageButton buttonNextDay, @NonNull ImageButton buttonPrevDay,
-      @NonNull MaterialButton buttonRetry, @NonNull MaterialButton buttonToday,
-      @NonNull MaterialCardView devotionCard, @NonNull LinearLayout errorGroup,
-      @NonNull TextView errorMessage, @NonNull MaterialCardView headerDateRow,
-      @NonNull ImageView imageDevotionArt, @NonNull ProgressBar progressIndicator,
-      @NonNull ImageView skyIllustration, @NonNull MaterialButton switchPrayer,
-      @NonNull MaterialButton switchZiyarat, @NonNull TextView textDevotionBody,
-      @NonNull TextView textDevotionDay, @NonNull TextView textDevotionSubtitle,
-      @NonNull TextView textDevotionTitle, @NonNull TextView textSelectedCalendar,
-      @NonNull TextView textSelectedDate, @NonNull LinearLayout toggleRow, @NonNull View topGlow) {
+  @NonNull
+  public final TextView toggleTitle;
+
+  private FragmentDevotionsBinding(@NonNull ConstraintLayout rootView, @NonNull View auroraBottom,
+      @NonNull View auroraHalo, @NonNull MaterialButton buttonNextDay,
+      @NonNull MaterialButton buttonPrevDay, @NonNull MaterialButton buttonRetry,
+      @NonNull MaterialButton buttonToday, @NonNull LinearLayout dateInfoGroup,
+      @NonNull MaterialCardView devotionCard, @NonNull LinearLayout devotionHintRow,
+      @NonNull LinearLayout errorGroup, @NonNull TextView errorMessage,
+      @NonNull MaterialCardView headerDateRow, @NonNull LinearLayout heroActionRow,
+      @NonNull ImageView heroIllustration, @NonNull ImageView imageDevotionArt,
+      @NonNull ProgressBar progressIndicator, @NonNull MaterialButton switchPrayer,
+      @NonNull MaterialButton switchZiyarat, @NonNull TextView textDevotionBadge,
+      @NonNull TextView textDevotionBody, @NonNull TextView textDevotionDay,
+      @NonNull TextView textDevotionHint, @NonNull TextView textDevotionSubtitle,
+      @NonNull TextView textDevotionTitle, @NonNull TextView textHeroChip,
+      @NonNull TextView textHeroSubtitle, @NonNull TextView textHeroTitle,
+      @NonNull TextView textSelectedCalendar, @NonNull TextView textSelectedDate,
+      @NonNull LinearLayout toggleRow, @NonNull TextView toggleSubtitle,
+      @NonNull TextView toggleTitle) {
     this.rootView = rootView;
-    this.bottomGlow = bottomGlow;
+    this.auroraBottom = auroraBottom;
+    this.auroraHalo = auroraHalo;
     this.buttonNextDay = buttonNextDay;
     this.buttonPrevDay = buttonPrevDay;
     this.buttonRetry = buttonRetry;
     this.buttonToday = buttonToday;
+    this.dateInfoGroup = dateInfoGroup;
     this.devotionCard = devotionCard;
+    this.devotionHintRow = devotionHintRow;
     this.errorGroup = errorGroup;
     this.errorMessage = errorMessage;
     this.headerDateRow = headerDateRow;
+    this.heroActionRow = heroActionRow;
+    this.heroIllustration = heroIllustration;
     this.imageDevotionArt = imageDevotionArt;
     this.progressIndicator = progressIndicator;
-    this.skyIllustration = skyIllustration;
     this.switchPrayer = switchPrayer;
     this.switchZiyarat = switchZiyarat;
+    this.textDevotionBadge = textDevotionBadge;
     this.textDevotionBody = textDevotionBody;
     this.textDevotionDay = textDevotionDay;
+    this.textDevotionHint = textDevotionHint;
     this.textDevotionSubtitle = textDevotionSubtitle;
     this.textDevotionTitle = textDevotionTitle;
+    this.textHeroChip = textHeroChip;
+    this.textHeroSubtitle = textHeroSubtitle;
+    this.textHeroTitle = textHeroTitle;
     this.textSelectedCalendar = textSelectedCalendar;
     this.textSelectedDate = textSelectedDate;
     this.toggleRow = toggleRow;
-    this.topGlow = topGlow;
+    this.toggleSubtitle = toggleSubtitle;
+    this.toggleTitle = toggleTitle;
   }
 
   @Override
@@ -154,20 +199,26 @@ public final class FragmentDevotionsBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.bottomGlow;
-      View bottomGlow = ViewBindings.findChildViewById(rootView, id);
-      if (bottomGlow == null) {
+      id = R.id.auroraBottom;
+      View auroraBottom = ViewBindings.findChildViewById(rootView, id);
+      if (auroraBottom == null) {
+        break missingId;
+      }
+
+      id = R.id.auroraHalo;
+      View auroraHalo = ViewBindings.findChildViewById(rootView, id);
+      if (auroraHalo == null) {
         break missingId;
       }
 
       id = R.id.buttonNextDay;
-      ImageButton buttonNextDay = ViewBindings.findChildViewById(rootView, id);
+      MaterialButton buttonNextDay = ViewBindings.findChildViewById(rootView, id);
       if (buttonNextDay == null) {
         break missingId;
       }
 
       id = R.id.buttonPrevDay;
-      ImageButton buttonPrevDay = ViewBindings.findChildViewById(rootView, id);
+      MaterialButton buttonPrevDay = ViewBindings.findChildViewById(rootView, id);
       if (buttonPrevDay == null) {
         break missingId;
       }
@@ -184,9 +235,21 @@ public final class FragmentDevotionsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.dateInfoGroup;
+      LinearLayout dateInfoGroup = ViewBindings.findChildViewById(rootView, id);
+      if (dateInfoGroup == null) {
+        break missingId;
+      }
+
       id = R.id.devotionCard;
       MaterialCardView devotionCard = ViewBindings.findChildViewById(rootView, id);
       if (devotionCard == null) {
+        break missingId;
+      }
+
+      id = R.id.devotionHintRow;
+      LinearLayout devotionHintRow = ViewBindings.findChildViewById(rootView, id);
+      if (devotionHintRow == null) {
         break missingId;
       }
 
@@ -208,6 +271,18 @@ public final class FragmentDevotionsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.heroActionRow;
+      LinearLayout heroActionRow = ViewBindings.findChildViewById(rootView, id);
+      if (heroActionRow == null) {
+        break missingId;
+      }
+
+      id = R.id.heroIllustration;
+      ImageView heroIllustration = ViewBindings.findChildViewById(rootView, id);
+      if (heroIllustration == null) {
+        break missingId;
+      }
+
       id = R.id.imageDevotionArt;
       ImageView imageDevotionArt = ViewBindings.findChildViewById(rootView, id);
       if (imageDevotionArt == null) {
@@ -217,12 +292,6 @@ public final class FragmentDevotionsBinding implements ViewBinding {
       id = R.id.progressIndicator;
       ProgressBar progressIndicator = ViewBindings.findChildViewById(rootView, id);
       if (progressIndicator == null) {
-        break missingId;
-      }
-
-      id = R.id.skyIllustration;
-      ImageView skyIllustration = ViewBindings.findChildViewById(rootView, id);
-      if (skyIllustration == null) {
         break missingId;
       }
 
@@ -238,6 +307,12 @@ public final class FragmentDevotionsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.textDevotionBadge;
+      TextView textDevotionBadge = ViewBindings.findChildViewById(rootView, id);
+      if (textDevotionBadge == null) {
+        break missingId;
+      }
+
       id = R.id.textDevotionBody;
       TextView textDevotionBody = ViewBindings.findChildViewById(rootView, id);
       if (textDevotionBody == null) {
@@ -250,6 +325,12 @@ public final class FragmentDevotionsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.textDevotionHint;
+      TextView textDevotionHint = ViewBindings.findChildViewById(rootView, id);
+      if (textDevotionHint == null) {
+        break missingId;
+      }
+
       id = R.id.textDevotionSubtitle;
       TextView textDevotionSubtitle = ViewBindings.findChildViewById(rootView, id);
       if (textDevotionSubtitle == null) {
@@ -259,6 +340,24 @@ public final class FragmentDevotionsBinding implements ViewBinding {
       id = R.id.textDevotionTitle;
       TextView textDevotionTitle = ViewBindings.findChildViewById(rootView, id);
       if (textDevotionTitle == null) {
+        break missingId;
+      }
+
+      id = R.id.textHeroChip;
+      TextView textHeroChip = ViewBindings.findChildViewById(rootView, id);
+      if (textHeroChip == null) {
+        break missingId;
+      }
+
+      id = R.id.textHeroSubtitle;
+      TextView textHeroSubtitle = ViewBindings.findChildViewById(rootView, id);
+      if (textHeroSubtitle == null) {
+        break missingId;
+      }
+
+      id = R.id.textHeroTitle;
+      TextView textHeroTitle = ViewBindings.findChildViewById(rootView, id);
+      if (textHeroTitle == null) {
         break missingId;
       }
 
@@ -280,17 +379,25 @@ public final class FragmentDevotionsBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.topGlow;
-      View topGlow = ViewBindings.findChildViewById(rootView, id);
-      if (topGlow == null) {
+      id = R.id.toggleSubtitle;
+      TextView toggleSubtitle = ViewBindings.findChildViewById(rootView, id);
+      if (toggleSubtitle == null) {
         break missingId;
       }
 
-      return new FragmentDevotionsBinding((ConstraintLayout) rootView, bottomGlow, buttonNextDay,
-          buttonPrevDay, buttonRetry, buttonToday, devotionCard, errorGroup, errorMessage,
-          headerDateRow, imageDevotionArt, progressIndicator, skyIllustration, switchPrayer,
-          switchZiyarat, textDevotionBody, textDevotionDay, textDevotionSubtitle, textDevotionTitle,
-          textSelectedCalendar, textSelectedDate, toggleRow, topGlow);
+      id = R.id.toggleTitle;
+      TextView toggleTitle = ViewBindings.findChildViewById(rootView, id);
+      if (toggleTitle == null) {
+        break missingId;
+      }
+
+      return new FragmentDevotionsBinding((ConstraintLayout) rootView, auroraBottom, auroraHalo,
+          buttonNextDay, buttonPrevDay, buttonRetry, buttonToday, dateInfoGroup, devotionCard,
+          devotionHintRow, errorGroup, errorMessage, headerDateRow, heroActionRow, heroIllustration,
+          imageDevotionArt, progressIndicator, switchPrayer, switchZiyarat, textDevotionBadge,
+          textDevotionBody, textDevotionDay, textDevotionHint, textDevotionSubtitle,
+          textDevotionTitle, textHeroChip, textHeroSubtitle, textHeroTitle, textSelectedCalendar,
+          textSelectedDate, toggleRow, toggleSubtitle, toggleTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
